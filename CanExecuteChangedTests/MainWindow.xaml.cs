@@ -21,6 +21,8 @@ using System.Windows.Shapes;
 
 namespace CanExecuteChanged.Tests
 {
+    using System.Diagnostics;
+
     /// <summary>
     ///     Interaction logic for MainWindow.xaml
     /// </summary>
@@ -29,7 +31,14 @@ namespace CanExecuteChanged.Tests
         public MainWindow()
         {
             this.InitializeComponent();
+            CommandManager.RequerySuggested += this.CommandManagerOnRequerySuggested;
+
             this.DataContext = new MainViewModel(this);
+        }
+
+        private void CommandManagerOnRequerySuggested(object sender, EventArgs e)
+        {
+            Debug.WriteLine("On RequerySuggested {0}", sender?.GetType());
         }
     }
 }

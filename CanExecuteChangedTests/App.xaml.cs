@@ -8,6 +8,8 @@ using System.Windows;
 
 namespace CanExecuteChanged.Tests
 {
+    using System.Windows.Input;
+
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>

@@ -13,11 +13,14 @@ using System.Threading.Tasks;
 namespace CanExecuteChanged.Tests
 {
     using System.ComponentModel;
+    using System.Diagnostics;
     using System.Runtime.CompilerServices;
     using System.Windows.Input;
     using System.Windows.Threading;
 
     using CanExecuteChanged.Tests.Annotations;
+
+    using CanExecuteChangedTests;
 
     using GalaSoft.MvvmLight.CommandWpf;
 
@@ -32,7 +35,7 @@ namespace CanExecuteChanged.Tests
         public MainViewModel(MainWindow window)
         {
             this.window = window;
-            var command = new RelayCommand(this.Execute, this.CanExecute);
+            var command = new DirectCommand(this.Execute, this.CanExecute);
             command.RaiseCanExecuteChanged();
             this.TestCommand = command;
             this.timer = new DispatcherTimer();
@@ -40,8 +43,9 @@ namespace CanExecuteChanged.Tests
             this.timer.Tick += (e, a) =>
                 {
                     this.Text = DateTime.Now.ToLongTimeString();
-                    window.InvalidateMeasure();
-                    window.InvalidateVisual();
+                    command.RaiseCanExecuteChanged();
+                    // window.InvalidateMeasure();
+                    // window.InvalidateVisual();
                     window.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
                 };
             this.timer.Start();
@@ -71,6 +75,7 @@ namespace CanExecuteChanged.Tests
         private bool CanExecute()
         {
             this.Toggle = !this.Toggle;
+            Debug.WriteLine("CanExecute");
             return this.Toggle;
         }
 
