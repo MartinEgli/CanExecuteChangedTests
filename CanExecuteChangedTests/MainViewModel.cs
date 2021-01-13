@@ -18,11 +18,11 @@ namespace CanExecuteChanged.Tests
     using System.Windows.Input;
     using System.Windows.Threading;
 
-    using CanExecuteChanged.Tests.Annotations;
+    using Anorisoft.WinUI.Commands;
 
     using CanExecuteChangedTests;
 
-    using GalaSoft.MvvmLight.CommandWpf;
+    using JetBrains.Annotations;
 
     internal class MainViewModel : INotifyPropertyChanged
     {
@@ -38,8 +38,7 @@ namespace CanExecuteChanged.Tests
             var command = new DirectCommand(this.Execute, this.CanExecute);
             command.RaiseCanExecuteChanged();
             this.TestCommand = command;
-            this.timer = new DispatcherTimer();
-            this.timer.Interval = TimeSpan.FromSeconds(1);
+            this.timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
             this.timer.Tick += (e, a) =>
                 {
                     this.Text = DateTime.Now.ToLongTimeString();
@@ -48,10 +47,8 @@ namespace CanExecuteChanged.Tests
                     // window.InvalidateVisual();
                     window.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
                 };
-            this.timer.Start();
+            //this.timer.Start();
         }
-
-        public event PropertyChangedEventHandler PropertyChanged;
 
         public ICommand TestCommand { get; }
 
@@ -71,6 +68,8 @@ namespace CanExecuteChanged.Tests
                 this.OnPropertyChanged();
             }
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         private bool CanExecute()
         {

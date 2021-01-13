@@ -1,26 +1,27 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>WinExe</OutputType>
     <TargetFramework>net48</TargetFramework>
-    <UseWPF>true</UseWPF>
-    <AssemblyName>CanExecuteChangedTests</AssemblyName>
-    <RootNamespace>CanExecuteChangedTests</RootNamespace>
-    <LangVersion>8</LangVersion>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Annotations.cs" />
+    <Compile Remove="CanExecuteObservers\CanExecutesChangedSubject.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" Version="2020.3.0" />
-    <PackageReference Include="NUnit" Version="3.12.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Anorisoft.WinUI.Commands.Interfaces\Anorisoft.WinUI.Commands.Interfaces.csproj" />
-    <ProjectReference Include="..\Anorisoft.WinUI.Commands\Anorisoft.WinUI.Commands.csproj" />
     <ProjectReference Include="..\Anorisoft.WinUI.Common\Anorisoft.WinUI.Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
 </Project>

@@ -5,6 +5,16 @@ VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CanExecuteChangedTests", "CanExecuteChangedTests\CanExecuteChangedTests.csproj", "{94CB48A5-AD08-485C-8EDC-8F8E20608A7F}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Anorisoft.WinUI.Commands.Tests", "NUnitTestProject1\Anorisoft.WinUI.Commands.Tests.csproj", "{B343F447-F6B5-4DEA-834F-588B7B7C09E5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Anorisoft.WinUI.Commands", "Anorisoft.WinUI.Commands\Anorisoft.WinUI.Commands.csproj", "{D2B186E5-A55C-44D1-B5C3-776477250717}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Anorisoft.WinUI.Commands.Interfaces", "Anorisoft.WinUI.Commands.Interfaces\Anorisoft.WinUI.Commands.Interfaces.csproj", "{BF18324D-1D15-4321-8FF0-6E1A512A51F7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Anorisoft.WinUI.Common", "Anorisoft.WinUI.Common\Anorisoft.WinUI.Common.csproj", "{2C02C80E-6EB5-4F12-B790-D469692B7405}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Anorisoft.WinUI.Commands.GUITest", "Anorisoft.WinUI.Commands.GUITest\Anorisoft.WinUI.Commands.GUITest.csproj", "{9F3A8029-AA5C-4E53-86E1-24A41F528D21}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +25,26 @@ Global
 		{94CB48A5-AD08-485C-8EDC-8F8E20608A7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{94CB48A5-AD08-485C-8EDC-8F8E20608A7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{94CB48A5-AD08-485C-8EDC-8F8E20608A7F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B343F447-F6B5-4DEA-834F-588B7B7C09E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B343F447-F6B5-4DEA-834F-588B7B7C09E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B343F447-F6B5-4DEA-834F-588B7B7C09E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B343F447-F6B5-4DEA-834F-588B7B7C09E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2B186E5-A55C-44D1-B5C3-776477250717}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2B186E5-A55C-44D1-B5C3-776477250717}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2B186E5-A55C-44D1-B5C3-776477250717}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2B186E5-A55C-44D1-B5C3-776477250717}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF18324D-1D15-4321-8FF0-6E1A512A51F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF18324D-1D15-4321-8FF0-6E1A512A51F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF18324D-1D15-4321-8FF0-6E1A512A51F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF18324D-1D15-4321-8FF0-6E1A512A51F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C02C80E-6EB5-4F12-B790-D469692B7405}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C02C80E-6EB5-4F12-B790-D469692B7405}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C02C80E-6EB5-4F12-B790-D469692B7405}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C02C80E-6EB5-4F12-B790-D469692B7405}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F3A8029-AA5C-4E53-86E1-24A41F528D21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F3A8029-AA5C-4E53-86E1-24A41F528D21}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F3A8029-AA5C-4E53-86E1-24A41F528D21}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F3A8029-AA5C-4E53-86E1-24A41F528D21}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
