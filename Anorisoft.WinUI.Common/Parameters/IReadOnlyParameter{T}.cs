@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="IReadOnlyParameter.cs" company="Anori Soft">
+// <copyright file="IReadOnlyParameter{T}.cs" company="Anori Soft">
 // Copyright (c) Anori Soft. All rights reserved.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -10,10 +10,10 @@ namespace Anorisoft.WinUI.Common.Parameters
 
     using CanExecuteChangedTests;
 
-    public interface IReadOnlyParameter
+    public interface IReadOnlyParameter<T> : IReadOnlyParameter
     {
-        object Value { get; }
+        new T Value { get; }
 
-        event EventHandler<EventArgs<object>> ValueChanged;
+        new event EventHandler<EventArgs<T>> ValueChanged;
     }
 }

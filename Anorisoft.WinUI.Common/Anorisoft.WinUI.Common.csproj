@@ -2,15 +2,22 @@
 
   <PropertyGroup>
     <TargetFramework>net48</TargetFramework>
-    <LangVersion>8</LangVersion>
+    <LangVersion>9</LangVersion>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
     <Compile Remove="IErrorHandler.cs" />
+    <Compile Remove="Parameters\IParameterObserverNode{T}.cs" />
+    <Compile Remove="Parameters\IParameterObserverRootNode{T}.cs" />
+    <Compile Remove="Parameters\ParameterObserverEndNode{T}.cs" />
+    <Compile Remove="Parameters\ParameterObserverNode{T}.cs" />
+    <Compile Remove="Parameters\ParameterObserverRootNode{T}.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" Version="2020.3.0" />
+    <PackageReference Include="System.Reactive" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>

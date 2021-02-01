@@ -329,21 +329,21 @@ namespace Anorisoft.WinUI.Commands.Tests
         {
             var canExecuteChangedRaiseCount = 0;
             var commandTestObject = new CommandTestObject
-                                        {
-                                            ComplexProperty = new ComplexType
-                                                                  {
-                                                                      IntProperty = 1,
-                                                                      InnerComplexProperty = new ComplexType
-                                                                          {
-                                                                              IntProperty = 1,
-                                                                              InnerComplexProperty =
+            {
+                ComplexProperty = new ComplexType
+                {
+                    IntProperty = 1,
+                    InnerComplexProperty = new ComplexType
+                    {
+                        IntProperty = 1,
+                        InnerComplexProperty =
                                                                                   new ComplexType
-                                                                                      {
-                                                                                          IntProperty = 1
-                                                                                      }
-                                                                          }
-                                                                  }
-                                        };
+                                                                                  {
+                                                                                      IntProperty = 1
+                                                                                  }
+                    }
+                }
+            };
 
             var command = new ActivatablePropertyObserverCommand<object>(o => { })
                 .ObservesProperty(commandTestObject.ComplexPropertyIntPropertyExpression)
@@ -364,17 +364,17 @@ namespace Anorisoft.WinUI.Commands.Tests
             var complexProp = commandTestObject.ComplexProperty;
 
             commandTestObject.ComplexProperty = new ComplexType
-                                                    {
-                                                        InnerComplexProperty = new ComplexType
-                                                                                   {
-                                                                                       InnerComplexProperty =
+            {
+                InnerComplexProperty = new ComplexType
+                {
+                    InnerComplexProperty =
                                                                                            new ComplexType()
-                                                                                   }
-                                                    };
+                }
+            };
 
-            Assert.AreEqual(0, innerInnerComplexProp.GetPropertyChangedSubscribledLenght());
-            Assert.AreEqual(0, innerComplexProp.GetPropertyChangedSubscribledLenght());
-            Assert.AreEqual(0, complexProp.GetPropertyChangedSubscribledLenght());
+            Assert.AreEqual(0, innerInnerComplexProp.GetPropertyChangedSubscribedLength());
+            Assert.AreEqual(0, innerComplexProp.GetPropertyChangedSubscribedLength());
+            Assert.AreEqual(0, complexProp.GetPropertyChangedSubscribedLength());
 
             innerInnerComplexProp = commandTestObject.ComplexProperty.InnerComplexProperty.InnerComplexProperty;
             innerComplexProp = commandTestObject.ComplexProperty.InnerComplexProperty;
@@ -382,9 +382,9 @@ namespace Anorisoft.WinUI.Commands.Tests
 
             commandTestObject.ComplexProperty = null;
 
-            Assert.AreEqual(0, innerInnerComplexProp.GetPropertyChangedSubscribledLenght());
-            Assert.AreEqual(0, innerComplexProp.GetPropertyChangedSubscribledLenght());
-            Assert.AreEqual(0, complexProp.GetPropertyChangedSubscribledLenght());
+            Assert.AreEqual(0, innerInnerComplexProp.GetPropertyChangedSubscribedLength());
+            Assert.AreEqual(0, innerComplexProp.GetPropertyChangedSubscribedLength());
+            Assert.AreEqual(0, complexProp.GetPropertyChangedSubscribedLength());
         }
 
         [Test]
@@ -392,21 +392,21 @@ namespace Anorisoft.WinUI.Commands.Tests
         {
             var canExecuteChangedRaiseCount = 0;
             var commandTestObject = new CommandTestObject
-                                        {
-                                            ComplexProperty = new ComplexType
-                                                                  {
-                                                                      IntProperty = 1,
-                                                                      InnerComplexProperty = new ComplexType
-                                                                          {
-                                                                              IntProperty = 1,
-                                                                              InnerComplexProperty =
+            {
+                ComplexProperty = new ComplexType
+                {
+                    IntProperty = 1,
+                    InnerComplexProperty = new ComplexType
+                    {
+                        IntProperty = 1,
+                        InnerComplexProperty =
                                                                                   new ComplexType
-                                                                                      {
-                                                                                          IntProperty = 1
-                                                                                      }
-                                                                          }
-                                                                  }
-                                        };
+                                                                                  {
+                                                                                      IntProperty = 1
+                                                                                  }
+                    }
+                }
+            };
 
             var command = new ActivatablePropertyObserverCommand(() => { })
                 .ObservesProperty(commandTestObject.ComplexPropertyIntPropertyExpression)
@@ -427,17 +427,17 @@ namespace Anorisoft.WinUI.Commands.Tests
             var complexProp = commandTestObject.ComplexProperty;
 
             commandTestObject.ComplexProperty = new ComplexType
-                                                    {
-                                                        InnerComplexProperty = new ComplexType
-                                                                                   {
-                                                                                       InnerComplexProperty =
+            {
+                InnerComplexProperty = new ComplexType
+                {
+                    InnerComplexProperty =
                                                                                            new ComplexType()
-                                                                                   }
-                                                    };
+                }
+            };
 
-            Assert.AreEqual(0, innerInnerComplexProp.GetPropertyChangedSubscribledLenght());
-            Assert.AreEqual(0, innerComplexProp.GetPropertyChangedSubscribledLenght());
-            Assert.AreEqual(0, complexProp.GetPropertyChangedSubscribledLenght());
+            Assert.AreEqual(0, innerInnerComplexProp.GetPropertyChangedSubscribedLength());
+            Assert.AreEqual(0, innerComplexProp.GetPropertyChangedSubscribedLength());
+            Assert.AreEqual(0, complexProp.GetPropertyChangedSubscribedLength());
 
             innerInnerComplexProp = commandTestObject.ComplexProperty.InnerComplexProperty.InnerComplexProperty;
             innerComplexProp = commandTestObject.ComplexProperty.InnerComplexProperty;
@@ -445,9 +445,9 @@ namespace Anorisoft.WinUI.Commands.Tests
 
             commandTestObject.ComplexProperty = null;
 
-            Assert.AreEqual(0, innerInnerComplexProp.GetPropertyChangedSubscribledLenght());
-            Assert.AreEqual(0, innerComplexProp.GetPropertyChangedSubscribledLenght());
-            Assert.AreEqual(0, complexProp.GetPropertyChangedSubscribledLenght());
+            Assert.AreEqual(0, innerInnerComplexProp.GetPropertyChangedSubscribedLength());
+            Assert.AreEqual(0, innerComplexProp.GetPropertyChangedSubscribedLength());
+            Assert.AreEqual(0, complexProp.GetPropertyChangedSubscribedLength());
         }
 
         [Test]
@@ -455,21 +455,21 @@ namespace Anorisoft.WinUI.Commands.Tests
         {
             var canExecuteChangedRaiseCount = 0;
             var commandTestObject = new CommandTestObject
-                                        {
-                                            ComplexProperty = new ComplexType
-                                                                  {
-                                                                      IntProperty = 1,
-                                                                      InnerComplexProperty = new ComplexType
-                                                                          {
-                                                                              IntProperty = 1,
-                                                                              InnerComplexProperty =
+            {
+                ComplexProperty = new ComplexType
+                {
+                    IntProperty = 1,
+                    InnerComplexProperty = new ComplexType
+                    {
+                        IntProperty = 1,
+                        InnerComplexProperty =
                                                                                   new ComplexType
-                                                                                      {
-                                                                                          IntProperty = 1
-                                                                                      }
-                                                                          }
-                                                                  }
-                                        };
+                                                                                  {
+                                                                                      IntProperty = 1
+                                                                                  }
+                    }
+                }
+            };
 
             var command = new ActivatablePropertyObserverCommand<object>(o => { })
                 .ObservesProperty(commandTestObject, o => o.ComplexProperty.IntProperty)
@@ -491,17 +491,17 @@ namespace Anorisoft.WinUI.Commands.Tests
             var complexProp = commandTestObject.ComplexProperty;
 
             commandTestObject.ComplexProperty = new ComplexType
-                                                    {
-                                                        InnerComplexProperty = new ComplexType
-                                                                                   {
-                                                                                       InnerComplexProperty =
+            {
+                InnerComplexProperty = new ComplexType
+                {
+                    InnerComplexProperty =
                                                                                            new ComplexType()
-                                                                                   }
-                                                    };
+                }
+            };
 
-            Assert.AreEqual(0, innerInnerComplexProp.GetPropertyChangedSubscribledLenght());
-            Assert.AreEqual(0, innerComplexProp.GetPropertyChangedSubscribledLenght());
-            Assert.AreEqual(0, complexProp.GetPropertyChangedSubscribledLenght());
+            Assert.AreEqual(0, innerInnerComplexProp.GetPropertyChangedSubscribedLength());
+            Assert.AreEqual(0, innerComplexProp.GetPropertyChangedSubscribedLength());
+            Assert.AreEqual(0, complexProp.GetPropertyChangedSubscribedLength());
 
             innerInnerComplexProp = commandTestObject.ComplexProperty.InnerComplexProperty.InnerComplexProperty;
             innerComplexProp = commandTestObject.ComplexProperty.InnerComplexProperty;
@@ -509,9 +509,9 @@ namespace Anorisoft.WinUI.Commands.Tests
 
             commandTestObject.ComplexProperty = null;
 
-            Assert.AreEqual(0, innerInnerComplexProp.GetPropertyChangedSubscribledLenght());
-            Assert.AreEqual(0, innerComplexProp.GetPropertyChangedSubscribledLenght());
-            Assert.AreEqual(0, complexProp.GetPropertyChangedSubscribledLenght());
+            Assert.AreEqual(0, innerInnerComplexProp.GetPropertyChangedSubscribedLength());
+            Assert.AreEqual(0, innerComplexProp.GetPropertyChangedSubscribedLength());
+            Assert.AreEqual(0, complexProp.GetPropertyChangedSubscribedLength());
         }
 
         [Test]
@@ -519,21 +519,21 @@ namespace Anorisoft.WinUI.Commands.Tests
         {
             var canExecuteChangedRaiseCount = 0;
             var commandTestObject = new CommandTestObject
-                                        {
-                                            ComplexProperty = new ComplexType
-                                                                  {
-                                                                      IntProperty = 1,
-                                                                      InnerComplexProperty = new ComplexType
-                                                                          {
-                                                                              IntProperty = 1,
-                                                                              InnerComplexProperty =
+            {
+                ComplexProperty = new ComplexType
+                {
+                    IntProperty = 1,
+                    InnerComplexProperty = new ComplexType
+                    {
+                        IntProperty = 1,
+                        InnerComplexProperty =
                                                                                   new ComplexType
-                                                                                      {
-                                                                                          IntProperty = 1
-                                                                                      }
-                                                                          }
-                                                                  }
-                                        };
+                                                                                  {
+                                                                                      IntProperty = 1
+                                                                                  }
+                    }
+                }
+            };
 
             var command = new ActivatablePropertyObserverCommand(() => { })
                 .ObservesProperty(commandTestObject, o => o.ComplexProperty.IntProperty)
@@ -555,17 +555,17 @@ namespace Anorisoft.WinUI.Commands.Tests
             var complexProp = commandTestObject.ComplexProperty;
 
             commandTestObject.ComplexProperty = new ComplexType
-                                                    {
-                                                        InnerComplexProperty = new ComplexType
-                                                                                   {
-                                                                                       InnerComplexProperty =
+            {
+                InnerComplexProperty = new ComplexType
+                {
+                    InnerComplexProperty =
                                                                                            new ComplexType()
-                                                                                   }
-                                                    };
+                }
+            };
 
-            Assert.AreEqual(0, innerInnerComplexProp.GetPropertyChangedSubscribledLenght());
-            Assert.AreEqual(0, innerComplexProp.GetPropertyChangedSubscribledLenght());
-            Assert.AreEqual(0, complexProp.GetPropertyChangedSubscribledLenght());
+            Assert.AreEqual(0, innerInnerComplexProp.GetPropertyChangedSubscribedLength());
+            Assert.AreEqual(0, innerComplexProp.GetPropertyChangedSubscribedLength());
+            Assert.AreEqual(0, complexProp.GetPropertyChangedSubscribedLength());
 
             innerInnerComplexProp = commandTestObject.ComplexProperty.InnerComplexProperty.InnerComplexProperty;
             innerComplexProp = commandTestObject.ComplexProperty.InnerComplexProperty;
@@ -573,9 +573,9 @@ namespace Anorisoft.WinUI.Commands.Tests
 
             commandTestObject.ComplexProperty = null;
 
-            Assert.AreEqual(0, innerInnerComplexProp.GetPropertyChangedSubscribledLenght());
-            Assert.AreEqual(0, innerComplexProp.GetPropertyChangedSubscribledLenght());
-            Assert.AreEqual(0, complexProp.GetPropertyChangedSubscribledLenght());
+            Assert.AreEqual(0, innerInnerComplexProp.GetPropertyChangedSubscribedLength());
+            Assert.AreEqual(0, innerComplexProp.GetPropertyChangedSubscribedLength());
+            Assert.AreEqual(0, complexProp.GetPropertyChangedSubscribedLength());
         }
 
         [Test]
@@ -1115,21 +1115,21 @@ namespace Anorisoft.WinUI.Commands.Tests
         {
             var canExecuteChangedRaiseCount = 0;
             var commandTestObject = new CommandTestObject
-                                        {
-                                            ComplexProperty = new ComplexType
-                                                                  {
-                                                                      IntProperty = 1,
-                                                                      InnerComplexProperty = new ComplexType
-                                                                          {
-                                                                              IntProperty = 1,
-                                                                              InnerComplexProperty =
+            {
+                ComplexProperty = new ComplexType
+                {
+                    IntProperty = 1,
+                    InnerComplexProperty = new ComplexType
+                    {
+                        IntProperty = 1,
+                        InnerComplexProperty =
                                                                                   new ComplexType
-                                                                                      {
-                                                                                          IntProperty = 1
-                                                                                      }
-                                                                          }
-                                                                  }
-                                        };
+                                                                                  {
+                                                                                      IntProperty = 1
+                                                                                  }
+                    }
+                }
+            };
 
             var command = new ActivatablePropertyObserverCommand(() => { })
                 .ObservesProperty(commandTestObject.ComplexPropertyIntPropertyExpression)
@@ -1150,17 +1150,17 @@ namespace Anorisoft.WinUI.Commands.Tests
             var complexProp = commandTestObject.ComplexProperty;
 
             commandTestObject.ComplexProperty = new ComplexType
-                                                    {
-                                                        InnerComplexProperty = new ComplexType
-                                                                                   {
-                                                                                       InnerComplexProperty =
+            {
+                InnerComplexProperty = new ComplexType
+                {
+                    InnerComplexProperty =
                                                                                            new ComplexType()
-                                                                                   }
-                                                    };
+                }
+            };
 
-            Assert.AreEqual(0, innerInnerComplexProp.GetPropertyChangedSubscribledLenght());
-            Assert.AreEqual(0, innerComplexProp.GetPropertyChangedSubscribledLenght());
-            Assert.AreEqual(0, complexProp.GetPropertyChangedSubscribledLenght());
+            Assert.AreEqual(0, innerInnerComplexProp.GetPropertyChangedSubscribedLength());
+            Assert.AreEqual(0, innerComplexProp.GetPropertyChangedSubscribedLength());
+            Assert.AreEqual(0, complexProp.GetPropertyChangedSubscribedLength());
 
             innerInnerComplexProp = commandTestObject.ComplexProperty.InnerComplexProperty.InnerComplexProperty;
             innerComplexProp = commandTestObject.ComplexProperty.InnerComplexProperty;
@@ -1168,9 +1168,9 @@ namespace Anorisoft.WinUI.Commands.Tests
 
             commandTestObject.ComplexProperty = null;
 
-            Assert.AreEqual(0, innerInnerComplexProp.GetPropertyChangedSubscribledLenght());
-            Assert.AreEqual(0, innerComplexProp.GetPropertyChangedSubscribledLenght());
-            Assert.AreEqual(0, complexProp.GetPropertyChangedSubscribledLenght());
+            Assert.AreEqual(0, innerInnerComplexProp.GetPropertyChangedSubscribedLength());
+            Assert.AreEqual(0, innerComplexProp.GetPropertyChangedSubscribedLength());
+            Assert.AreEqual(0, complexProp.GetPropertyChangedSubscribedLength());
         }
 
         [Test]
@@ -1331,10 +1331,10 @@ namespace Anorisoft.WinUI.Commands.Tests
         public void NonGenericDelegateCommandShouldObserveOneComplexProperty()
         {
             var commandTestObject = new CommandTestObject
-                                        {
-                                            ComplexProperty =
+            {
+                ComplexProperty =
                                                 new ComplexType { InnerComplexProperty = new ComplexType() }
-                                        };
+            };
 
             var canExecuteChangedRaised = false;
 
@@ -1415,7 +1415,7 @@ namespace Anorisoft.WinUI.Commands.Tests
             var testClass = new MyClass();
             ICommand command = new ActivatablePropertyObserverCommand<MyClass>(
                 p => { },
-                delegate(MyClass parameter)
+                delegate (MyClass parameter)
                     {
                         Assert.AreSame(testClass, parameter);
                         canExecuteCalled = true;
@@ -1432,7 +1432,7 @@ namespace Anorisoft.WinUI.Commands.Tests
             var executeCalled = false;
             var testClass = new MyClass();
             ICommand command = new ActivatablePropertyObserverCommand<MyClass>(
-                delegate(MyClass parameter)
+                delegate (MyClass parameter)
                     {
                         Assert.AreSame(testClass, parameter);
                         executeCalled = true;

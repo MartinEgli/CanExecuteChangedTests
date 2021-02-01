@@ -153,9 +153,9 @@ namespace Anorisoft.WinUI.Commands.Tests
             var innerComplexProp = notifyPropertyChangedTestObject.ComplexProperty.InnerComplexProperty;
             var complexProp = notifyPropertyChangedTestObject.ComplexProperty;
 
-            Assert.AreEqual(1, innerInnerComplexProp.GetPropertyChangedSubscribledLenght());
-            Assert.AreEqual(2, innerComplexProp.GetPropertyChangedSubscribledLenght());
-            Assert.AreEqual(3, complexProp.GetPropertyChangedSubscribledLenght());
+            Assert.AreEqual(1, innerInnerComplexProp.GetPropertyChangedSubscribedLength());
+            Assert.AreEqual(2, innerComplexProp.GetPropertyChangedSubscribedLength());
+            Assert.AreEqual(3, complexProp.GetPropertyChangedSubscribedLength());
 
             notifyPropertyChangedTestObject.ComplexProperty = new ComplexType
             {
@@ -168,25 +168,25 @@ namespace Anorisoft.WinUI.Commands.Tests
 
             Assert.AreEqual(6, canExecuteChangedRaiseCount);
 
-            Assert.AreEqual(0, innerInnerComplexProp.GetPropertyChangedSubscribledLenght());
-            Assert.AreEqual(0, innerComplexProp.GetPropertyChangedSubscribledLenght());
-            Assert.AreEqual(0, complexProp.GetPropertyChangedSubscribledLenght());
+            Assert.AreEqual(0, innerInnerComplexProp.GetPropertyChangedSubscribedLength());
+            Assert.AreEqual(0, innerComplexProp.GetPropertyChangedSubscribedLength());
+            Assert.AreEqual(0, complexProp.GetPropertyChangedSubscribedLength());
 
             innerInnerComplexProp = notifyPropertyChangedTestObject.ComplexProperty.InnerComplexProperty
                 .InnerComplexProperty;
             innerComplexProp = notifyPropertyChangedTestObject.ComplexProperty.InnerComplexProperty;
             complexProp = notifyPropertyChangedTestObject.ComplexProperty;
 
-            Assert.AreEqual(1, innerInnerComplexProp.GetPropertyChangedSubscribledLenght());
-            Assert.AreEqual(2, innerComplexProp.GetPropertyChangedSubscribledLenght());
-            Assert.AreEqual(3, complexProp.GetPropertyChangedSubscribledLenght());
+            Assert.AreEqual(1, innerInnerComplexProp.GetPropertyChangedSubscribedLength());
+            Assert.AreEqual(2, innerComplexProp.GetPropertyChangedSubscribedLength());
+            Assert.AreEqual(3, complexProp.GetPropertyChangedSubscribedLength());
 
             notifyPropertyChangedTestObject.ComplexProperty = null;
             Assert.AreEqual(9, canExecuteChangedRaiseCount);
 
-            Assert.AreEqual(0, innerInnerComplexProp.GetPropertyChangedSubscribledLenght());
-            Assert.AreEqual(0, innerComplexProp.GetPropertyChangedSubscribledLenght());
-            Assert.AreEqual(0, complexProp.GetPropertyChangedSubscribledLenght());
+            Assert.AreEqual(0, innerInnerComplexProp.GetPropertyChangedSubscribedLength());
+            Assert.AreEqual(0, innerComplexProp.GetPropertyChangedSubscribedLength());
+            Assert.AreEqual(0, complexProp.GetPropertyChangedSubscribedLength());
         }
 
         [Test]
@@ -331,9 +331,9 @@ namespace Anorisoft.WinUI.Commands.Tests
             var innerComplexProp = notifyPropertyChangedTestObject.ComplexProperty.InnerComplexProperty;
             var complexProp = notifyPropertyChangedTestObject.ComplexProperty;
 
-            Assert.AreEqual(1, innerInnerComplexProp.GetPropertyChangedSubscribledLenght());
-            Assert.AreEqual(2, innerComplexProp.GetPropertyChangedSubscribledLenght());
-            Assert.AreEqual(3, complexProp.GetPropertyChangedSubscribledLenght());
+            Assert.AreEqual(1, innerInnerComplexProp.GetPropertyChangedSubscribedLength());
+            Assert.AreEqual(2, innerComplexProp.GetPropertyChangedSubscribedLength());
+            Assert.AreEqual(3, complexProp.GetPropertyChangedSubscribedLength());
 
             notifyPropertyChangedTestObject.ComplexProperty = new ComplexType
             {
@@ -346,25 +346,25 @@ namespace Anorisoft.WinUI.Commands.Tests
 
             Assert.AreEqual(6, canExecuteChangedRaiseCount);
 
-            Assert.AreEqual(0, innerInnerComplexProp.GetPropertyChangedSubscribledLenght());
-            Assert.AreEqual(0, innerComplexProp.GetPropertyChangedSubscribledLenght());
-            Assert.AreEqual(0, complexProp.GetPropertyChangedSubscribledLenght());
+            Assert.AreEqual(0, innerInnerComplexProp.GetPropertyChangedSubscribedLength());
+            Assert.AreEqual(0, innerComplexProp.GetPropertyChangedSubscribedLength());
+            Assert.AreEqual(0, complexProp.GetPropertyChangedSubscribedLength());
 
             innerInnerComplexProp = notifyPropertyChangedTestObject.ComplexProperty.InnerComplexProperty
                 .InnerComplexProperty;
             innerComplexProp = notifyPropertyChangedTestObject.ComplexProperty.InnerComplexProperty;
             complexProp = notifyPropertyChangedTestObject.ComplexProperty;
 
-            Assert.AreEqual(1, innerInnerComplexProp.GetPropertyChangedSubscribledLenght());
-            Assert.AreEqual(2, innerComplexProp.GetPropertyChangedSubscribledLenght());
-            Assert.AreEqual(3, complexProp.GetPropertyChangedSubscribledLenght());
+            Assert.AreEqual(1, innerInnerComplexProp.GetPropertyChangedSubscribedLength());
+            Assert.AreEqual(2, innerComplexProp.GetPropertyChangedSubscribedLength());
+            Assert.AreEqual(3, complexProp.GetPropertyChangedSubscribedLength());
 
             notifyPropertyChangedTestObject.ComplexProperty = null;
             Assert.AreEqual(9, canExecuteChangedRaiseCount);
 
-            Assert.AreEqual(0, innerInnerComplexProp.GetPropertyChangedSubscribledLenght());
-            Assert.AreEqual(0, innerComplexProp.GetPropertyChangedSubscribledLenght());
-            Assert.AreEqual(0, complexProp.GetPropertyChangedSubscribledLenght());
+            Assert.AreEqual(0, innerInnerComplexProp.GetPropertyChangedSubscribedLength());
+            Assert.AreEqual(0, innerComplexProp.GetPropertyChangedSubscribedLength());
+            Assert.AreEqual(0, complexProp.GetPropertyChangedSubscribedLength());
         }
 
         [Test]

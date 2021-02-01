@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="ParameterObserver.cs" company="Anori Soft">
+// <copyright file="ParameterObserver{T}.cs" company="Anori Soft">
 // Copyright (c) Anori Soft. All rights reserved.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -14,67 +14,11 @@ namespace Anorisoft.WinUI.Common.Parameters
     using System.Linq.Expressions;
     using System.Reflection;
 
-    public sealed class ParameterObserver<TValue, TOwner> : ParameterObserverBase<TOwner>
-    {
-        /// <summary>
-        ///     The action
-        /// </summary>
-        private readonly Action<TValue> action;
-
-        /// <summary>
-        ///     The property propertyGetter
-        /// </summary>
-        private readonly Func<TValue> propertyGetter;
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="ParameterObserver{TValue, TOwner}" /> class.
-        /// </summary>
-        /// <param name="propertyExpression">The property expression.</param>
-        /// <param name="action">The action.</param>
-        /// <exception cref="ArgumentNullException">
-        ///     action
-        ///     or
-        ///     propertyGetter
-        /// </exception>
-        internal ParameterObserver(
-            [NotNull] Expression<Func<TValue>> propertyExpression,
-            [NotNull] Action<TValue> action)
-            : base(propertyExpression?.Body)
-        {
-            this.action = action ?? throw new ArgumentNullException(nameof(action));
-            this.propertyGetter = propertyExpression.Compile();
-        }
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="ParameterObserver{TValue, TOwner}" /> class.
-        /// </summary>
-        /// <param name="owner">The owner.</param>
-        /// <param name="propertyExpression">The property expression.</param>
-        /// <param name="action">The action.</param>
-        /// <exception cref="ArgumentNullException">action</exception>
-        internal ParameterObserver(
-            [NotNull] TOwner owner,
-            [NotNull] Expression<Func<TOwner, TValue>> propertyExpression,
-            [NotNull] Action<TValue> action)
-            : base(owner, propertyExpression?.Body)
-        {
-            this.action = action ?? throw new ArgumentNullException(nameof(action));
-            this.propertyGetter = () =>
-                propertyExpression.Compile()(this.Owner)
-                ?? throw new ArgumentNullException(nameof(this.propertyGetter));
-        }
-
-        /// <summary>
-        ///     Calls the action.
-        /// </summary>
-        protected override void CallAction() => this.action.Raise(this.propertyGetter());
-    }
-
     /// <summary>
     ///     Provide a way to observe property changes of INotifyPropertyChanged objects and invokes a
     ///     custom action when the PropertyChanged event is fired.
     /// </summary>
-    public sealed class ParameterObserver : IEquatable<ParameterObserver>, IDisposable
+    public sealed class ParameterObserver2<TValue> : IEquatable<ParameterObserver2<TValue>>, IDisposable
     {
         /// <summary>
         ///     The owner string
@@ -84,7 +28,7 @@ namespace Anorisoft.WinUI.Common.Parameters
         /// <summary>
         ///     The action
         /// </summary>
-        private readonly Action action;
+        private readonly Action<TValue> action;
 
         /// <summary>
         ///     The parameterObserverRoot node
@@ -97,20 +41,31 @@ namespace Anorisoft.WinUI.Common.Parameters
         private readonly Expression propertyExpression;
 
         /// <summary>
+        ///     The property propertyGetter
+        /// </summary>
+        private readonly Func<TValue> propertyGetter;
+
+        /// <summary>
         ///     Initializes a new instance of the <see cref="ParameterObserver" /> class.
         /// </summary>
         /// <param name="propertyExpression">The property expression.</param>
+        /// <param name="propertyGetter">The property propertyGetter.</param>
         /// <param name="action">The action.</param>
         /// <exception cref="ArgumentNullException">
         ///     propertyExpression
         ///     or
         ///     action
         /// </exception>
-        private ParameterObserver([NotNull] Expression propertyExpression, [NotNull] Action action)
+        private ParameterObserver2(
+            [NotNull] Expression propertyExpression,
+            [NotNull] Func<TValue> propertyGetter,
+            [NotNull] Action<TValue> action)
         {
+            this.propertyGetter = propertyGetter ?? throw new ArgumentNullException(nameof(propertyGetter));
             this.propertyExpression = propertyExpression ?? throw new ArgumentNullException(nameof(propertyExpression));
-            this.ExpressionString = propertyExpression.ToString();
             this.action = action ?? throw new ArgumentNullException(nameof(action));
+
+            this.ExpressionString = propertyExpression.ToString();
             (this.parameterObserverRootNode, this.ExpressionString) = this.CreateChain();
             this.Owner = this.parameterObserverRootNode.Owner;
         }
@@ -120,7 +75,15 @@ namespace Anorisoft.WinUI.Common.Parameters
         /// </summary>
         /// <param name="owner">The owner.</param>
         /// <param name="propertyExpression">The property expression.</param>
+        /// <param name="propertyGetter">The propertyGetter.</param>
         /// <param name="action">The action.</param>
+        /// <exception cref="ArgumentNullException">
+        ///     owner
+        ///     or
+        ///     propertyExpression
+        ///     or
+        ///     action
+        /// </exception>
         /// <exception cref="System.ArgumentNullException">
         ///     propertyExpression
         ///     or
@@ -128,14 +91,16 @@ namespace Anorisoft.WinUI.Common.Parameters
         ///     or
         ///     owner
         /// </exception>
-        private ParameterObserver(
+        private ParameterObserver2(
             [NotNull] object owner,
             [NotNull] Expression propertyExpression,
-            [NotNull] Action action)
+            [NotNull] Func<TValue> propertyGetter,
+            [NotNull] Action<TValue> action)
         {
-            this.propertyExpression = propertyExpression ?? throw new ArgumentNullException(nameof(propertyExpression));
-            this.action = action ?? throw new ArgumentNullException(nameof(action));
             this.Owner = owner ?? throw new ArgumentNullException(nameof(owner));
+            this.propertyExpression = propertyExpression ?? throw new ArgumentNullException(nameof(propertyExpression));
+            this.propertyGetter = propertyGetter ?? throw new ArgumentNullException(nameof(propertyGetter));
+            this.action = action ?? throw new ArgumentNullException(nameof(action));
             (this.parameterObserverRootNode, this.ExpressionString) = this.CreateChain(owner);
         }
 
@@ -172,9 +137,9 @@ namespace Anorisoft.WinUI.Common.Parameters
         ///     <see langword="true" /> if the current object is equal to the <paramref name="other" /> parameter; otherwise,
         ///     <see langword="false" />.
         /// </returns>
-        public bool Equals(ParameterObserver other)
+        public bool Equals(ParameterObserver2<TValue> other)
         {
-            if (ReferenceEquals(null, other))
+            if (other is null)
             {
                 return false;
             }
@@ -200,12 +165,12 @@ namespace Anorisoft.WinUI.Common.Parameters
         /// <param name="action">Action to be invoked when PropertyChanged event occours.</param>
         /// <param name="isAutoSubscribe">if set to <c>true</c> [is automatic subscribe].</param>
         /// <returns></returns>
-        public static ParameterObserver Observes<T>(
+        public static ParameterObserver2<T> Observes<T>(
             Expression<Func<T>> propertyExpression,
-            Action action,
+            Action<T> action,
             bool isAutoSubscribe = true)
         {
-            var observer = new ParameterObserver(propertyExpression.Body, action);
+            var observer = new ParameterObserver2<T>(propertyExpression.Body, propertyExpression.Compile(), action);
             if (isAutoSubscribe)
             {
                 observer.Subscribe();
@@ -224,13 +189,18 @@ namespace Anorisoft.WinUI.Common.Parameters
         /// <param name="action">The action.</param>
         /// <param name="isAutoSubscribe">if set to <c>true</c> [is automatic subscribe].</param>
         /// <returns></returns>
-        public static ParameterObserver Observes<TOwner, T>(
+        public static ParameterObserver2<T> Observes<TOwner, T>(
             TOwner owner,
             Expression<Func<TOwner, T>> propertyExpression,
-            Action action,
+            Action<T> action,
             bool isAutoSubscribe = true)
         {
-            var observer = new ParameterObserver(owner, propertyExpression.Body, action);
+            ParameterObserver2<T> observer = null;
+            observer = new ParameterObserver2<T>(
+                owner,
+                propertyExpression.Body,
+                () => propertyExpression.Compile()((TOwner)observer.Owner),
+                action);
             if (isAutoSubscribe)
             {
                 observer.Subscribe();
@@ -263,7 +233,7 @@ namespace Anorisoft.WinUI.Common.Parameters
                 return false;
             }
 
-            return this.Equals((ParameterObserver)obj);
+            return this.Equals((ParameterObserver2<TValue>)obj);
         }
 
         /// <summary>
@@ -284,23 +254,21 @@ namespace Anorisoft.WinUI.Common.Parameters
         /// <summary>
         ///     Subscribes this instance.
         /// </summary>
-        public void Subscribe()
-        {
-            this.parameterObserverRootNode.SubscribeListenerForOwner();
-        }
+        public void Subscribe() => this.parameterObserverRootNode.SubscribeListenerForOwner();
 
         /// <summary>
         ///     Unsubscribes this instance.
         /// </summary>
-        public void Unsubscribe()
-        {
-            this.parameterObserverRootNode.UnsubscribeListener();
-        }
+        public void Unsubscribe() => this.parameterObserverRootNode.UnsubscribeListener();
+
+        /// <summary>
+        ///     Calls the action.
+        /// </summary>
+        private void CallAction() => this.action(this.propertyGetter());
 
         /// <summary>
         ///     Creates the graph.
         /// </summary>
-        /// <param name="expression">The expression.</param>
         /// <returns></returns>
         /// <exception cref="NotSupportedException">
         ///     Operation not supported for the given expression type {expression.Type}. "
@@ -346,17 +314,17 @@ namespace Anorisoft.WinUI.Common.Parameters
             expressionString = OwnerString + this.propertyExpression.ToString()
                                    .Remove(0, constantExpression.ToString().Length);
 
-            if (!(constantExpression.Value is IReadOnlyParameter owner))
+            if (!(constantExpression.Value is IReadOnlyParameter<TValue> owner))
             {
                 throw new InvalidOperationException(
                     "Trying to subscribe PropertyChanged listener in object that "
                     + $"owns '{rootPropertyInfo.Name}' property, but the object does not implements IReadOnlyParameter.");
             }
 
-            var root = new ParameterObserverRootNode<object>(rootPropertyInfo, this.action, owner, owner);
+            var root = new ParameterObserverRootNode<object>(rootPropertyInfo, this.CallAction, owner, owner);
 
             ParameterObserverNode previousNode = root;
-            foreach (var currentNode in propertyInfos.Select(name => new ParameterObserverNode(name, this.action)))
+            foreach (var currentNode in propertyInfos.Select(name => new ParameterObserverNode(name, this.CallAction)))
             {
                 previousNode.Next = currentNode;
                 previousNode = currentNode;
@@ -374,6 +342,11 @@ namespace Anorisoft.WinUI.Common.Parameters
         ///     Operation not supported for the given expression type {expression.Type}. "
         ///     + "Only MemberExpression and ConstantExpression are currently supported.
         /// </exception>
+        /// <exception cref="Exception">
+        ///     No Parameter 3.
+        ///     or
+        ///     No Parameter.
+        /// </exception>
         private (IParameterObserverRootNode<object>, string) CreateChain(object owner)
         {
             var expression = this.propertyExpression;
@@ -381,13 +354,13 @@ namespace Anorisoft.WinUI.Common.Parameters
             var propertyInfos = new Stack<PropertyInfo>();
             while (expression is MemberExpression memberExpression)
             {
-                if (!(memberExpression.Member is PropertyInfo info))
+                if (!(memberExpression.Member is PropertyInfo propertyInfo))
                 {
                     continue;
                 }
 
                 expression = memberExpression.Expression;
-                propertyInfos.Push(info);
+                propertyInfos.Push(propertyInfo);
             }
 
             if (!(expression is ParameterExpression parameterExpression))
@@ -407,10 +380,10 @@ namespace Anorisoft.WinUI.Common.Parameters
             {
                 if (!propertyInfos.Any())
                 {
-                    return (new ParameterObserverSingleNode<object>(this.action, owner, p), expressionString);
+                    return (new ParameterObserverSingleNode<object>(this.CallAction, owner, p), expressionString);
                 }
 
-                parameterObserverRoot = new ParameterObserverRootNode<object>(rootPropertyInfo, this.action, owner, p);
+                parameterObserverRoot = new ParameterObserverRootNode<object>(rootPropertyInfo, this.CallAction, owner, p);
             }
             else
             {
@@ -421,24 +394,20 @@ namespace Anorisoft.WinUI.Common.Parameters
 
                 if (!propertyInfos.Any())
                 {
-                    return (new ParameterObserverSingleNode<object>(this.action, owner, v), expressionString);
+                    return (new ParameterObserverSingleNode<object>(this.CallAction, owner, v), expressionString);
                 }
 
                 var propertyInfo = propertyInfos.Pop();
                 if (typeof(IReadOnlyParameter).IsAssignableFrom(propertyInfo.PropertyType))
                 {
-                    parameterObserverRoot = new ParameterObserverRootNode<object>(propertyInfo, this.action, owner, v);
+                    parameterObserverRoot = new ParameterObserverRootNode<object>(propertyInfo, this.CallAction, owner, v);
                 }
                 else
                 {
                     propertyInfo = propertyInfos.Pop();
                     if (typeof(IReadOnlyParameter).IsAssignableFrom(propertyInfo.PropertyType))
                     {
-                        parameterObserverRoot = new ParameterObserverRootNode<object>(
-                            propertyInfo,
-                            this.action,
-                            owner,
-                            v);
+                        parameterObserverRoot = new ParameterObserverRootNode<object>(propertyInfo, this.CallAction, owner, v);
                     }
                     else
                     {
@@ -450,13 +419,13 @@ namespace Anorisoft.WinUI.Common.Parameters
             ParameterObserverNode previousNode = parameterObserverRoot;
             foreach (var node in propertyInfos
                 .Where(currentNode => typeof(IReadOnlyParameter).IsAssignableFrom(currentNode.PropertyType))
-                .Select(currentNode => new ParameterObserverNode(currentNode, this.action)))
+                .Select(currentNode => new ParameterObserverNode(currentNode, this.CallAction)))
             {
                 previousNode.Next = node;
                 previousNode = node;
             }
 
-            var endNode = new ParameterObserverEndNode(this.action);
+            var endNode = new ParameterObserverEndNode(this.CallAction);
             previousNode.Next = endNode;
 
             return (parameterObserverRoot, expressionString);

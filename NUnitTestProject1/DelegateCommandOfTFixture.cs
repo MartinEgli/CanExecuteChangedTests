@@ -208,9 +208,9 @@ namespace Anorisoft.WinUI.Commands.Tests
                 }
             };
 
-            Assert.AreEqual(0, innerInnerComplexProp.GetPropertyChangedSubscribledLenght());
-            Assert.AreEqual(0, innerComplexProp.GetPropertyChangedSubscribledLenght());
-            Assert.AreEqual(0, complexProp.GetPropertyChangedSubscribledLenght());
+            Assert.AreEqual(0, innerInnerComplexProp.GetPropertyChangedSubscribedLength());
+            Assert.AreEqual(0, innerComplexProp.GetPropertyChangedSubscribedLength());
+            Assert.AreEqual(0, complexProp.GetPropertyChangedSubscribedLength());
 
             innerInnerComplexProp = commandTestObject.ComplexProperty.InnerComplexProperty.InnerComplexProperty;
             innerComplexProp = commandTestObject.ComplexProperty.InnerComplexProperty;
@@ -218,9 +218,9 @@ namespace Anorisoft.WinUI.Commands.Tests
 
             commandTestObject.ComplexProperty = null;
 
-            Assert.AreEqual(0, innerInnerComplexProp.GetPropertyChangedSubscribledLenght());
-            Assert.AreEqual(0, innerComplexProp.GetPropertyChangedSubscribledLenght());
-            Assert.AreEqual(0, complexProp.GetPropertyChangedSubscribledLenght());
+            Assert.AreEqual(0, innerInnerComplexProp.GetPropertyChangedSubscribedLength());
+            Assert.AreEqual(0, innerComplexProp.GetPropertyChangedSubscribedLength());
+            Assert.AreEqual(0, complexProp.GetPropertyChangedSubscribedLength());
         }
 
         [Test]
@@ -272,9 +272,9 @@ namespace Anorisoft.WinUI.Commands.Tests
                 }
             };
 
-            Assert.AreEqual(0, innerInnerComplexProp.GetPropertyChangedSubscribledLenght());
-            Assert.AreEqual(0, innerComplexProp.GetPropertyChangedSubscribledLenght());
-            Assert.AreEqual(0, complexProp.GetPropertyChangedSubscribledLenght());
+            Assert.AreEqual(0, innerInnerComplexProp.GetPropertyChangedSubscribedLength());
+            Assert.AreEqual(0, innerComplexProp.GetPropertyChangedSubscribedLength());
+            Assert.AreEqual(0, complexProp.GetPropertyChangedSubscribedLength());
 
             innerInnerComplexProp = commandTestObject.ComplexProperty.InnerComplexProperty.InnerComplexProperty;
             innerComplexProp = commandTestObject.ComplexProperty.InnerComplexProperty;
@@ -282,9 +282,9 @@ namespace Anorisoft.WinUI.Commands.Tests
 
             commandTestObject.ComplexProperty = null;
 
-            Assert.AreEqual(0, innerInnerComplexProp.GetPropertyChangedSubscribledLenght());
-            Assert.AreEqual(0, innerComplexProp.GetPropertyChangedSubscribledLenght());
-            Assert.AreEqual(0, complexProp.GetPropertyChangedSubscribledLenght());
+            Assert.AreEqual(0, innerInnerComplexProp.GetPropertyChangedSubscribedLength());
+            Assert.AreEqual(0, innerComplexProp.GetPropertyChangedSubscribedLength());
+            Assert.AreEqual(0, complexProp.GetPropertyChangedSubscribedLength());
         }
 
         [Test]

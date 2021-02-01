@@ -11,14 +11,14 @@ namespace Anorisoft.WinUI.Commands.Tests
 
     /// <summary>
     ///     Provides minimum functionality TestViewModel based class in order to expose
-    ///     GetPropertyChangedSubscribledLenght to test if PropertyObserve's
+    ///     GetPropertyChangedSubscribedLength to test if PropertyObserve's
     ///     unsubscribing to PropertyChanged is working properly.
     /// </summary>
     public abstract class TestPurposeBindableBase : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public int GetPropertyChangedSubscribledLenght()
+        public int GetPropertyChangedSubscribedLength()
         {
             return this.PropertyChanged?.GetInvocationList()?.Length ?? 0;
         }

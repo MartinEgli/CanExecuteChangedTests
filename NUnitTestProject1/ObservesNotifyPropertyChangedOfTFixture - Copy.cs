@@ -1,11 +1,14 @@
 // -----------------------------------------------------------------------
-// <copyright file="ObservesNotifyPropertyChangedOfTFixture.cs" company="Anori Soft">
+// <copyright file="ObservesNotifyPropertyChangedOfTFixture - Copy.cs" company="Anori Soft">
 // Copyright (c) Anori Soft. All rights reserved.
 // </copyright>
 // -----------------------------------------------------------------------
 
 namespace Anorisoft.WinUI.Commands.Tests
 {
+    using System;
+    using System.Linq.Expressions;
+
     using Anorisoft.WinUI.Common.NotifyPropertyChangedObservers;
     using Anorisoft.WinUI.Common.Parameters;
 
@@ -64,7 +67,8 @@ namespace Anorisoft.WinUI.Commands.Tests
                 notifyPropertyChangedTestObject.Value.IntPropertyExpression,
                 () => { });
             using var observer2 = ParameterObserver.Observes(
-                notifyPropertyChangedTestObject, o => o.Value.IntParameter,
+                notifyPropertyChangedTestObject,
+                o => o.Value.IntParameter,
                 () => { });
             Assert.True(observer1.Equals(observer2));
         }
@@ -87,7 +91,9 @@ namespace Anorisoft.WinUI.Commands.Tests
         {
             var actionRaised = false;
             var notifyPropertyChangedTestObject = new ParameterTestObject();
-            using var observer1 = ParameterObserver.Observes(notifyPropertyChangedTestObject, o => o.IntParameter,
+            using var observer1 = ParameterObserver.Observes(
+                notifyPropertyChangedTestObject,
+                o => o.IntParameter,
                 () => actionRaised = true);
             Assert.False(actionRaised);
             notifyPropertyChangedTestObject.IntParameter.Value = 2;
@@ -98,14 +104,15 @@ namespace Anorisoft.WinUI.Commands.Tests
         public void NotifyPropertyChanged_OwnerExpression_ComplexProperty_Value_Integer_AutoActivate_True()
         {
             var actionRaised = false;
-            var notifyPropertyChangedTestObject =
-                new ParameterTestObject();
+            var notifyPropertyChangedTestObject = new ParameterTestObject();
+            notifyPropertyChangedTestObject.IntParameter.Value = 10;
             notifyPropertyChangedTestObject.ComplexProperty.Value = new ComplexParameterType();
-            using var observer1 = ParameterObserver.Observes(notifyPropertyChangedTestObject, o => o.ComplexProperty.Value.IntProperty,
-                () =>
-                    {
-                        actionRaised = true;
-                    });
+            notifyPropertyChangedTestObject.ComplexProperty.Value.IntProperty.Value = 11;
+
+            using var observer1 = ParameterObserver.Observes(
+                notifyPropertyChangedTestObject,
+                o => o.ComplexProperty.Value.IntProperty.Value,
+                () => { actionRaised = true; });
             notifyPropertyChangedTestObject.ComplexProperty.Value.IntProperty.ValueChanged += (sender, args) =>
                 {
                     var i = 1;
@@ -115,6 +122,176 @@ namespace Anorisoft.WinUI.Commands.Tests
             Assert.True(actionRaised);
         }
 
+        /// <summary>
+        ///     Notifies the property changed owner expression complex property value integer automatic activate true2.
+        /// </summary>
+        [Test]
+        public void NotifyPropertyChanged_OwnerExpression_ComplexProperty_Value_Integer_AutoActivate_True2()
+        {
+            var value = 0;
+            var notifyPropertyChangedTestObject = new ParameterTestObject();
+            notifyPropertyChangedTestObject.IntParameter.Value = 1;
+            notifyPropertyChangedTestObject.ComplexProperty.Value = new ComplexParameterType();
+            notifyPropertyChangedTestObject.ComplexProperty.Value.IntProperty.Value = 1;
+
+            using var observer1 = ParameterObserverFactory.Observes(
+                notifyPropertyChangedTestObject,
+                o => o.ComplexProperty.Value.IntProperty.Value,
+                v => value = v);
+
+            Assert.AreEqual(0, value);
+            notifyPropertyChangedTestObject.ComplexProperty.Value.IntProperty.Value = 2;
+            Assert.AreEqual(2, value);
+        }
+
+        [Test]
+        public void NotifyPropertyChanged_OwnerExpression_ComplexProperty_Value_Integer_AutoActivate_True4()
+        {
+            var value = 0;
+            var notifyPropertyChangedTestObject = new ParameterTestObject();
+            notifyPropertyChangedTestObject.IntParameter.Value = 1;
+            notifyPropertyChangedTestObject.ComplexProperty.Value = new ComplexParameterType();
+            notifyPropertyChangedTestObject.ComplexProperty.Value.IntProperty.Value = 1;
+
+            using var observer1 = ParameterObserverFactory.Observes(
+                notifyPropertyChangedTestObject,
+                o => o.ComplexProperty.Value.IntProperty.Value);
+            Assert.AreEqual(0, observer1.SubscribedLength);
+            void Ev(int v) => value = v;
+            observer1.ParameterChanged += Ev;
+            Assert.AreEqual(1, observer1.SubscribedLength);
+
+            Assert.AreEqual(0, value);
+            notifyPropertyChangedTestObject.ComplexProperty.Value.IntProperty.Value = 2;
+            Assert.AreEqual(2, value);
+            observer1.ParameterChanged -= Ev;
+            Assert.AreEqual(0, observer1.SubscribedLength);
+        }
+
+        [Test]
+        public void
+            ReactiveParameterObservers_ParameterObserver_OwnerExpression_ComplexProperty_Value_Integer_AutoActivate_True4()
+        {
+            var value = 0;
+            var notifyPropertyChangedTestObject = new ParameterTestObject();
+            notifyPropertyChangedTestObject.IntParameter.Value = 1;
+            notifyPropertyChangedTestObject.ComplexProperty.Value = new ComplexParameterType();
+            notifyPropertyChangedTestObject.ComplexProperty.Value.IntProperty.Value = 1;
+
+            using var observer1 = Common.Parameters.Reactive.ObserverFactory.Observes(
+                notifyPropertyChangedTestObject,
+                o => o.ComplexProperty.Value.IntProperty.Value);
+            using var d = observer1.Subscribe(v => value = v);
+
+            Assert.AreEqual(1, value);
+            notifyPropertyChangedTestObject.ComplexProperty.Value.IntProperty.Value = 2;
+            Assert.AreEqual(2, value);
+        }
+
+        [Test]
+        public void
+            ReactiveParameterObservers_BehaviorParameterObserver_OwnerExpression_ComplexProperty_Value_Integer_AutoActivate_True4()
+        {
+            var value = 0;
+            var notifyPropertyChangedTestObject = new ParameterTestObject();
+            notifyPropertyChangedTestObject.IntParameter.Value = 1;
+            notifyPropertyChangedTestObject.ComplexProperty.Value = new ComplexParameterType();
+            notifyPropertyChangedTestObject.ComplexProperty.Value.IntProperty.Value = 1;
+
+            using var observer1 = Common.Parameters.Reactive.BehaviorObserverFactory.Observes(
+                notifyPropertyChangedTestObject,
+                o => o.ComplexProperty.Value.IntProperty.Value);
+            using var d = observer1.Subscribe(v => value = v);
+
+            Assert.AreEqual(1, value);
+            notifyPropertyChangedTestObject.ComplexProperty.Value.IntProperty.Value = 2;
+            Assert.AreEqual(2, value);
+        }
+
+        [Test]
+        public void
+            ReactiveParameterObservers_ReplayParameterObserver_OwnerExpression_ComplexProperty_Value_Integer_AutoActivate_True4()
+        {
+            var value = (int?)null;
+            var count = 0;
+            var notifyPropertyChangedTestObject = new ParameterTestObject();
+
+            using var observer1 = Common.Parameters.Reactive.ReplayObserverFactory.Observes(
+                notifyPropertyChangedTestObject,
+                o => o.ComplexProperty.Value.IntProperty.Value);
+
+            var a = notifyPropertyChangedTestObject.ComplexProperty.Value?.IntProperty.Value;
+            Expression<Func<ParameterTestObject, int?>> exp = (o => o.ComplexProperty.Value.IntProperty.Value);
+            //  var x = exp.Compile()(notifyPropertyChangedTestObject);
+            notifyPropertyChangedTestObject.IntParameter.Value = 1;
+            notifyPropertyChangedTestObject.ComplexProperty.Value = new ComplexParameterType();
+            notifyPropertyChangedTestObject.ComplexProperty.Value.IntProperty.Value = 1;
+            notifyPropertyChangedTestObject.ComplexProperty.Value.IntProperty.Value = 2;
+
+            Assert.AreEqual(null, value);
+            Assert.AreEqual(0, count);
+
+            using var d = observer1.Subscribe(
+                v =>
+                    {
+                        count++;
+                        value = v;
+                    });
+
+            Assert.AreEqual(2, value);
+            Assert.AreEqual(3, count);
+            notifyPropertyChangedTestObject.ComplexProperty.Value.IntProperty.Value = 3;
+            Assert.AreEqual(3, value);
+            Assert.AreEqual(4, count);
+            notifyPropertyChangedTestObject.ComplexProperty.Value = null;
+            Assert.AreEqual(null, value);
+        }
+
+        //private Expression<Func<ParameterTestObject, bool?>> EvaluateRules<T>(string attributeName)
+        //{
+        //    ParameterExpression attributeParameter = Expression.Parameter(typeof(ParameterTestObject), "user");
+        //    MemberExpression attribute = Expression.Property(attributeParameter, attributeName);
+        //    BinaryExpression nullCheck = Expression.NotEqual(attribute, Expression.Constant(null, typeof(object)));
+        //    BinaryExpression condition = null;
+        //    object Value = "";
+        //    if (Value.GetType() != typeof(string))
+        //        condition = Expression.GreaterThanOrEqual(Expression.Call(parseMethod,
+        //                    Expression.Property(attributeParameter, attributeName)),
+        //                Expression.Constant(Value));
+
+        //    return Expression.Lambda<Func<ParameterTestObject, bool?>>(Expression.IfThenElse(nullCheck, Expression.Return(null), ), attributeParameter);
+        //}
+
+        /// <summary>
+        ///     Notifies the property changed owner expression complex property value integer automatic activate true3.
+        /// </summary>
+        [Test]
+        public void NotifyPropertyChanged_OwnerExpression_ComplexProperty_Value_Integer_AutoActivate_True3()
+        {
+            var value = 0;
+            var notifyPropertyChangedTestObject = new ParameterTestObject();
+            notifyPropertyChangedTestObject.IntParameter.Value = 1;
+            notifyPropertyChangedTestObject.ComplexProperty.Value = new ComplexParameterType();
+            notifyPropertyChangedTestObject.ComplexProperty.Value.IntProperty.Value = 1;
+
+            var a = new ComplexParameterType();
+            a.IntProperty.Value = 1;
+
+            using var observer1 = ParameterObserverFactory.Observes(
+                notifyPropertyChangedTestObject,
+                o => o.ComplexProperty.Value.IntProperty.Value,
+                v => value = v);
+
+            Assert.AreEqual(0, value);
+            notifyPropertyChangedTestObject.ComplexProperty.Value.IntProperty.Value = 2;
+            Assert.AreEqual(2, value);
+            notifyPropertyChangedTestObject.ComplexProperty.Value = a;
+            Assert.AreEqual(1, value);
+        }
+
+        /// <summary>
+        ///     Notifies the property changed expression observes integer and boolean test.
+        /// </summary>
         [Test]
         public void NotifyPropertyChanged_Expression_ObservesIntegerAndBoolean_Test()
         {
@@ -186,9 +363,9 @@ namespace Anorisoft.WinUI.Commands.Tests
             var innerComplexProp = notifyPropertyChangedTestObject.ComplexProperty.InnerComplexProperty;
             var complexProp = notifyPropertyChangedTestObject.ComplexProperty;
 
-            Assert.AreEqual(1, innerInnerComplexProp.GetPropertyChangedSubscribledLenght());
-            Assert.AreEqual(2, innerComplexProp.GetPropertyChangedSubscribledLenght());
-            Assert.AreEqual(3, complexProp.GetPropertyChangedSubscribledLenght());
+            Assert.AreEqual(1, innerInnerComplexProp.GetPropertyChangedSubscribedLength());
+            Assert.AreEqual(2, innerComplexProp.GetPropertyChangedSubscribedLength());
+            Assert.AreEqual(3, complexProp.GetPropertyChangedSubscribedLength());
 
             notifyPropertyChangedTestObject.ComplexProperty = new ComplexType
             {
@@ -201,25 +378,25 @@ namespace Anorisoft.WinUI.Commands.Tests
 
             Assert.AreEqual(6, canExecuteChangedRaiseCount);
 
-            Assert.AreEqual(0, innerInnerComplexProp.GetPropertyChangedSubscribledLenght());
-            Assert.AreEqual(0, innerComplexProp.GetPropertyChangedSubscribledLenght());
-            Assert.AreEqual(0, complexProp.GetPropertyChangedSubscribledLenght());
+            Assert.AreEqual(0, innerInnerComplexProp.GetPropertyChangedSubscribedLength());
+            Assert.AreEqual(0, innerComplexProp.GetPropertyChangedSubscribedLength());
+            Assert.AreEqual(0, complexProp.GetPropertyChangedSubscribedLength());
 
             innerInnerComplexProp = notifyPropertyChangedTestObject.ComplexProperty.InnerComplexProperty
                 .InnerComplexProperty;
             innerComplexProp = notifyPropertyChangedTestObject.ComplexProperty.InnerComplexProperty;
             complexProp = notifyPropertyChangedTestObject.ComplexProperty;
 
-            Assert.AreEqual(1, innerInnerComplexProp.GetPropertyChangedSubscribledLenght());
-            Assert.AreEqual(2, innerComplexProp.GetPropertyChangedSubscribledLenght());
-            Assert.AreEqual(3, complexProp.GetPropertyChangedSubscribledLenght());
+            Assert.AreEqual(1, innerInnerComplexProp.GetPropertyChangedSubscribedLength());
+            Assert.AreEqual(2, innerComplexProp.GetPropertyChangedSubscribedLength());
+            Assert.AreEqual(3, complexProp.GetPropertyChangedSubscribedLength());
 
             notifyPropertyChangedTestObject.ComplexProperty = null;
             Assert.AreEqual(9, canExecuteChangedRaiseCount);
 
-            Assert.AreEqual(0, innerInnerComplexProp.GetPropertyChangedSubscribledLenght());
-            Assert.AreEqual(0, innerComplexProp.GetPropertyChangedSubscribledLenght());
-            Assert.AreEqual(0, complexProp.GetPropertyChangedSubscribledLenght());
+            Assert.AreEqual(0, innerInnerComplexProp.GetPropertyChangedSubscribedLength());
+            Assert.AreEqual(0, innerComplexProp.GetPropertyChangedSubscribedLength());
+            Assert.AreEqual(0, complexProp.GetPropertyChangedSubscribedLength());
         }
 
         [Test]
@@ -364,9 +541,9 @@ namespace Anorisoft.WinUI.Commands.Tests
             var innerComplexProp = notifyPropertyChangedTestObject.ComplexProperty.InnerComplexProperty;
             var complexProp = notifyPropertyChangedTestObject.ComplexProperty;
 
-            Assert.AreEqual(1, innerInnerComplexProp.GetPropertyChangedSubscribledLenght());
-            Assert.AreEqual(2, innerComplexProp.GetPropertyChangedSubscribledLenght());
-            Assert.AreEqual(3, complexProp.GetPropertyChangedSubscribledLenght());
+            Assert.AreEqual(1, innerInnerComplexProp.GetPropertyChangedSubscribedLength());
+            Assert.AreEqual(2, innerComplexProp.GetPropertyChangedSubscribedLength());
+            Assert.AreEqual(3, complexProp.GetPropertyChangedSubscribedLength());
 
             notifyPropertyChangedTestObject.ComplexProperty = new ComplexType
             {
@@ -379,25 +556,25 @@ namespace Anorisoft.WinUI.Commands.Tests
 
             Assert.AreEqual(6, canExecuteChangedRaiseCount);
 
-            Assert.AreEqual(0, innerInnerComplexProp.GetPropertyChangedSubscribledLenght());
-            Assert.AreEqual(0, innerComplexProp.GetPropertyChangedSubscribledLenght());
-            Assert.AreEqual(0, complexProp.GetPropertyChangedSubscribledLenght());
+            Assert.AreEqual(0, innerInnerComplexProp.GetPropertyChangedSubscribedLength());
+            Assert.AreEqual(0, innerComplexProp.GetPropertyChangedSubscribedLength());
+            Assert.AreEqual(0, complexProp.GetPropertyChangedSubscribedLength());
 
             innerInnerComplexProp = notifyPropertyChangedTestObject.ComplexProperty.InnerComplexProperty
                 .InnerComplexProperty;
             innerComplexProp = notifyPropertyChangedTestObject.ComplexProperty.InnerComplexProperty;
             complexProp = notifyPropertyChangedTestObject.ComplexProperty;
 
-            Assert.AreEqual(1, innerInnerComplexProp.GetPropertyChangedSubscribledLenght());
-            Assert.AreEqual(2, innerComplexProp.GetPropertyChangedSubscribledLenght());
-            Assert.AreEqual(3, complexProp.GetPropertyChangedSubscribledLenght());
+            Assert.AreEqual(1, innerInnerComplexProp.GetPropertyChangedSubscribedLength());
+            Assert.AreEqual(2, innerComplexProp.GetPropertyChangedSubscribedLength());
+            Assert.AreEqual(3, complexProp.GetPropertyChangedSubscribedLength());
 
             notifyPropertyChangedTestObject.ComplexProperty = null;
             Assert.AreEqual(9, canExecuteChangedRaiseCount);
 
-            Assert.AreEqual(0, innerInnerComplexProp.GetPropertyChangedSubscribledLenght());
-            Assert.AreEqual(0, innerComplexProp.GetPropertyChangedSubscribledLenght());
-            Assert.AreEqual(0, complexProp.GetPropertyChangedSubscribledLenght());
+            Assert.AreEqual(0, innerInnerComplexProp.GetPropertyChangedSubscribedLength());
+            Assert.AreEqual(0, innerComplexProp.GetPropertyChangedSubscribedLength());
+            Assert.AreEqual(0, complexProp.GetPropertyChangedSubscribedLength());
         }
 
         [Test]

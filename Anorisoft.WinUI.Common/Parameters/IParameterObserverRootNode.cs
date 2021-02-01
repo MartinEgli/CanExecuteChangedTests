@@ -1,19 +1,15 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="IReadOnlyParameter.cs" company="Anori Soft">
+// <copyright file="IParameterObserverRootNode.cs" company="Anori Soft">
 // Copyright (c) Anori Soft. All rights reserved.
 // </copyright>
 // -----------------------------------------------------------------------
 
 namespace Anorisoft.WinUI.Common.Parameters
 {
-    using System;
-
-    using CanExecuteChangedTests;
-
-    public interface IReadOnlyParameter
+    internal interface IParameterObserverRootNode<out TOwner> : IParameterObserverNode
     {
-        object Value { get; }
+        TOwner Owner { get; }
 
-        event EventHandler<EventArgs<object>> ValueChanged;
+        void SubscribeListenerForOwner();
     }
 }

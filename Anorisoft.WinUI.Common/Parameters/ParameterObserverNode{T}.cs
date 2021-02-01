@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="ParameterObserverNode.cs" company="Anori Soft">
+// <copyright file="ParameterObserverNode{T}.cs" company="Anori Soft">
 // Copyright (c) Anori Soft. All rights reserved.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -15,13 +15,13 @@ namespace Anorisoft.WinUI.Common.Parameters
     ///     Represents each node of nested properties expression and takes care of
     ///     subscribing/unsubscribing INotifyPropertyChanged.PropertyChanged listeners on it.
     /// </summary>
-    internal class ParameterObserverNode : IParameterObserverNode
+    internal class ParameterObserverNode<T> : IParameterObserverNode<T>
 
     {
         /// <summary>
         ///     The action
         /// </summary>
-        private readonly Action action;
+        private readonly Action<T> action;
 
         /// <summary>
         ///     The notify property changed
@@ -34,12 +34,12 @@ namespace Anorisoft.WinUI.Common.Parameters
         /// <param name="propertyInfo">The property information.</param>
         /// <param name="action">The action.</param>
         /// <exception cref="ArgumentNullException">propertyInfo</exception>
-        public ParameterObserverNode(PropertyInfo propertyInfo, Action action)
+        public ParameterObserverNode(PropertyInfo propertyInfo, Action<T> action)
         {
             this.PropertyInfo = propertyInfo ?? throw new ArgumentNullException(nameof(propertyInfo));
-            this.action = () =>
+            this.action = v =>
                 {
-                    action.Raise();
+                    action.Raise(v);
                     if (this.Next == null)
                     {
                         return;
@@ -56,7 +56,7 @@ namespace Anorisoft.WinUI.Common.Parameters
         /// <value>
         ///     The next.
         /// </value>
-        public IParameterObserverNode Next { get; set; }
+        public IParameterObserverNode<T> Next { get; set; }
 
         /// <summary>
         ///     Gets the property information.
@@ -67,7 +67,7 @@ namespace Anorisoft.WinUI.Common.Parameters
         public PropertyInfo PropertyInfo { get; }
 
         /// <summary>
-        /// Subscribes the listener for.
+        ///     Subscribes the listener for.
         /// </summary>
         /// <param name="parameter">The property changed.</param>
         public void SubscribeListenerFor(IReadOnlyParameter parameter)
@@ -103,19 +103,13 @@ namespace Anorisoft.WinUI.Common.Parameters
         /// </exception>
         private void GenerateNextNode()
         {
-            var value = this.parameter.Value;
-            if (value == null)
-            {
-                return;
-            }
-
-            var nextParameter = this.PropertyInfo.GetValue(value);
+            var nextParameter = this.PropertyInfo.GetValue(this.parameter.Value);
             if (nextParameter == null)
             {
                 return;
             }
 
-            if (!(nextParameter is IReadOnlyParameter parameter))
+            if (!(nextParameter is IReadOnlyParameter<T> parameter))
             {
                 if (this.Next is ParameterObserverNode next)
                 {
@@ -123,6 +117,7 @@ namespace Anorisoft.WinUI.Common.Parameters
                         "Trying to subscribe ValueChanged listener in object that "
                         + $"owns '{next.PropertyInfo.Name}' property, but the object does not implements IReadOnlyParameter.");
                 }
+
                 throw new InvalidOperationException(
                     "Trying to subscribe ValueChanged listener in object that, but the object does not implements IReadOnlyParameter.");
             }
@@ -131,10 +126,10 @@ namespace Anorisoft.WinUI.Common.Parameters
         }
 
         /// <summary>
-        /// Called when [value changed].
+        ///     Called when [value changed].
         /// </summary>
         /// <param name="sender">The sender.</param>
-        /// <param name="e">The <see cref="EventArgs{System.Object}"/> instance containing the event data.</param>
-        private void OnValueChanged(object sender, EventArgs<object> e) => this.action.Raise();
+        /// <param name="e">The <see cref="EventArgs{System.Object}" /> instance containing the event data.</param>
+        private void OnValueChanged(object sender, EventArgs<T> e) => this.action.Raise(e.Value);
     }
 }

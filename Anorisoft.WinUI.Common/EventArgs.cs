@@ -10,11 +10,11 @@ namespace CanExecuteChangedTests
 {
     public class EventArgs<T> : EventArgs
     {
-        private T Value { get; }
-
         public EventArgs(T value)
         {
             this.Value = value;
         }
+
+        public T Value { get; }
     }
 }
