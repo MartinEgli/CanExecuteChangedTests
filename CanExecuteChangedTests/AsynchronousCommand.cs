@@ -4,7 +4,7 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace Anori.WPF.Commands
+namespace Anorisoft.WPF.Commands
 {
     #region
 

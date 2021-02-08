@@ -41,7 +41,7 @@ namespace Anorisoft.WinUI.Commands
 
         /// <inheritdoc />
         /// <summary>
-        ///     Initializes a new instance of the <see cref="T:Anori.WPF.Commands.Command`1" /> class and the Command can
+        ///     Initializes a new instance of the <see cref="T:Anorisoft.WPF.Commands.Command`1" /> class and the Command can
         ///     always be executed.
         /// </summary>
         /// <param name="execute">The execution logic.</param>

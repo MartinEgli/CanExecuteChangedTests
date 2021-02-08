@@ -13,7 +13,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Anorisoft.WinUI.Commands.In
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Anorisoft.WinUI.Common", "Anorisoft.WinUI.Common\Anorisoft.WinUI.Common.csproj", "{2C02C80E-6EB5-4F12-B790-D469692B7405}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Anorisoft.WinUI.Commands.GUITest", "Anorisoft.WinUI.Commands.GUITest\Anorisoft.WinUI.Commands.GUITest.csproj", "{9F3A8029-AA5C-4E53-86E1-24A41F528D21}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Anorisoft.WinUI.Commands.GUITest", "Anorisoft.WinUI.Commands.GUITest\Anorisoft.WinUI.Commands.GUITest.csproj", "{9F3A8029-AA5C-4E53-86E1-24A41F528D21}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Anorisoft.ExpressionObservers", "Anorisoft.ExpressionObservers\Anorisoft.ExpressionObservers.csproj", "{4DE577C0-0D92-4BA7-8EC9-F89E95A1FD24}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Anorisoft.ExpressionObservers.ConsoleTests", "Anorisoft.ExpressionObservers.ConsoleTests\Anorisoft.ExpressionObservers.ConsoleTests.csproj", "{F281CEB5-5EF3-448E-A435-337578A44465}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Anorisoft.ExpressionObservers.UnitTests", "Anorisoft.ExpressionObservers.UnitTests\Anorisoft.ExpressionObservers.UnitTests.csproj", "{762B3AC9-E935-4B3E-9CAB-4D03C71E6693}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Anorisoft.PropertyObservers", "Anorisoft.PropertyObservers\Anorisoft.PropertyObservers.csproj", "{BDAF9C7A-BC22-4D47-891C-F34A6D3409DE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +53,22 @@ Global
 		{9F3A8029-AA5C-4E53-86E1-24A41F528D21}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9F3A8029-AA5C-4E53-86E1-24A41F528D21}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9F3A8029-AA5C-4E53-86E1-24A41F528D21}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4DE577C0-0D92-4BA7-8EC9-F89E95A1FD24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DE577C0-0D92-4BA7-8EC9-F89E95A1FD24}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DE577C0-0D92-4BA7-8EC9-F89E95A1FD24}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DE577C0-0D92-4BA7-8EC9-F89E95A1FD24}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F281CEB5-5EF3-448E-A435-337578A44465}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F281CEB5-5EF3-448E-A435-337578A44465}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F281CEB5-5EF3-448E-A435-337578A44465}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F281CEB5-5EF3-448E-A435-337578A44465}.Release|Any CPU.Build.0 = Release|Any CPU
+		{762B3AC9-E935-4B3E-9CAB-4D03C71E6693}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{762B3AC9-E935-4B3E-9CAB-4D03C71E6693}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{762B3AC9-E935-4B3E-9CAB-4D03C71E6693}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{762B3AC9-E935-4B3E-9CAB-4D03C71E6693}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BDAF9C7A-BC22-4D47-891C-F34A6D3409DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BDAF9C7A-BC22-4D47-891C-F34A6D3409DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BDAF9C7A-BC22-4D47-891C-F34A6D3409DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BDAF9C7A-BC22-4D47-891C-F34A6D3409DE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

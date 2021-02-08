@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <Compile Remove="IErrorHandler.cs" />
+    <Compile Remove="NotifyPropertyChangedObservers\PropertiesObserver.cs" />
     <Compile Remove="Parameters\IParameterObserverNode{T}.cs" />
     <Compile Remove="Parameters\IParameterObserverRootNode{T}.cs" />
     <Compile Remove="Parameters\ParameterObserverEndNode{T}.cs" />
