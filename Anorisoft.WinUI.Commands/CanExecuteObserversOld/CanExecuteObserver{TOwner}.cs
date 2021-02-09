@@ -4,17 +4,15 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace Anorisoft.WinUI.Commands.CanExecuteObservers
+using System;
+using System.ComponentModel;
+using System.Linq.Expressions;
+using Anorisoft.WinUI.Common;
+using Anorisoft.WinUI.Common.NotifyPropertyChangedObservers;
+using JetBrains.Annotations;
+
+namespace Anorisoft.WinUI.Commands.CanExecuteObserversOld
 {
-    using System;
-    using System.ComponentModel;
-    using System.Linq.Expressions;
-
-    using Anorisoft.WinUI.Common;
-    using Anorisoft.WinUI.Common.NotifyPropertyChangedObservers;
-
-    using JetBrains.Annotations;
-
     public sealed class CanExecuteObserver<TOwner> : CanExecuteObserverBase<CanExecuteObserver<TOwner>>
         where TOwner : INotifyPropertyChanged
 

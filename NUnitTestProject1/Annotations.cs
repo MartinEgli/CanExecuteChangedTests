@@ -931,9 +931,9 @@ namespace NUnitTestProject1.Annotations
     None = 0,
     /// <summary>Method only reads content of the collection but does not modify it.</summary>
     Read = 1,
-    /// <summary>Method can change content of the collection but does not add new elements.</summary>
+    /// <summary>Method can change content of the collection but does not add new tree.</summary>
     ModifyExistingContent = 2,
-    /// <summary>Method can add new elements to the collection.</summary>
+    /// <summary>Method can add new tree to the collection.</summary>
     UpdatedContent = ModifyExistingContent | 4
   }
 

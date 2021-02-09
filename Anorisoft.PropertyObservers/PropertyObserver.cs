@@ -15,6 +15,20 @@ namespace Anorisoft.PropertyObservers
             new PropertyObserver<TResult>(propertyExpression, action);
 
         [NotNull]
+        public static PropertyObserverAndGetter<TResult> ObservesAndGet<TResult>(
+            [NotNull] Expression<Func<TResult>> propertyExpression,
+            [NotNull] Action action)
+            where TResult : struct =>
+            new PropertyObserverAndGetter<TResult>(propertyExpression, action);
+
+        [NotNull]
+        public static PropertyObserverWithGetterAndFallback<TResult> ObservesAndGet<TResult>(
+            [NotNull] Expression<Func<TResult>> propertyExpression,
+            [NotNull] Action action, TResult fallback)
+            where TResult : struct =>
+            new PropertyObserverWithGetterAndFallback<TResult>(propertyExpression, action, fallback);
+
+        [NotNull]
         public static PropertyGetterObserver<TResult> Observes<TResult>(
             [NotNull] Expression<Func<TResult>> propertyExpression,
             [NotNull] Action<TResult?> action)

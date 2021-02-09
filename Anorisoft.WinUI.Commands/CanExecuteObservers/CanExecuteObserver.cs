@@ -4,18 +4,15 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using System;
+using System.Linq.Expressions;
+using Anorisoft.PropertyObservers;
+using Anorisoft.WinUI.Common;
+using JetBrains.Annotations;
+
 namespace Anorisoft.WinUI.Commands.CanExecuteObservers
 {
-    using System;
-    using System.ComponentModel;
-    using System.Linq.Expressions;
-
-    using Anorisoft.WinUI.Common;
-    using Anorisoft.WinUI.Common.NotifyPropertyChangedObservers;
-
-    using JetBrains.Annotations;
-
-    public sealed class CanExecuteObserver : CanExecuteObserverBase<CanExecuteObserver>
+    public sealed class CanExecuteObserver : CanExecuteObserverBase
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="CanExecuteObserver" /> class.
@@ -28,20 +25,10 @@ namespace Anorisoft.WinUI.Commands.CanExecuteObservers
             {
                 throw new ArgumentNullException(nameof(canExecuteExpression));
             }
-
-            this.Observer = PropertyObserver.Observes(canExecuteExpression, () => this.Update.Raise(), false);
-            this.Owner = this.Observer.Owner ?? throw new NullReferenceException(nameof(this.Owner));
-            this.CanExecute = canExecuteExpression.Compile();
+            var observesAndGet = PropertyObserver.ObservesAndGet(canExecuteExpression, () => this.Update.Raise(), false);
+            this.Observer = observesAndGet;
+            this.CanExecute = observesAndGet.GetValue;
         }
-
-        /// <summary>
-        ///     Gets the owner.
-        /// </summary>
-        /// <value>
-        ///     The owner.
-        /// </value>
-        [NotNull]
-        public INotifyPropertyChanged Owner { get; }
 
         /// <summary>
         ///     Occurs when [can execute changed].

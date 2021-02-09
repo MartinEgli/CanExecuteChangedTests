@@ -10,8 +10,7 @@ namespace Anorisoft.WinUI.Commands.CanExecuteObservers
 
     using Anorisoft.WinUI.Commands.Interfaces;
 
-    public abstract class CanExecuteObserverBase<T> : PropertyObserverBase<T>, ICanExecuteObserver
-        where T : CanExecuteObserverBase<T>
+    public abstract class CanExecuteObserverBase : PropertyObserverBase, ICanExecuteObserver
     {
         /// <summary>
         ///     Called when [can execute changed].

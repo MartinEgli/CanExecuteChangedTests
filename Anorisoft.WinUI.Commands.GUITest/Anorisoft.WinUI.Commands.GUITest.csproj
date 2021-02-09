@@ -10,4 +10,20 @@
   <ItemGroup>
     <ProjectReference Include="..\Anorisoft.WinUI.Commands\Anorisoft.WinUI.Commands.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="PropertyObservableNullReferenceTest.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="General\MainWindow.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+    <Page Update="PropertyObservableNullReferenceTest.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
 </Project>

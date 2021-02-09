@@ -11,7 +11,7 @@ namespace Anorisoft.ExpressionObservers.Nodes
             BinaryExpression = binaryExpression;
             NodeType = binaryExpression.NodeType;
             LeftNodes = null;
-            Rightelements = null;
+            Righttree = null;
             Type = binaryExpression.Type;
             Previous = null;
             Next = null;
@@ -25,6 +25,6 @@ namespace Anorisoft.ExpressionObservers.Nodes
         public IExpressionNode Parent { get; set; }
         public ExpressionType NodeType { get; }
         public NodeCollection LeftNodes { get; set; }
-        public NodeCollection Rightelements { get; set; }
+        public NodeCollection Righttree { get; set; }
     }
 }

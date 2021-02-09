@@ -4,27 +4,24 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
+using Anorisoft.WinUI.Commands.Interfaces;
+using Anorisoft.WinUI.Common;
+using CanExecuteChangedTests;
+using JetBrains.Annotations;
+
 namespace Anorisoft.WinUI.Commands
 {
-    using Anorisoft.WinUI.Commands.Interfaces;
-    using Anorisoft.WinUI.Common;
-
-    using CanExecuteChangedTests;
-
-    using JetBrains.Annotations;
-
-    using System;
-    using System.Collections.Generic;
-
     public class ActivatableCanExecuteObserverCommand : SyncCommandBase,
-                                                      ICanExecuteChangedObserver,
-                                                      IDisposable,
-                                                      IActivatable
+        ICanExecuteChangedObserver,
+        IDisposable,
+        IActivatable
     {
         /// <summary>
         ///     The observers
         /// </summary>
-        private readonly List<ICanExecuteChangedSubject> observers = new List<ICanExecuteChangedSubject>();
+        private readonly List<ICanExecuteChangedSubjectBase> observers = new List<ICanExecuteChangedSubjectBase>();
 
         /// <summary>
         ///     The is active
@@ -47,7 +44,7 @@ namespace Anorisoft.WinUI.Commands
             [NotNull] Action execute,
             bool autoActivate,
             [NotNull] ICanExecuteChangedSubject observer,
-            [NotNull][ItemNotNull] params ICanExecuteChangedSubject[] observers)
+            [NotNull] [ItemNotNull] params ICanExecuteChangedSubject[] observers)
             : base(execute)
         {
             if (observer == null)
@@ -68,8 +65,33 @@ namespace Anorisoft.WinUI.Commands
             }
         }
 
+        public ActivatableCanExecuteObserverCommand(
+            [NotNull] Action execute,
+            bool autoActivate,
+            [NotNull] ICanExecuteSubject canExecuteSubject,
+            [NotNull] [ItemNotNull] params ICanExecuteChangedSubject[] observers)
+            : base(execute, canExecuteSubject.CanExecute)
+        {
+            if (canExecuteSubject == null)
+            {
+                throw new ArgumentNullException(nameof(canExecuteSubject));
+            }
+
+            if (observers == null)
+            {
+                throw new ArgumentNullException(nameof(observers));
+            }
+
+            this.observers.Add(canExecuteSubject);
+            this.observers.AddRange(observers);
+            if (autoActivate)
+            {
+                this.Activate();
+            }
+        }
+
         /// <summary>
-        ///     Initializes a new instance of the <see cref="ActivatableCanExecuteObserverCommand" /> class.
+        /// Initializes a new instance of the <see cref="ActivatableCanExecuteObserverCommand" /> class.
         /// </summary>
         /// <param name="execute">The execute.</param>
         /// <param name="observer">The observer.</param>
@@ -77,8 +99,34 @@ namespace Anorisoft.WinUI.Commands
         public ActivatableCanExecuteObserverCommand(
             [NotNull] Action execute,
             [NotNull] ICanExecuteChangedSubject observer,
-            [NotNull][ItemNotNull] params ICanExecuteChangedSubject[] observers)
+            [NotNull] [ItemNotNull] params ICanExecuteChangedSubject[] observers)
             : this(execute, false, observer, observers)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ActivatableCanExecuteObserverCommand"/> class.
+        /// </summary>
+        /// <param name="execute">The execute.</param>
+        /// <param name="canExecuteSubject">The can execute subject.</param>
+        /// <param name="observers">The observers.</param>
+        public ActivatableCanExecuteObserverCommand(
+            [NotNull] Action execute,
+            [NotNull] ICanExecuteSubject canExecuteSubject,
+            [NotNull] [ItemNotNull] params ICanExecuteChangedSubject[] observers)
+            : this(execute, false, canExecuteSubject, observers)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ActivatableCanExecuteObserverCommand"/> class.
+        /// </summary>
+        /// <param name="execute">The execute.</param>
+        /// <param name="canExecuteSubject">The can execute subject.</param>
+        public ActivatableCanExecuteObserverCommand(
+            [NotNull] Action execute,
+            [NotNull] ICanExecuteSubject canExecuteSubject)
+            : this(execute, false, canExecuteSubject)
         {
         }
 
@@ -98,7 +146,7 @@ namespace Anorisoft.WinUI.Commands
             [NotNull] Action execute,
             [NotNull] Func<bool> canExecute,
             [NotNull] ICanExecuteChangedSubject observer,
-            [NotNull][ItemNotNull] params ICanExecuteChangedSubject[] observers)
+            [NotNull] [ItemNotNull] params ICanExecuteChangedSubject[] observers)
             : base(execute, canExecute)
         {
             if (observer == null)
@@ -172,20 +220,20 @@ namespace Anorisoft.WinUI.Commands
         }
 
         /// <summary>
+        ///     Called when [can execute changed].
+        /// </summary>
+        public void RaisePropertyChanged()
+        {
+            this.CanExecuteChanged.RaiseEmpty(this);
+        }
+
+        /// <summary>
         ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
         public void Dispose()
         {
             this.Dispose(true);
             GC.SuppressFinalize(this);
-        }
-
-        /// <summary>
-        ///     Called when [can execute changed].
-        /// </summary>
-        public void RaisePropertyChanged()
-        {
-            this.CanExecuteChanged.RaiseEmpty(this);
         }
 
         /// <summary>
@@ -208,17 +256,11 @@ namespace Anorisoft.WinUI.Commands
         /// <summary>
         ///     Subscribes this instance.
         /// </summary>
-        protected void Subscribe()
-        {
-            this.observers.ForEach(observer => observer.Add(this));
-        }
+        protected void Subscribe() => this.observers.ForEach(observer => observer.Add(this));
 
         /// <summary>
         ///     Unsubscribes this instance.
         /// </summary>
-        protected void Unsubscribe()
-        {
-            this.observers.ForEach(observer => observer.Remove(this));
-        }
+        protected void Unsubscribe() => this.observers.ForEach(observer => observer.Remove(this));
     }
 }

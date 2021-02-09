@@ -3,12 +3,12 @@ using System.Linq;
 
 namespace Anorisoft.ExpressionObservers.Nodes
 {
-    public class NodeCollection : List<IExpressionNode>, IRootNode
+    public class NodeCollection : List<IExpressionNode>, ITree
     {
 
-        public NodeCollection(IRootNode rootNodeCollection, IExpressionNode parent)
+        public NodeCollection(ITree tree, IExpressionNode parent)
         {
-            Root = rootNodeCollection;
+            Tree = tree;
             Parent = parent;
         }
 
@@ -25,9 +25,9 @@ namespace Anorisoft.ExpressionObservers.Nodes
             Add(node);
         }
 
-        public IRootNode Root { get; }
+        public ITree Tree { get; }
         public IExpressionNode Parent { get; }
 
-        public IList<IExpressionNode> Roots => Root.Roots;
+        public IList<IExpressionNode> Roots => Tree.Roots;
     }
 }

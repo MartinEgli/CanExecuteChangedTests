@@ -16,6 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Anorisoft.ExpressionObservers\Anorisoft.ExpressionObservers.csproj" />
+    <ProjectReference Include="..\Anorisoft.PropertyObservers\Anorisoft.PropertyObservers.csproj" />
     <ProjectReference Include="..\Anorisoft.WinUI.Commands.Interfaces\Anorisoft.WinUI.Commands.Interfaces.csproj" />
     <ProjectReference Include="..\Anorisoft.WinUI.Common\Anorisoft.WinUI.Common.csproj" />
   </ItemGroup>

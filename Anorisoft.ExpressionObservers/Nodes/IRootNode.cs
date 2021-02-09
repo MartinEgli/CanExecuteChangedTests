@@ -2,7 +2,7 @@
 
 namespace Anorisoft.ExpressionObservers.Nodes
 {
-    public interface IRootNode
+    public interface ITree
     {
         IList<IExpressionNode> Roots { get; }
     }

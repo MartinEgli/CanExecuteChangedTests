@@ -4,19 +4,17 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using System;
+using System.ComponentModel;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
+using System.Windows.Input;
+using Anorisoft.WinUI.Common;
+using JetBrains.Annotations;
+
 namespace Anorisoft.WinUI.Commands
 {
-    using System;
-    using System.ComponentModel;
-    using System.Linq;
-    using System.Linq.Expressions;
-    using System.Reflection;
-    using System.Windows.Input;
-
-    using Anorisoft.WinUI.Common;
-
-    using JetBrains.Annotations;
-
     /// <summary>
     ///     An <see cref="ICommand" /> whose delegates can be attached for <see cref="Execute(T)" /> and
     ///     <see cref="CanExecute(T)" />.
@@ -37,7 +35,7 @@ namespace Anorisoft.WinUI.Commands
     /// {
     ///     this.submitCommand = new ActivatablePropertyObserverCommand&lt;int?&gt;(this.Submit, this.CanSubmit);
     /// }
-    /// 
+    ///
     /// private bool CanSubmit(int? customerId)
     /// {
     ///     return (customerId.HasValue &amp;&amp; customers.Contains(customerId.Value));
@@ -50,58 +48,54 @@ namespace Anorisoft.WinUI.Commands
         /// <summary>
         ///     The execute method
         /// </summary>
-        private readonly Action<T> executeMethod;
+        private readonly Action<T> execute;
 
         /// <summary>
         ///     The can execute method
         /// </summary>
-        private Func<T, bool> canExecuteMethod;
+        private Func<T, bool> canExecute;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="ActivatablePropertyObserverCommand{T}" /> class.
+        /// Initializes a new instance of the <see cref="ActivatablePropertyObserverCommand{T}" /> class.
         /// </summary>
-        /// <param name="executeMethod">The execute method.</param>
-        public ActivatablePropertyObserverCommand(Action<T> executeMethod)
-            : this(executeMethod, o => true)
+        /// <param name="execute">The execute method.</param>
+        public ActivatablePropertyObserverCommand(Action<T> execute)
+            : this(execute, o => true)
         {
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="ActivatablePropertyObserverCommand{T}" /> class.
+        /// Initializes a new instance of the <see cref="ActivatablePropertyObserverCommand{T}" /> class.
         /// </summary>
-        /// <param name="executeMethod">The execute method.</param>
-        /// <param name="canExecuteMethod">The can execute method.</param>
-        /// <exception cref="ArgumentNullException">
-        ///     executeMethod
-        ///     or
-        ///     canExecuteMethod
-        /// </exception>
+        /// <param name="execute">The execute method.</param>
+        /// <param name="canExecute">The can execute method.</param>
+        /// <exception cref="ArgumentNullException">executeMethod
+        /// or
+        /// canExecuteMethod</exception>
         /// <exception cref="InvalidCastException">DelegateCommandInvalidGenericPayloadType</exception>
         public ActivatablePropertyObserverCommand(
-            [NotNull] Action<T> executeMethod,
-            [NotNull] Func<T, bool> canExecuteMethod)
+            [NotNull] Action<T> execute,
+            [NotNull] Func<T, bool> canExecute)
         {
-            if (executeMethod == null)
+            if (execute == null)
             {
-                throw new ArgumentNullException(nameof(executeMethod));
+                throw new ArgumentNullException(nameof(execute));
             }
 
-            if (canExecuteMethod == null)
+            if (canExecute == null)
             {
-                throw new ArgumentNullException(nameof(canExecuteMethod));
+                throw new ArgumentNullException(nameof(canExecute));
             }
 
             var genericTypeInfo = typeof(T).GetTypeInfo();
 
-            // ActivatablePropertyObserverCommand allows object or Nullable<>.
-            // note: Nullable<> is a struct so we cannot use a class constraint.
             if (genericTypeInfo.IsValueType && !genericTypeInfo.IsNullable())
             {
                 throw new InvalidCastException("DelegateCommandInvalidGenericPayloadType");
             }
 
-            this.executeMethod = executeMethod;
-            this.canExecuteMethod = canExecuteMethod;
+            this.execute = execute;
+            this.canExecute = canExecute;
         }
 
         /// <summary>
@@ -111,19 +105,13 @@ namespace Anorisoft.WinUI.Commands
         /// <returns>
         ///     <see langword="true" /> if this command can be executed; otherwise, <see langword="false" />.
         /// </returns>
-        public bool CanExecute(T parameter)
-        {
-            return this.canExecuteMethod(parameter);
-        }
+        public bool CanExecute(T parameter) => this.canExecute(parameter);
 
         /// <summary>
         ///     Executes the command and invokes the <see cref="Action{T}" /> provided during construction.
         /// </summary>
         /// <param name="parameter">Data used by the command.</param>
-        public void Execute(T parameter)
-        {
-            this.executeMethod(parameter);
-        }
+        public void Execute(T parameter) => this.execute(parameter);
 
         /// <summary>
         ///     Observes a property that is used to determine if this command can execute, and if it implements
@@ -138,7 +126,7 @@ namespace Anorisoft.WinUI.Commands
             var expression = Expression.Lambda<Func<T, bool>>(
                 canExecuteExpression.Body,
                 Expression.Parameter(typeof(T), "o"));
-            this.canExecuteMethod = expression.Compile();
+            this.canExecute = expression.Compile();
             this.ObservesPropertyInternal(canExecuteExpression);
             return this;
         }
@@ -161,49 +149,49 @@ namespace Anorisoft.WinUI.Commands
                 canExecuteExpression.Body,
                 parameter,
                 Expression.Parameter(typeof(T), parameterName2));
-            this.canExecuteMethod = o => expression.Compile()(owner, o);
+            this.canExecute = o => expression.Compile()(owner, o);
 
             this.ObservesPropertyInternal(owner, canExecuteExpression);
             return this;
         }
 
         /// <summary>
-        ///     Observeses the can execute.
+        /// Observeses the can execute.
         /// </summary>
-        /// <typeparam name="TOwner">The type of the owner.</typeparam>
+        /// <typeparam name="TParameter">The type of the owner.</typeparam>
         /// <typeparam name="TType">The type of the type.</typeparam>
-        /// <param name="owner">The owner.</param>
+        /// <param name="parameter">The owner.</param>
         /// <param name="canExecute">The can execute.</param>
         /// <param name="propertyExpression">The property expression.</param>
         /// <returns></returns>
-        public ActivatablePropertyObserverCommand<T> ObservesCanExecute<TOwner, TType>(
-            TOwner owner,
+        public ActivatablePropertyObserverCommand<T> ObservesCanExecute<TParameter, TType>(
+            TParameter parameter,
             Func<T, bool> canExecute,
-            Expression<Func<TOwner, TType>> propertyExpression)
-            where TOwner : INotifyPropertyChanged
+            Expression<Func<TParameter, TType>> propertyExpression)
+            where TParameter : INotifyPropertyChanged
         {
-            this.canExecuteMethod = canExecute;
-            this.ObservesPropertyInternal(owner, propertyExpression);
+            this.canExecute = canExecute;
+            this.ObservesPropertyInternal(parameter, propertyExpression);
             return this;
         }
 
         /// <summary>
-        ///     Observeses the can execute.
+        /// Observeses the can execute.
         /// </summary>
-        /// <typeparam name="TOwner">The type of the owner.</typeparam>
+        /// <typeparam name="TParameter">The type of the owner.</typeparam>
         /// <typeparam name="TType">The type of the type.</typeparam>
-        /// <param name="owner">The owner.</param>
+        /// <param name="parameter">The owner.</param>
         /// <param name="canExecute">The can execute.</param>
         /// <param name="propertyExpression">The property expression.</param>
         /// <returns></returns>
-        public ActivatablePropertyObserverCommand<T> ObservesCanExecute<TOwner, TType>(
-            TOwner owner,
-            Func<TOwner, bool> canExecute,
-            Expression<Func<TOwner, TType>> propertyExpression)
-            where TOwner : INotifyPropertyChanged
+        public ActivatablePropertyObserverCommand<T> ObservesCanExecute<TParameter, TType>(
+            TParameter parameter,
+            Func<TParameter, bool> canExecute,
+            Expression<Func<TParameter, TType>> propertyExpression)
+            where TParameter : INotifyPropertyChanged
         {
-            this.canExecuteMethod = arg => canExecute(owner);
-            this.ObservesPropertyInternal(owner, propertyExpression);
+            this.canExecute = arg => canExecute(parameter);
+            this.ObservesPropertyInternal(parameter, propertyExpression);
             return this;
         }
 
@@ -222,7 +210,7 @@ namespace Anorisoft.WinUI.Commands
             Expression<Func<TOwner, TType>> propertyExpression)
             where TOwner : INotifyPropertyChanged
         {
-            this.canExecuteMethod = arg => canExecute(owner, arg);
+            this.canExecute = arg => canExecute(owner, arg);
             this.ObservesPropertyInternal(owner, propertyExpression);
             return this;
         }
@@ -264,7 +252,7 @@ namespace Anorisoft.WinUI.Commands
         /// <returns><see langword="true" /> if the Command Can Execute, otherwise <see langword="false" /></returns>
         protected override bool CanExecute(object parameter)
         {
-            return this.CanExecute((T)parameter);
+            return this.CanExecute((T) parameter);
         }
 
         /// <summary>
@@ -273,7 +261,7 @@ namespace Anorisoft.WinUI.Commands
         /// <param name="parameter">Command Parameter</param>
         protected override void Execute(object parameter)
         {
-            this.Execute((T)parameter);
+            this.Execute((T) parameter);
         }
     }
 }

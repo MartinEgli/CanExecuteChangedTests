@@ -1,0 +1,48 @@
+﻿<Window
+    x:Class="Anorisoft.WinUI.Commands.GUITest.General.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:Anorisoft.WinUI.Commands.GUITest"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:general="clr-namespace:Anorisoft.WinUI.Commands.GUITest.General"
+    Title="MainWindow"
+    Width="800"
+    Height="450"
+    d:DataContext="{d:DesignInstance general:MainViewModel}"
+    mc:Ignorable="d">
+    <StackPanel>
+        <StackPanel.Resources>
+            <local:InverseBooleanConverter x:Key="InverseBooleanConverter" />
+        </StackPanel.Resources>
+        <Button Command="{Binding DirectCommand}">Direct Command</Button>
+        <Button Command="{Binding RelayCommand}">Relay Command</Button>
+        <Button Command="{Binding AsyncCommand}">I/O Bound Async Command</Button>
+        <Button Command="{Binding ConcurrencyRelayCommand}">CPU Bound Async Command</Button>
+        <Button Command="{Binding ConcurrencyRelayCommand.CancelCommand}">Cancel CPU Bound Async Command</Button>
+        <CheckBox
+            Content="Throw Exception"
+            IsChecked="{Binding ThrowException}"
+            IsEnabled="{Binding ConcurrencyRelayCommand.IsExecuting, Converter={StaticResource InverseBooleanConverter}}" />
+        <CheckBox
+            Content="IsExecuting"
+            IsChecked="{Binding ConcurrencyRelayCommand.IsExecuting, Mode=OneWay}"
+            IsHitTestVisible="False" />
+        <CheckBox
+            Content="WasCanceled"
+            IsChecked="{Binding ConcurrencyRelayCommand.WasCanceled, Mode=OneWay}"
+            IsHitTestVisible="False" />
+        <CheckBox
+            Content="WasSuccessfuly"
+            IsChecked="{Binding ConcurrencyRelayCommand.WasSuccessfuly, Mode=OneWay}"
+            IsHitTestVisible="False" />
+        <CheckBox
+            Content="WasFaulty"
+            IsChecked="{Binding ConcurrencyRelayCommand.WasFaulty, Mode=OneWay}"
+            IsHitTestVisible="False" />
+        <TextBox Text="{Binding Text, Mode=TwoWay}" />
+
+        <Button Command="{Binding ThirietViewModel.Submit}">Thiriet Command</Button>
+        <RadioButton IsChecked="{Binding ThirietViewModel.IsBusy, Mode=OneWay}" />
+    </StackPanel>
+</Window>

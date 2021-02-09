@@ -60,6 +60,12 @@ namespace Anorisoft.WinUI.Commands
         /// <summary>
         ///     Executes this instance.
         /// </summary>
+        void Interfaces.ICommand.Execute()
+        {
+            this.execute();
+        }
+
+
         public void Execute()
         {
             if (this.CanExecute())
@@ -67,7 +73,6 @@ namespace Anorisoft.WinUI.Commands
                 this.execute();
             }
         }
-
         /// <summary>
         ///     Determines whether this instance can execute the specified parameter.
         /// </summary>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Linq.Expressions;
 using Anorisoft.ExpressionObservers.Nodes;
 
@@ -15,6 +16,24 @@ namespace Anorisoft.ExpressionObservers
             var parameters = expression.Parameters;
             var body = ExpressionCreator.CreateValueBody(typeof(TResult?), expression.Body);
             var lambda = Expression.Lambda<Func<TResult?>>(body, parameters);
+            return lambda.Compile();
+        }
+
+        public static Func<TResult?> CreateValueGetter<TResult>(
+            ReadOnlyCollection<ParameterExpression> parameters, Tree tree)
+            where TResult : struct
+        {
+            var body = ExpressionCreator.CreateValueBody(typeof(TResult?), tree);
+            var lambda = Expression.Lambda<Func<TResult?>>(body, parameters);
+            return lambda.Compile();
+        }
+
+        public static Func<TResult> CreateValueGetter<TResult>(
+            ReadOnlyCollection<ParameterExpression> parameters, Tree tree, TResult fallback)
+            where TResult : struct
+        {
+            var body = ExpressionCreator.CreateValueBody(typeof(TResult), tree, Fallback(fallback));
+            var lambda = Expression.Lambda<Func<TResult>>(body, parameters);
             return lambda.Compile();
         }
 

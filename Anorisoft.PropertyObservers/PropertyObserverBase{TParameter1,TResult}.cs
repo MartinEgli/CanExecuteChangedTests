@@ -28,7 +28,7 @@ namespace Anorisoft.PropertyObservers
         /// <summary>
         ///     The expression
         /// </summary>
-        public string ExpressionString { get; }
+        public override string ExpressionString { get; }
 
         /// <summary>
         ///     Gets the parameter1.
@@ -48,10 +48,10 @@ namespace Anorisoft.PropertyObservers
         ///                     + "Only MemberExpression and ConstantExpression are currently supported.</exception>
         private string CreateChain(TParameter1 parameter1)
         {
-            var elements = ExpressionTree.GetRootElements(this.propertyExpression.Body);
+            var tree = ExpressionTree.GetTree(this.propertyExpression.Body);
             var expressionString = propertyExpression.ToString();
 
-            base.CreateChain(parameter1, elements);
+            base.CreateChain(parameter1, tree);
 
             return expressionString;
         }

@@ -70,6 +70,14 @@ namespace Anorisoft.WinUI.Commands
         /// <summary>
         ///     Executes the command.
         /// </summary>
+        void Interfaces.ICommand.Execute()
+        {
+            this.execute();
+        }
+
+        /// <summary>
+        /// Executes this instance.
+        /// </summary>
         public void Execute()
         {
             if (this.CanExecute())

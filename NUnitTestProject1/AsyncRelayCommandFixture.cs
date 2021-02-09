@@ -4,6 +4,8 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using System.Threading;
+
 namespace Anorisoft.WinUI.Commands.Tests
 {
     using Anorisoft.WinUI.Common;
@@ -76,11 +78,17 @@ namespace Anorisoft.WinUI.Commands.Tests
         public void ExecuteCallsPassedInExecuteDelegate()
         {
             var handlers = new AsyncDelegateObjectHandlers();
-            var command = new AsyncRelayCommand<object>(async o => await handlers.Execute(o)) as ICommand;
+            using var waitHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
+
+            var command = new AsyncRelayCommand<object>(async o =>
+            {
+                await handlers.Execute(o);
+                waitHandle.Set();
+            }) as ICommand;
             var parameter = new object();
 
             command.Execute(parameter);
-
+            waitHandle.WaitOne();
             Assert.AreSame(parameter, handlers.ExecuteParameter);
         }
 
@@ -138,15 +146,19 @@ namespace Anorisoft.WinUI.Commands.Tests
         {
             var executed = false;
             var hasError = false;
+            using  var waitHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
+
             var command = new AsyncRelayCommand(
                               async () =>
                                   {
                                       await Task.Yield();
                                       executed = true;
+                                      waitHandle.Set();
                                   },
                               ex => hasError = true) as ICommand;
             command.Execute(new object());
 
+            waitHandle.WaitOne();
             Task.Delay(50);
             Assert.False(hasError);
             Assert.True(executed);

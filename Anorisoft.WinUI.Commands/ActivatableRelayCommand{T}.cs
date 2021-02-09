@@ -4,17 +4,14 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using System;
+using System.Windows.Input;
+using Anorisoft.WinUI.Common;
+using CanExecuteChangedTests;
+using JetBrains.Annotations;
+
 namespace Anorisoft.WinUI.Commands
 {
-    using Anorisoft.WinUI.Common;
-
-    using CanExecuteChangedTests;
-
-    using JetBrains.Annotations;
-
-    using System;
-    using System.Windows.Input;
-
     /// <summary>
     ///     A Command whose sole purpose is to relay its functionality to other objects by invoking delegates.
     ///     The default return value for the CanExecute method is 'true'.
@@ -51,6 +48,11 @@ namespace Anorisoft.WinUI.Commands
         ///     Notifies that the value for <see cref="P:Anorisoft.WinUI.Common.IActivated.IsActive" /> property has changed.
         /// </summary>
         public event EventHandler<EventArgs<bool>> IsActiveChanged;
+
+        /// <summary>
+        ///     Occurs when changes occur that affect whether or not the command should execute.
+        /// </summary>
+        public override event EventHandler CanExecuteChanged;
 
         /// <summary>
         ///     Gets a value indicating whether this instance is activated.
@@ -101,12 +103,6 @@ namespace Anorisoft.WinUI.Commands
             this.Unsubscribe();
             this.IsActive = false;
         }
-
-        /// <summary>
-        ///     Occurs when changes occur that affect whether or not the command should execute.
-        /// </summary>
-        public override event EventHandler CanExecuteChanged;
-
         /// <summary>
         ///     Subscribes the specified value.
         /// </summary>
@@ -134,6 +130,7 @@ namespace Anorisoft.WinUI.Commands
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
-        private void OnCanExecuteChanged(object sender, EventArgs e) => this.CanExecuteChanged.Raise(this, e);
+        private void OnCanExecuteChanged(object sender, EventArgs e) =>
+            this.Dispatch(me => me.CanExecuteChanged.Raise(me, e));
     }
 }

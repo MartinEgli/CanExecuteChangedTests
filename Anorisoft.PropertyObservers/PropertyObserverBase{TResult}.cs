@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 using Anorisoft.ExpressionObservers;
+using Anorisoft.ExpressionObservers.Nodes;
 using JetBrains.Annotations;
 
 namespace Anorisoft.PropertyObservers
@@ -19,11 +20,12 @@ namespace Anorisoft.PropertyObservers
             this.propertyExpression = propertyExpression ?? throw new ArgumentNullException(nameof(propertyExpression));
             this.ExpressionString = this.CreateChain();
         }
+        
 
         /// <summary>
         ///     The expression
         /// </summary>
-        public string ExpressionString { get; }
+        public override string ExpressionString { get; }
 
         /// <summary>
         /// Creates the chain.
@@ -32,12 +34,12 @@ namespace Anorisoft.PropertyObservers
         /// <returns></returns>
         /// <exception cref="NotSupportedException">Operation not supported for the given expression type {expression.Type}. "
         ///                     + "Only MemberExpression and ConstantExpression are currently supported.</exception>
-        private string CreateChain()
+        protected string CreateChain()
         {
-            var elements = ExpressionTree.GetRootElements(this.propertyExpression.Body);
+            var tree = ExpressionTree.GetTree(this.propertyExpression.Body);
             var expressionString = propertyExpression.ToString();
 
-            base.CreateChain(elements);
+            base.CreateChain(tree);
 
             return expressionString;
         }

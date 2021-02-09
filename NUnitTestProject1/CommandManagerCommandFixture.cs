@@ -247,7 +247,7 @@ namespace Anorisoft.WinUI.Commands.Tests
             Assert.Throws<ArgumentNullException>(
                 () =>
                     {
-                        var command = new ActivatableCanExecuteObserverCommand(null, null);
+                        var command = new ActivatableCanExecuteObserverCommand(null, (ICanExecuteSubject)null);
                     });
         }
 
@@ -257,7 +257,7 @@ namespace Anorisoft.WinUI.Commands.Tests
             Assert.Throws<ArgumentNullException>(
                 () =>
                     {
-                        var command = new ActivatableCanExecuteObserverCommand(() => { }, null);
+                        var command = new ActivatableCanExecuteObserverCommand(() => { }, (ICanExecuteSubject)null);
                     });
         }
 

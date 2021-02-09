@@ -66,6 +66,10 @@ namespace Anorisoft.WinUI.Commands
         /// <summary>
         ///     Raises the can execute changed.
         /// </summary>
-        public override void RaiseCanExecuteChanged() => this.CanExecuteChanged.RaiseEmpty(this);
+        public override void RaiseCanExecuteChanged()
+        {
+            
+            this.CanExecuteChanged.RaiseEmpty(this);
+        }
     }
 }

@@ -30,7 +30,7 @@ namespace CanExecuteChangedTests
         /// <summary>
         ///     Initializes a new instance of the <see cref="ActivatableObservableCollection{T}" /> class.
         /// </summary>
-        /// <param name="collection">The collection from which the elements are copied.</param>
+        /// <param name="collection">The collection from which the tree are copied.</param>
         public ActivatableObservableCollection(IEnumerable<T> collection)
             : base(collection)
         {

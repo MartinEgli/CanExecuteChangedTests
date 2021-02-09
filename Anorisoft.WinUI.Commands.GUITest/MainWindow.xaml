@@ -15,33 +15,7 @@
             <local:InverseBooleanConverter x:Key="InverseBooleanConverter" />
         </StackPanel.Resources>
         <Button Command="{Binding DirectCommand}">Direct Command</Button>
-        <Button Command="{Binding RelayCommand}">Relay Command</Button>
-        <Button Command="{Binding AsyncCommand}">I/O Bound Async Command</Button>
-        <Button Command="{Binding ConcurrencyRelayCommand}">CPU Bound Async Command</Button>
-        <Button Command="{Binding ConcurrencyRelayCommand.CancelCommand}">Cancel CPU Bound Async Command</Button>
-        <CheckBox
-            Content="Throw Exception"
-            IsChecked="{Binding ThrowException}"
-            IsEnabled="{Binding ConcurrencyRelayCommand.IsExecuting, Converter={StaticResource InverseBooleanConverter}}" />
-        <CheckBox
-            Content="IsExecuting"
-            IsChecked="{Binding ConcurrencyRelayCommand.IsExecuting, Mode=OneWay}"
-            IsHitTestVisible="False" />
-        <CheckBox
-            Content="WasCanceled"
-            IsChecked="{Binding ConcurrencyRelayCommand.WasCanceled, Mode=OneWay}"
-            IsHitTestVisible="False" />
-        <CheckBox
-            Content="WasSuccessfuly"
-            IsChecked="{Binding ConcurrencyRelayCommand.WasSuccessfuly, Mode=OneWay}"
-            IsHitTestVisible="False" />
-        <CheckBox
-            Content="WasFaulty"
-            IsChecked="{Binding ConcurrencyRelayCommand.WasFaulty, Mode=OneWay}"
-            IsHitTestVisible="False" />
-        <TextBox Text="{Binding Text, Mode=TwoWay}" />
 
-        <Button Command="{Binding ThirietViewModel.Submit}">Thiriet Command</Button>
-        <RadioButton IsChecked="{Binding ThirietViewModel.IsBusy, Mode=OneWay}" />
-    </StackPanel>
+        <Button Command="{Binding PropertyObservableNullReferenceCommand}">Property Observable Null Reference Test</Button>
+</StackPanel>
 </Window>

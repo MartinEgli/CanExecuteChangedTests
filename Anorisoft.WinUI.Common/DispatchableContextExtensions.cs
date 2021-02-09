@@ -62,6 +62,16 @@ namespace Anorisoft.WinUI.Common
 
             context.SynchronizationContext.Dispatch(context, action);
         }
+        public static void Dispatch<TContext>([NotNull] this TContext context, [NotNull] Action action)
+            where TContext : IDispatchableContext
+        {
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
+            context.SynchronizationContext.Dispatch(action);
+        }
 
         /// <summary>
         ///     Dispatches the specified sender.

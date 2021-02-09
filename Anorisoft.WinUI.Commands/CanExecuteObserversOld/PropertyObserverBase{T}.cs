@@ -4,18 +4,14 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace Anorisoft.WinUI.Commands.CanExecuteObservers
+using System;
+using System.Collections.Generic;
+using Anorisoft.WinUI.Commands.Interfaces;
+using Anorisoft.WinUI.Common.NotifyPropertyChangedObservers;
+using JetBrains.Annotations;
+
+namespace Anorisoft.WinUI.Commands.CanExecuteObserversOld
 {
-    using Anorisoft.WinUI.Commands.Interfaces;
-    using Anorisoft.WinUI.Common;
-
-    using JetBrains.Annotations;
-
-    using System;
-    using System.Collections.Generic;
-
-    using Anorisoft.WinUI.Common.NotifyPropertyChangedObservers;
-
     /// <summary>
     ///
     /// </summary>

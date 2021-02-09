@@ -4,6 +4,8 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using Anorisoft.PropertyObservers;
+
 namespace Anorisoft.WinUI.Commands.CanExecuteObservers
 {
     using System;
@@ -18,7 +20,7 @@ namespace Anorisoft.WinUI.Commands.CanExecuteObservers
         /// <typeparam name="TType">The type of the type.</typeparam>
         /// <param name="propertyExpression">The property expression.</param>
         /// <returns></returns>
-        public PropertyObserver<TType> ObservesProperty<TType>(Expression<Func<TType>> propertyExpression)
+        public PropertyObserver<TType> ObservesProperty<TType>(Expression<Func<TType>> propertyExpression) where TType : struct
         {
             return PropertyObserver<TType>.Create(propertyExpression);
         }
@@ -31,12 +33,14 @@ namespace Anorisoft.WinUI.Commands.CanExecuteObservers
         /// <param name="owner">The owner.</param>
         /// <param name="propertyExpression">The property expression.</param>
         /// <returns></returns>
-        public PropertyObserver<TOwner, TType> ObservesProperty<TOwner, TType>(
+        public PropertyObserver<TOwner, TResult> ObservesProperty<TOwner, TResult>(
             TOwner owner,
-            Expression<Func<TOwner, TType>> propertyExpression)
+            Expression<Func<TOwner, TResult>> propertyExpression)
             where TOwner : INotifyPropertyChanged
+            where TResult : struct
+
         {
-            return PropertyObserver<TOwner, TType>.Create(owner, propertyExpression);
+            return PropertyObserver<TOwner, TResult>.Create(owner, propertyExpression);
         }
 
         /// <summary>

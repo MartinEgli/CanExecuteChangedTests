@@ -4,6 +4,9 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using System.Threading;
+using Anorisoft.WinUI.Common;
+
 namespace Anorisoft.WinUI.Commands
 {
     using JetBrains.Annotations;
@@ -17,7 +20,7 @@ namespace Anorisoft.WinUI.Commands
     /// </summary>
     /// <typeparam name="T">Parameter type</typeparam>
     /// <seealso cref="T:System.Windows.Input.ICommand" />
-    public abstract class SyncCommandBase<T> : CommandBase, Interfaces.ICommand<T>
+    public abstract class SyncCommandBase<T> : CommandBase, Interfaces.ICommand<T>, IDispatchableContext
     {
         /// <summary>
         /// Gets or sets a value indicating whether this instance has can execute.
@@ -94,5 +97,7 @@ namespace Anorisoft.WinUI.Commands
         /// </summary>
         /// <param name="parameter">Command Parameter</param>
         protected sealed override void Execute(object parameter) => this.Execute((T)parameter);
+
+
     }
 }

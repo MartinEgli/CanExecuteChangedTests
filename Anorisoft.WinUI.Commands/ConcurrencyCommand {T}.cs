@@ -4,22 +4,19 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using Anorisoft.WinUI.Commands.Interfaces;
+using Anorisoft.WinUI.Common;
+using JetBrains.Annotations;
+using System;
+using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Input;
+using System.Windows.Threading;
+using ICommand = Anorisoft.WinUI.Commands.Interfaces.ICommand;
+
 namespace Anorisoft.WinUI.Commands
 {
-    using Anorisoft.WinUI.Commands.Interfaces;
-    using Anorisoft.WinUI.Common;
-
-    using JetBrains.Annotations;
-
-    using System;
-    using System.Diagnostics;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using System.Windows.Input;
-    using System.Windows.Threading;
-
-    using ICommand = Interfaces.ICommand;
-
     /// <summary>
     ///     Asynchronous Relay Command
     /// </summary>
@@ -112,6 +109,15 @@ namespace Anorisoft.WinUI.Commands
         }
 
         /// <summary>
+        ///     Occurs when changes occur that affect whether or not the command should execute.
+        /// </summary>
+        public override event EventHandler CanExecuteChanged
+        {
+            add => CommandManager.RequerySuggested += value;
+            remove => CommandManager.RequerySuggested -= value;
+        }
+
+        /// <summary>
         ///     Gets or sets the cancel command.
         /// </summary>
         /// <value>
@@ -158,15 +164,6 @@ namespace Anorisoft.WinUI.Commands
         ///     <c>true</c> if this instance has can execute; otherwise, <c>false</c>.
         /// </value>
         protected override bool HasCanExecute => this.canExecute != null;
-
-        /// <summary>
-        ///     Occurs when changes occur that affect whether or not the command should execute.
-        /// </summary>
-        public override event EventHandler CanExecuteChanged
-        {
-            add => CommandManager.RequerySuggested += value;
-            remove => CommandManager.RequerySuggested -= value;
-        }
 
         /// <summary>
         ///     Defines the method that determines whether the command can execute in its current state.
@@ -282,17 +279,7 @@ namespace Anorisoft.WinUI.Commands
         /// <summary>
         ///     Raises the can execute command.
         /// </summary>
-        public void RaiseCanExecuteCommand()
-        {
-            if (this.dispatcher.CheckAccess())
-            {
-                CommandManager.InvalidateRequerySuggested();
-            }
-            else
-            {
-                this.dispatcher.Invoke(CommandManager.InvalidateRequerySuggested);
-            }
-        }
+        public void RaiseCanExecuteCommand() => this.Dispatch(CommandManager.InvalidateRequerySuggested);
 
         /// <summary>
         ///     Determines whether this instance can execute the specified parameter.

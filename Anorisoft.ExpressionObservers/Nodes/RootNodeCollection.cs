@@ -2,9 +2,9 @@
 
 namespace Anorisoft.ExpressionObservers.Nodes
 {
-    public class RootNodeCollection : IRootNode
+    public class Tree : ITree
     {
-        public RootNodeCollection()
+        public Tree()
         {
         }
 

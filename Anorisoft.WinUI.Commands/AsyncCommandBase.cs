@@ -4,6 +4,9 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using System.Threading;
+using Anorisoft.WinUI.Common;
+
 namespace Anorisoft.WinUI.Commands
 {
     using Anorisoft.WinUI.Commands.Interfaces;
@@ -22,7 +25,7 @@ namespace Anorisoft.WinUI.Commands
     /// </summary>
     /// <seealso cref="Anorisoft.WinUI.Commands.CommandBase" />
     /// <seealso cref="Anorisoft.WinUI.Commands.Interfaces.IAsyncCommand{T}" />
-    public abstract class AsyncCommandBase : CommandBase, IAsyncCommand, IExecutable, INotifyPropertyChanged
+    public abstract class AsyncCommandBase : CommandBase, IAsyncCommand, IExecutable, INotifyPropertyChanged, IDispatchableContext
     {
         /// <summary>
         ///     The can execute
@@ -57,6 +60,7 @@ namespace Anorisoft.WinUI.Commands
             : this(execute, canExecute)
         {
             this.error = error ?? throw new ArgumentNullException(nameof(error));
+
         }
 
         /// <summary>
@@ -91,6 +95,7 @@ namespace Anorisoft.WinUI.Commands
         protected AsyncCommandBase([NotNull] Func<Task> execute)
         {
             this.execute = execute ?? throw new ArgumentNullException(nameof(execute));
+            SynchronizationContext = System.Threading.SynchronizationContext.Current;
         }
 
         /// <summary>
@@ -109,7 +114,8 @@ namespace Anorisoft.WinUI.Commands
         /// </returns>
         public virtual bool CanExecute()
         {
-            return !this.isExecuting && (this.canExecute == null || this.canExecute());
+            var result = (!this.isExecuting) && (this.canExecute == null || this.canExecute());
+            return result;
         }
 
         /// <summary>
@@ -147,7 +153,7 @@ namespace Anorisoft.WinUI.Commands
 
                 this.isExecuting = value;
                 this.RaisePropertyChanged();
-                this.RaiseCanExecuteChanged();
+                this.Dispatch(me => me.RaiseCanExecuteChanged());
             }
         }
 
@@ -182,5 +188,7 @@ namespace Anorisoft.WinUI.Commands
         [NotifyPropertyChangedInvocator]
         protected virtual void RaisePropertyChanged([CallerMemberName] string propertyName = null) =>
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+        public SynchronizationContext SynchronizationContext { get; }
     }
 }

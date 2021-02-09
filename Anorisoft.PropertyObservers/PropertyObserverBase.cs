@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using Anorisoft.ExpressionObservers.Nodes;
 
 namespace Anorisoft.PropertyObservers
 {
-    public abstract class PropertyObserverBase : IDisposable
+    public abstract class PropertyObserverBase : IDisposable, IEquatable<PropertyObserverBase>
     {
+
+      
         /// <summary>
         ///     The root observerNode
         /// </summary>
@@ -20,6 +23,7 @@ namespace Anorisoft.PropertyObservers
             this.Unsubscribe();
         }
 
+
         /// <summary>
         ///     Subscribes this instance.
         /// </summary>
@@ -32,6 +36,11 @@ namespace Anorisoft.PropertyObservers
 
             OnAction();
         }
+
+        /// <summary>
+        ///     The expression
+        /// </summary>
+        public abstract string ExpressionString { get; }
 
         /// <summary>
         ///     Unsubscribes this instance.
@@ -49,11 +58,11 @@ namespace Anorisoft.PropertyObservers
         /// </summary>
         protected abstract void OnAction();
 
-        protected void CreateChain(INotifyPropertyChanged parameter1, RootNodeCollection nodes)
+        protected void CreateChain(INotifyPropertyChanged parameter1, Tree nodes)
         {
-            foreach (var elementsRoot in nodes.Roots)
+            foreach (var treeRoot in nodes.Roots)
             {
-                switch (elementsRoot)
+                switch (treeRoot)
                 {
                     case ParameterNode parameterElement:
                         {
@@ -66,11 +75,11 @@ namespace Anorisoft.PropertyObservers
                                 propertyElement.PropertyInfo,
                                 this.OnAction,
                                 parameter1);
-                            LoopElements(propertyElement, root);
+                            Looptree(propertyElement, root);
                             RootNodes.Add(root);
                             break;
                         }
-                    case ConstantNode constantElement when elementsRoot.Next is FieldNode fieldElement:
+                    case ConstantNode constantElement when treeRoot.Next is FieldNode fieldElement:
                         {
                             if (!(fieldElement.Next is PropertyNode propertyElement))
                             {
@@ -82,13 +91,13 @@ namespace Anorisoft.PropertyObservers
                                 this.OnAction,
                                 (INotifyPropertyChanged)fieldElement.FieldInfo.GetValue(constantElement.Value));
 
-                            LoopElements(propertyElement, root);
+                            Looptree(propertyElement, root);
                             RootNodes.Add(root);
                             break;
                         }
                     case ConstantNode constantElement:
                         {
-                            if (!(elementsRoot.Next is PropertyNode propertyElement))
+                            if (!(treeRoot.Next is PropertyNode propertyElement))
                             {
                                 continue;
                             }
@@ -98,7 +107,7 @@ namespace Anorisoft.PropertyObservers
                                 this.OnAction,
                                 (INotifyPropertyChanged)constantElement.Value);
 
-                            LoopElements(propertyElement, root);
+                            Looptree(propertyElement, root);
                             RootNodes.Add(root);
 
                             break;
@@ -109,13 +118,13 @@ namespace Anorisoft.PropertyObservers
             }
         }
 
-        protected void CreateChain(RootNodeCollection nodes)
+        protected void CreateChain(Tree nodes)
         {
-            foreach (var elementsRoot in nodes.Roots)
+            foreach (var treeRoot in nodes.Roots)
             {
-                switch (elementsRoot)
+                switch (treeRoot)
                 {
-                    case ConstantNode constantElement when elementsRoot.Next is FieldNode fieldElement:
+                    case ConstantNode constantElement when treeRoot.Next is FieldNode fieldElement:
                         {
                             if (!(fieldElement.Next is PropertyNode propertyElement))
                             {
@@ -127,13 +136,13 @@ namespace Anorisoft.PropertyObservers
                                 this.OnAction,
                                 (INotifyPropertyChanged)fieldElement.FieldInfo.GetValue(constantElement.Value));
 
-                            LoopElements(propertyElement, root);
+                            Looptree(propertyElement, root);
                             RootNodes.Add(root);
                             break;
                         }
                     case ConstantNode constantElement:
                         {
-                            if (!(elementsRoot.Next is PropertyNode propertyElement))
+                            if (!(treeRoot.Next is PropertyNode propertyElement))
                             {
                                 continue;
                             }
@@ -143,7 +152,7 @@ namespace Anorisoft.PropertyObservers
                                 this.OnAction,
                                 (INotifyPropertyChanged)constantElement.Value);
 
-                            LoopElements(propertyElement, root);
+                            Looptree(propertyElement, root);
                             RootNodes.Add(root);
 
                             break;
@@ -154,7 +163,7 @@ namespace Anorisoft.PropertyObservers
             }
         }
 
-        internal void LoopElements(IExpressionNode expressionNode, PropertyObserverNode observerNode)
+        internal void Looptree(IExpressionNode expressionNode, PropertyObserverNode observerNode)
         {
             var previousNode = observerNode;
             while (expressionNode.Next != null && expressionNode.Next is PropertyNode property)
@@ -164,6 +173,32 @@ namespace Anorisoft.PropertyObservers
                 previousNode.Previous = currentNode;
                 previousNode = currentNode;
                 expressionNode = expressionNode.Next;
+            }
+        }
+
+        public bool Equals(PropertyObserverBase other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+
+
+
+            return RootNodes.SequenceEqual(other.RootNodes) && ExpressionString == other.ExpressionString;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((PropertyObserverBase) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return ((RootNodes != null ? RootNodes.GetHashCode() : 0) * 397) ^ (ExpressionString != null ? ExpressionString.GetHashCode() : 0);
             }
         }
     }

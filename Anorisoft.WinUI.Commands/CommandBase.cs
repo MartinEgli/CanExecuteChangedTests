@@ -4,6 +4,9 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using System.Threading;
+using Anorisoft.WinUI.Common;
+
 namespace Anorisoft.WinUI.Commands
 {
     using JetBrains.Annotations;
@@ -12,12 +15,20 @@ namespace Anorisoft.WinUI.Commands
     using System.Diagnostics;
     using System.Windows.Input;
 
-    public abstract class CommandBase : ICommand
+    public abstract class CommandBase : ICommand, IDispatchableContext
     {
         /// <summary>
         /// Occurs when changes occur that affect whether or not the command should execute.
         /// </summary>
         public abstract event EventHandler CanExecuteChanged;
+
+        /// <summary>
+        /// Gets the synchronization context.
+        /// </summary>
+        /// <value>
+        /// The synchronization context.
+        /// </value>
+        public SynchronizationContext SynchronizationContext { get; } = SynchronizationContext.Current;
 
         /// <summary>
         /// Gets or sets a value indicating whether this instance has can execute.

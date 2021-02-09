@@ -63,16 +63,14 @@ namespace Anorisoft.WinUI.Commands
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="ActivatableCanExecuteObserverCommand" /> class.
+        /// Initializes a new instance of the <see cref="ActivatableCanExecuteObserverCommand" /> class.
         /// </summary>
         /// <param name="execute">The execute.</param>
         /// <param name="canExecuteObserver">The can execute observer.</param>
         /// <param name="observers">The observers.</param>
-        /// <exception cref="ArgumentNullException">
-        ///     observers
-        ///     or
-        ///     observers
-        /// </exception>
+        /// <exception cref="ArgumentNullException">observers
+        /// or
+        /// observers</exception>
         public ActivatableCanExecuteObserverCommand(
             [NotNull] Action<T> execute,
             [NotNull] ICanExecuteSubject canExecuteObserver,

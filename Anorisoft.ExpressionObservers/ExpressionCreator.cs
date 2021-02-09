@@ -17,11 +17,10 @@ namespace Anorisoft.ExpressionObservers
             Type resultType,
             Expression expression,
             Expression fallback)
-
         {
             var returnTarget = Expression.Label(resultType);
-            var elements = ExpressionTree.GetRootElements(expression);
-            var body = CreateValueBlock(resultType, elements, returnTarget, fallback);
+            var tree = ExpressionTree.GetTree(expression);
+            var body = CreateValueBlock(resultType, tree, returnTarget, fallback);
             return body;
         }
 
@@ -31,8 +30,28 @@ namespace Anorisoft.ExpressionObservers
 
         {
             var returnTarget = Expression.Label(resultType);
-            var elements = ExpressionTree.GetRootElements(expression);
-            var body = CreateValueBlock(resultType, elements, returnTarget);
+            var tree = ExpressionTree.GetTree(expression);
+            var body = CreateValueBlock(resultType, tree, returnTarget);
+            return body;
+        }
+
+        internal static BlockExpression CreateValueBody(
+            Type resultType,
+            Tree tree)
+
+        {
+            var returnTarget = Expression.Label(resultType);
+            var body = CreateValueBlock(resultType, tree, returnTarget);
+            return body;
+        }
+
+        internal static BlockExpression CreateValueBody(
+            Type resultType,
+            Tree tree, Expression fallback)
+
+        {
+            var returnTarget = Expression.Label(resultType);
+            var body = CreateValueBlock(resultType, tree, returnTarget, fallback);
             return body;
         }
 
@@ -42,7 +61,7 @@ namespace Anorisoft.ExpressionObservers
 
         {
             var returnTarget = Expression.Label(resultParameter.Type);
-            var elements = ExpressionTree.GetRootElements(expression);
+            var tree = ExpressionTree.GetTree(expression);
             var body = resultParameter.Expression;
             return body;
         }
@@ -50,7 +69,7 @@ namespace Anorisoft.ExpressionObservers
         private static Expression NullExpressionOf(Type type) => Expression.Constant(null, type);
         private static BlockExpression CreateValueBlock(
             Type resultType,
-            RootNodeCollection nodes,
+            Tree nodes,
             LabelTarget returnTarget)
         {
             var expressions = new List<Expression>();
@@ -66,7 +85,7 @@ namespace Anorisoft.ExpressionObservers
 
         private static BlockExpression CreateValueBlock(
             Type resultType,
-            RootNodeCollection nodes,
+            Tree nodes,
             LabelTarget returnTarget,
             Expression fallback)
         {
@@ -733,7 +752,7 @@ namespace Anorisoft.ExpressionObservers
                     {
                         var right = new List<Expression>();
                         right.Add(Expression.Condition(
-                            CreateVariableExpressions(right, variables, binary.Rightelements, ifNull),
+                            CreateVariableExpressions(right, variables, binary.Righttree, ifNull),
                             TrueConstantExpression, FalseConstantExpression));
 
                         var left = new List<Expression>();
@@ -749,7 +768,7 @@ namespace Anorisoft.ExpressionObservers
                     {
                         var right = new List<Expression>();
                         right.Add(Expression.Condition(
-                            CreateVariableExpressions(right, variables, binary.Rightelements, ifNull),
+                            CreateVariableExpressions(right, variables, binary.Righttree, ifNull),
                             TrueConstantExpression, FalseConstantExpression));
 
                         var left = new List<Expression>();
@@ -764,7 +783,7 @@ namespace Anorisoft.ExpressionObservers
                     {
                         var lable = Expression.Label();
                         var right = new List<Expression>();
-                        right.Add(CreateVariableExpressions(right, variables, binary.Rightelements, ifNull));
+                        right.Add(CreateVariableExpressions(right, variables, binary.Righttree, ifNull));
                         var rightBlock = Expression.Block(right);
                         var left = new List<Expression>();
                         var coalesce = Expression.Coalesce(
@@ -779,7 +798,7 @@ namespace Anorisoft.ExpressionObservers
                 default:
                     {
                         var left = CreateVariableExpressions(expressions, variables, binary.LeftNodes, ifNull);
-                        var right = CreateVariableExpressions(expressions, variables, binary.Rightelements, ifNull);
+                        var right = CreateVariableExpressions(expressions, variables, binary.Righttree, ifNull);
                         return Expression.MakeBinary(binary.BinaryExpression.NodeType, left, right);
                     }
             }

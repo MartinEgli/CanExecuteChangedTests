@@ -11,30 +11,30 @@ namespace Anorisoft.ExpressionObservers
     public static class ExpressionTree
     {
 
-        public static RootNodeCollection GetRootElements(
+        public static Tree GetTree(
             Expression expression)
         {
-            var elements = new RootNodeCollection();
-            elements.Nodes = GetTree(expression, elements, null);
-            return elements;
+            var tree = new Tree();
+            tree.Nodes = GetTree(expression, tree, null);
+            return tree;
         }
 
 
-        public static NodeCollection GetTree(Expression expression, IRootNode rootNode, IExpressionNode parent)
+        public static NodeCollection GetTree(Expression expression, ITree tree, IExpressionNode parent)
         {
-            var elements = new NodeCollection(rootNode, parent);
+            var nodeCollection = new NodeCollection(tree, parent);
             while (true)
                 switch (expression)
                 {
                     case MemberExpression memberExpression when memberExpression.Member is PropertyInfo propertyInfo:
                     {
                         expression = memberExpression.Expression;
-                        elements.AddElement(new PropertyNode(memberExpression, propertyInfo));
+                        nodeCollection.AddElement(new PropertyNode(memberExpression, propertyInfo));
                         break;
                     }
                     case MemberExpression memberExpression when memberExpression.Member is FieldInfo fieldInfo:
                         expression = memberExpression.Expression;
-                        elements.AddElement(new FieldNode(memberExpression, fieldInfo));
+                        nodeCollection.AddElement(new FieldNode(memberExpression, fieldInfo));
                         break;
 
                     case MemberExpression _:
@@ -43,9 +43,9 @@ namespace Anorisoft.ExpressionObservers
                     case ParameterExpression parameterExpression:
                     {
                         var element = (new ParameterNode(parameterExpression));
-                        elements.AddElement(element);
-                        elements.Roots.Add(element);
-                        return elements;
+                        nodeCollection.AddElement(element);
+                        nodeCollection.Roots.Add(element);
+                        return nodeCollection;
                     }
 
                     case MethodCallExpression methodCallExpression
@@ -57,63 +57,63 @@ namespace Anorisoft.ExpressionObservers
                         if (expression != null)
                         {
                             var element = new MethodNode(methodCallExpression);
-                            element.Object = GetTree(expression, rootNode, element);
+                            element.Object = GetTree(expression, nodeCollection, element);
 
                             var arguments = new List<NodeCollection>();
                             foreach (var argument in methodCallExpression.Arguments)
                             {
-                                arguments.Add(GetTree(argument, rootNode, element));
+                                arguments.Add(GetTree(argument, nodeCollection, element));
                             }
 
                             element.Arguments = arguments;
-                            elements.AddElement(element);
+                            nodeCollection.AddElement(element);
 
-                            return elements;
+                            return nodeCollection;
                         }
                         else
                         {
                             var element = new FunctionNode(methodCallExpression);
                             var parameters = new List<NodeCollection>();
                             foreach (var argument in methodCallExpression.Arguments)
-                                parameters.Add(GetTree(argument, rootNode, element));
+                                parameters.Add(GetTree(argument, nodeCollection, element));
                             element.Parameters = parameters;
-                            elements.AddElement(element);
-                            return elements;
+                            nodeCollection.AddElement(element);
+                            return nodeCollection;
                         }
 
                     case ConstantExpression constantExpression:
                     {
                         var element = new ConstantNode(constantExpression);
-                        elements.AddElement(element);
-                        elements.Roots.Add(element);
-                        return elements;
+                        nodeCollection.AddElement(element);
+                        nodeCollection.Roots.Add(element);
+                        return nodeCollection;
                     }
 
                     case BinaryExpression binaryExpression:
                     {
                         var element = new BinaryNode(binaryExpression);
-                        element.LeftNodes = GetTree(binaryExpression.Left, rootNode, element);
-                        element.Rightelements = GetTree(binaryExpression.Right, rootNode, element);
-                        elements.AddElement(element);
-                        return elements;
+                        element.LeftNodes = GetTree(binaryExpression.Left, nodeCollection, element);
+                        element.Righttree = GetTree(binaryExpression.Right, nodeCollection, element);
+                        nodeCollection.AddElement(element);
+                        return nodeCollection;
                     }
                     case UnaryExpression unaryExpression:
                     {
                         var element = new UnaryNode(unaryExpression);
-                        element.Operand = GetTree(unaryExpression.Operand, rootNode, element);
-                        elements.AddElement(element);
-                        return elements;
+                        element.Operand = GetTree(unaryExpression.Operand, nodeCollection, element);
+                        nodeCollection.AddElement(element);
+                        return nodeCollection;
                     }
 
                     case ConditionalExpression conditionalExpression:
                     {
                         var element = new ConditionalNode(conditionalExpression);
-                        element.Test = GetTree(conditionalExpression.Test, rootNode, element);
-                        element.IfTrue = GetTree(conditionalExpression.IfTrue, rootNode, element);
-                        element.IfFalse = GetTree(conditionalExpression.IfFalse, rootNode, element);
+                        element.Test = GetTree(conditionalExpression.Test, nodeCollection, element);
+                        element.IfTrue = GetTree(conditionalExpression.IfTrue, nodeCollection, element);
+                        element.IfFalse = GetTree(conditionalExpression.IfFalse, nodeCollection, element);
 
-                        elements.AddElement(element);
-                        return elements;
+                        nodeCollection.AddElement(element);
+                        return nodeCollection;
                     }
 
                     case NewExpression newExpression:
@@ -122,11 +122,11 @@ namespace Anorisoft.ExpressionObservers
                         var parameters = new List<NodeCollection>();
                         foreach (var argument in newExpression.Arguments)
                         {
-                            parameters.Add(GetTree(argument, rootNode, element));
+                            parameters.Add(GetTree(argument, nodeCollection, element));
                         }
                         element.Parameters = parameters;
-                        elements.AddElement(element);
-                        return elements;
+                        nodeCollection.AddElement(element);
+                        return nodeCollection;
                     }
 
                     case MemberInitExpression memberInitExpression:
@@ -135,16 +135,16 @@ namespace Anorisoft.ExpressionObservers
                         var parameters = new List<NodeCollection>();
                         foreach (var argument in memberInitExpression.NewExpression.Arguments)
                         {
-                            parameters.Add(GetTree(argument, rootNode, element));
+                            parameters.Add(GetTree(argument, nodeCollection, element));
                         }
                         element.Parameters = parameters;
 
                         var bindings = memberInitExpression.Bindings;
-                        var bindingElements = CreateBindingElements(rootNode, bindings, element);
+                        var bindingtree = CreateBindingtree(nodeCollection, bindings, element);
 
-                        element.Bindings = bindingElements;
-                        elements.AddElement(element);
-                        return elements;
+                        element.Bindings = bindingtree;
+                        nodeCollection.AddElement(element);
+                        return nodeCollection;
                     }
                     case null:
                         throw new ExpressionObserversException("Expression body is null");
@@ -155,12 +155,12 @@ namespace Anorisoft.ExpressionObservers
                 }
         }
 
-        private static List<IBindingNode> CreateBindingElements(
-            IRootNode rootNode,
+        private static List<IBindingNode> CreateBindingtree(
+            ITree tree,
             ReadOnlyCollection<MemberBinding> bindings,
             MemberInitNode node)
         {
-            var bindingElements = new List<IBindingNode>();
+            var bindingtree = new List<IBindingNode>();
             foreach (var binding in bindings)
             {
                 switch (binding)
@@ -169,15 +169,15 @@ namespace Anorisoft.ExpressionObservers
                     {
                         var b = new MemberAssignmentNode(
                             memberAssignment,
-                            GetTree(memberAssignment.Expression, rootNode, node));
-                        bindingElements.Add(b);
+                            GetTree(memberAssignment.Expression, tree, node));
+                        bindingtree.Add(b);
                         break;
                     }
                     case MemberMemberBinding memberMemberBinding:
                     {
-                        var bs = CreateBindingElements(rootNode, memberMemberBinding.Bindings, node);
+                        var bs = CreateBindingtree(tree, memberMemberBinding.Bindings, node);
                         var b = new MemberMemberBindingNode(memberMemberBinding, bs, node);
-                        bindingElements.Add(b);
+                        bindingtree.Add(b);
                         break;
                     }
                     case MemberListBinding memberListBinding:
@@ -186,17 +186,17 @@ namespace Anorisoft.ExpressionObservers
                         foreach (var i in memberListBinding.Initializers)
                         {
                             elementInits.Add(new ElementInitNode(i,
-                                i.Arguments.Select(a => GetTree(a, rootNode, node)).ToList()));
+                                i.Arguments.Select(a => GetTree(a, tree, node)).ToList()));
                         }
 
                         var b = new MemberListBindingNode(memberListBinding, elementInits);
-                        bindingElements.Add(b);
+                        bindingtree.Add(b);
                         break;
                     }
                 }
             }
 
-            return bindingElements;
+            return bindingtree;
         }
         
 

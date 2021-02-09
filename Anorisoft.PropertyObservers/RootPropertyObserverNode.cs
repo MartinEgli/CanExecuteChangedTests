@@ -10,7 +10,7 @@ using System.Reflection;
 
 namespace Anorisoft.PropertyObservers
 {
-    internal class RootPropertyObserverNode : PropertyObserverNode
+    internal class RootPropertyObserverNode : PropertyObserverNode , IEquatable<RootPropertyObserverNode>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="RootPropertyObserverNode"/> class.
@@ -34,6 +34,26 @@ namespace Anorisoft.PropertyObservers
         /// Subscribes the listener for parameter.
         /// </summary>
         public void SubscribeListenerForOwner() => this.SubscribeListenerFor(this.Parameter);
+
+        public bool Equals(RootPropertyObserverNode other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return Equals(Parameter, other.Parameter);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((RootPropertyObserverNode) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return (Parameter != null ? Parameter.GetHashCode() : 0);
+        }
     }
 
 

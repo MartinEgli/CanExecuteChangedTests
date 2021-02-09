@@ -31,7 +31,7 @@ namespace Anorisoft.PropertyObservers
         /// <summary>
         ///     The expression
         /// </summary>
-        public string ExpressionString { get; }
+        public override string ExpressionString { get; }
 
         /// <summary>
         ///     Gets the parameter1.
@@ -54,19 +54,19 @@ namespace Anorisoft.PropertyObservers
         ///                     + "Only MemberExpression and ConstantExpression are currently supported.</exception>
         protected string CreateChain(TParameter1 parameter1, TParameter2 parameter2)
         {
-            var elements = ExpressionTree.GetRootElements(this.propertyExpression.Body);
+            var tree = ExpressionTree.GetTree(this.propertyExpression.Body);
             var expressionString = propertyExpression.ToString();
 
-            CreateChain(parameter1, parameter2, elements);
+            CreateChain(parameter1, parameter2, tree);
 
             return expressionString;
         }
 
-        private void CreateChain(TParameter1 parameter1, TParameter2 parameter2, IRootNode nodes)
+        private void CreateChain(TParameter1 parameter1, TParameter2 parameter2, ITree nodes)
         {
-            foreach (var elementsRoot in nodes.Roots)
+            foreach (var treeRoot in nodes.Roots)
             {
-                switch (elementsRoot)
+                switch (treeRoot)
                 {
                     case ParameterNode parameterElement:
                         {
@@ -82,11 +82,11 @@ namespace Anorisoft.PropertyObservers
                                 this.OnAction, 
                                 (INotifyPropertyChanged)parameterGetter(parameter1, parameter2));
 
-                            LoopElements(propertyElement, root);
+                            Looptree(propertyElement, root);
                             RootNodes.Add(root);
                             break;
                         }
-                    case ConstantNode constantElement when elementsRoot.Next is FieldNode fieldElement:
+                    case ConstantNode constantElement when treeRoot.Next is FieldNode fieldElement:
                         {
                             if (!(fieldElement.Next is PropertyNode propertyElement))
                             {
@@ -98,13 +98,13 @@ namespace Anorisoft.PropertyObservers
                                 this.OnAction,
                                 (INotifyPropertyChanged)fieldElement.FieldInfo.GetValue(constantElement.Value));
 
-                            LoopElements(propertyElement, root);
+                            Looptree(propertyElement, root);
                             RootNodes.Add(root);
                             break;
                         }
                     case ConstantNode constantElement:
                         {
-                            if (!(elementsRoot.Next is PropertyNode propertyElement))
+                            if (!(treeRoot.Next is PropertyNode propertyElement))
                             {
                                 continue;
                             }
@@ -114,7 +114,7 @@ namespace Anorisoft.PropertyObservers
                                 this.OnAction,
                                 (INotifyPropertyChanged)constantElement.Value);
 
-                            LoopElements(propertyElement, root);
+                            Looptree(propertyElement, root);
                             RootNodes.Add(root);
 
                             break;
