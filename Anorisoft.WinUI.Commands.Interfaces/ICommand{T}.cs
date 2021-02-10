@@ -6,19 +6,21 @@
 
 namespace Anorisoft.WinUI.Commands.Interfaces
 {
-    using System.Windows.Input;
-
     public interface ICommand<in T> : System.Windows.Input.ICommand
     {
+        /// <summary>
+        /// Determines whether this instance can execute the specified parameter.
+        /// </summary>
+        /// <param name="parameter">The parameter.</param>
+        /// <returns>
+        ///   <c>true</c> if this instance can execute the specified parameter; otherwise, <c>false</c>.
+        /// </returns>
         bool CanExecute(T parameter);
 
+        /// <summary>
+        /// Executes the specified parameter.
+        /// </summary>
+        /// <param name="parameter">The parameter.</param>
         void Execute(T parameter);
-    }
-
-    public interface ICommand : System.Windows.Input.ICommand
-    {
-        bool CanExecute();
-
-        void Execute();
     }
 }

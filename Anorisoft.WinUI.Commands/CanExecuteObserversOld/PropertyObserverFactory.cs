@@ -52,16 +52,16 @@ namespace Anorisoft.WinUI.Commands.CanExecuteObserversOld
         /// <summary>
         ///     Observeses the can execute.
         /// </summary>
-        /// <typeparam name="TOwner">The type of the owner.</typeparam>
-        /// <param name="owner">The owner.</param>
+        /// <typeparam name="TParameter">The type of the owner.</typeparam>
+        /// <param name="parameter">The owner.</param>
         /// <param name="canExecuteExpression">The can execute expression.</param>
         /// <returns></returns>
-        public CanExecuteObserversOld.CanExecuteObserver<TOwner> ObservesCanExecute<TOwner>(
-            TOwner owner,
-            Expression<Func<TOwner, bool>> canExecuteExpression)
-            where TOwner : INotifyPropertyChanged
+        public CanExecuteObserversOld.CanExecuteObserver<TParameter> ObservesCanExecute<TParameter>(
+            TParameter parameter,
+            Expression<Func<TParameter, bool>> canExecuteExpression)
+            where TParameter : INotifyPropertyChanged
         {
-            return CanExecuteObserversOld.CanExecuteObserver<TOwner>.Create(owner, canExecuteExpression);
+            return CanExecuteObserversOld.CanExecuteObserver<TParameter>.Create(parameter, canExecuteExpression);
         }
     }
 }

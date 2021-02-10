@@ -37,7 +37,7 @@ namespace Anorisoft.WinUI.Commands.CanExecuteObservers
         ///     The observerBase
         /// </summary>
         [NotNull]
-        protected virtual PropertyObservers.PropertyObserverBase Observer { get; set; } = null!;
+        protected virtual PropertyObservers.Common.PropertyObserverBase Observer { get; set; } = null!;
 
         /// <summary>
         ///     Adds the specified observer.

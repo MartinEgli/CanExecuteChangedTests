@@ -4,12 +4,10 @@ using System.ComponentModel;
 using System.Linq;
 using Anorisoft.ExpressionObservers.Nodes;
 
-namespace Anorisoft.PropertyObservers
+namespace Anorisoft.PropertyObservers.Common
 {
     public abstract class PropertyObserverBase : IDisposable, IEquatable<PropertyObserverBase>
     {
-
-      
         /// <summary>
         ///     The root observerNode
         /// </summary>
@@ -22,7 +20,6 @@ namespace Anorisoft.PropertyObservers
         {
             this.Unsubscribe();
         }
-
 
         /// <summary>
         ///     Subscribes this instance.
@@ -43,7 +40,7 @@ namespace Anorisoft.PropertyObservers
         public abstract string ExpressionString { get; }
 
         /// <summary>
-        ///     Unsubscribes this instance.
+        /// Unsubscribes this instance.
         /// </summary>
         public void Unsubscribe()
         {
@@ -58,6 +55,12 @@ namespace Anorisoft.PropertyObservers
         /// </summary>
         protected abstract void OnAction();
 
+        /// <summary>
+        /// Creates the chain.
+        /// </summary>
+        /// <param name="parameter1">The parameter1.</param>
+        /// <param name="nodes">The nodes.</param>
+        /// <exception cref="NotSupportedException"></exception>
         protected void CreateChain(INotifyPropertyChanged parameter1, Tree nodes)
         {
             foreach (var treeRoot in nodes.Roots)
@@ -118,6 +121,11 @@ namespace Anorisoft.PropertyObservers
             }
         }
 
+        /// <summary>
+        /// Creates the chain.
+        /// </summary>
+        /// <param name="nodes">The nodes.</param>
+        /// <exception cref="NotSupportedException"></exception>
         protected void CreateChain(Tree nodes)
         {
             foreach (var treeRoot in nodes.Roots)
@@ -163,6 +171,11 @@ namespace Anorisoft.PropertyObservers
             }
         }
 
+        /// <summary>
+        /// Looptrees the specified expression node.
+        /// </summary>
+        /// <param name="expressionNode">The expression node.</param>
+        /// <param name="observerNode">The observer node.</param>
         internal void Looptree(IExpressionNode expressionNode, PropertyObserverNode observerNode)
         {
             var previousNode = observerNode;
@@ -176,24 +189,42 @@ namespace Anorisoft.PropertyObservers
             }
         }
 
+        /// <summary>
+        /// Indicates whether the current object is equal to another object of the same type.
+        /// </summary>
+        /// <param name="other">An object to compare with this object.</param>
+        /// <returns>
+        /// true if the current object is equal to the <paramref name="other">other</paramref> parameter; otherwise, false.
+        /// </returns>
         public bool Equals(PropertyObserverBase other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
 
-
-
             return RootNodes.SequenceEqual(other.RootNodes) && ExpressionString == other.ExpressionString;
         }
 
+        /// <summary>
+        /// Determines whether the specified <see cref="System.Object" />, is equal to this instance.
+        /// </summary>
+        /// <param name="obj">The <see cref="System.Object" /> to compare with this instance.</param>
+        /// <returns>
+        ///   <c>true</c> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <c>false</c>.
+        /// </returns>
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != this.GetType()) return false;
-            return Equals((PropertyObserverBase) obj);
+            return Equals((PropertyObserverBase)obj);
         }
 
+        /// <summary>
+        /// Returns a hash code for this instance.
+        /// </summary>
+        /// <returns>
+        /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
+        /// </returns>
         public override int GetHashCode()
         {
             unchecked

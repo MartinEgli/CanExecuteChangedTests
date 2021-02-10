@@ -62,10 +62,9 @@ namespace Anorisoft.WinUI.Commands.Tests
         [Test]
         public void NotifyPropertyChanged_Equal_2_Test()
         {
-            var notifyPropertyChangedTestObject = new Parameter<ParameterTestObject>();
-            using var observer1 = ParameterObserver.Observes(
-                notifyPropertyChangedTestObject.Value.IntPropertyExpression,
-                () => { });
+            var notifyPropertyChangedTestObject = new Parameter<ParameterTestObject>{ Value = new ParameterTestObject()};
+            var expression =  notifyPropertyChangedTestObject.Value.IntPropertyExpression;
+            using var observer1 = ParameterObserver.Observes(expression, () => { });
             using var observer2 = ParameterObserver.Observes(
                 notifyPropertyChangedTestObject,
                 o => o.Value.IntParameter,

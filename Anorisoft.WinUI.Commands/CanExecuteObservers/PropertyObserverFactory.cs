@@ -4,8 +4,6 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-using Anorisoft.PropertyObservers;
-
 namespace Anorisoft.WinUI.Commands.CanExecuteObservers
 {
     using System;
@@ -17,55 +15,65 @@ namespace Anorisoft.WinUI.Commands.CanExecuteObservers
         /// <summary>
         ///     Observeses the property.
         /// </summary>
-        /// <typeparam name="TType">The type of the type.</typeparam>
+        /// <typeparam name="TResult">The type of the type.</typeparam>
         /// <param name="propertyExpression">The property expression.</param>
         /// <returns></returns>
-        public PropertyObserver<TType> ObservesProperty<TType>(Expression<Func<TType>> propertyExpression) where TType : struct
-        {
-            return PropertyObserver<TType>.Create(propertyExpression);
-        }
+        public PropertyValueObserver<TResult> ObservesProperty<TResult>(
+            Expression<Func<TResult>> propertyExpression) 
+            where TResult : struct => 
+            PropertyValueObserver<TResult>.Create(propertyExpression);
 
         /// <summary>
         ///     Observeses the property.
         /// </summary>
-        /// <typeparam name="TOwner">The type of the owner.</typeparam>
+        /// <typeparam name="TParameter">The type of the owner.</typeparam>
         /// <typeparam name="TType">The type of the type.</typeparam>
-        /// <param name="owner">The owner.</param>
+        /// <param name="parameter">The owner.</param>
         /// <param name="propertyExpression">The property expression.</param>
         /// <returns></returns>
-        public PropertyObserver<TOwner, TResult> ObservesProperty<TOwner, TResult>(
-            TOwner owner,
-            Expression<Func<TOwner, TResult>> propertyExpression)
-            where TOwner : INotifyPropertyChanged
-            where TResult : struct
-
-        {
-            return PropertyObserver<TOwner, TResult>.Create(owner, propertyExpression);
-        }
+        public PropertyValueObserver<TParameter, TResult> ObservesProperty<TParameter, TResult>(
+            TParameter parameter,
+            Expression<Func<TParameter, TResult>> propertyExpression)
+            where TParameter : INotifyPropertyChanged
+            where TResult : struct =>
+            PropertyValueObserver<TParameter, TResult>.Create(parameter, propertyExpression);
 
         /// <summary>
         ///     Observeses the can execute.
         /// </summary>
         /// <param name="canExecuteExpression">The can execute expression.</param>
         /// <returns></returns>
-        public CanExecuteObserver ObservesCanExecute(Expression<Func<bool>> canExecuteExpression)
-        {
-            return CanExecuteObserver.Create(canExecuteExpression);
-        }
+        public CanExecuteObserver ObservesCanExecute(
+            Expression<Func<bool>> canExecuteExpression) => 
+            CanExecuteObserver.Create(canExecuteExpression);
 
         /// <summary>
         ///     Observeses the can execute.
         /// </summary>
-        /// <typeparam name="TOwner">The type of the owner.</typeparam>
-        /// <param name="owner">The owner.</param>
+        /// <typeparam name="TParameter">The type of the owner.</typeparam>
+        /// <param name="parameter">The owner.</param>
         /// <param name="canExecuteExpression">The can execute expression.</param>
         /// <returns></returns>
-        public CanExecuteObserver<TOwner> ObservesCanExecute<TOwner>(
-            TOwner owner,
-            Expression<Func<TOwner, bool>> canExecuteExpression)
-            where TOwner : INotifyPropertyChanged
-        {
-            return CanExecuteObserver<TOwner>.Create(owner, canExecuteExpression);
-        }
+        public CanExecuteObserver<TParameter> ObservesCanExecute<TParameter>(
+            TParameter parameter,
+            Expression<Func<TParameter, bool>> canExecuteExpression)
+            where TParameter : INotifyPropertyChanged =>
+            CanExecuteObserver<TParameter>.Create(parameter, canExecuteExpression);
+
+
+        /// <summary>
+        ///     Observeses the can execute.
+        /// </summary>
+        /// <typeparam name="TParameter">The type of the owner.</typeparam>
+        /// <param name="parameter">The owner.</param>
+        /// <param name="canExecuteExpression">The can execute expression.</param>
+        /// <returns></returns>
+        public CanExecuteObserver<TParameter1, TParameter2> ObservesCanExecute<TParameter1, TParameter2>(
+            TParameter1 parameter1,
+            TParameter2 parameter2,
+            Expression<Func<TParameter1, TParameter2, bool>> canExecuteExpression)
+            where TParameter1 : INotifyPropertyChanged
+            where TParameter2 : INotifyPropertyChanged =>
+            CanExecuteObserver<TParameter1, TParameter2>.Create(parameter1, parameter2, canExecuteExpression);
     }
 }

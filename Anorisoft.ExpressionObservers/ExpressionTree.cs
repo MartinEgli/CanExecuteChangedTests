@@ -1,16 +1,23 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Anorisoft.ExpressionObservers.Exceptions;
 using Anorisoft.ExpressionObservers.Nodes;
+using JetBrains.Annotations;
 
 namespace Anorisoft.ExpressionObservers
 {
     public static class ExpressionTree
     {
 
+        /// <summary>
+        /// Gets the tree.
+        /// </summary>
+        /// <param name="expression">The expression.</param>
+        /// <returns></returns>
         public static Tree GetTree(
             Expression expression)
         {
@@ -20,8 +27,27 @@ namespace Anorisoft.ExpressionObservers
         }
 
 
-        public static NodeCollection GetTree(Expression expression, ITree tree, IExpressionNode parent)
+        /// <summary>
+        /// Gets the tree.
+        /// </summary>
+        /// <param name="expression">The expression.</param>
+        /// <param name="tree">The tree.</param>
+        /// <param name="parent">The parent.</param>
+        /// <returns></returns>
+        /// <exception cref="ExpressionObserversException">
+        /// Expression member is not a PropertyInfo
+        /// or
+        /// Method call has no ReturnParameter
+        /// or
+        /// Expression body is null
+        /// or
+        /// Expression body is not a supportet Expression {expression} type {expression.Type}
+        /// </exception>
+        public static NodeCollection GetTree([NotNull] Expression expression, [NotNull] ITree tree,
+            [CanBeNull] IExpressionNode parent)
         {
+            if (expression == null) throw new ArgumentNullException(nameof(expression));
+            if (tree == null) throw new ArgumentNullException(nameof(tree));
             var nodeCollection = new NodeCollection(tree, parent);
             while (true)
                 switch (expression)
@@ -155,6 +181,13 @@ namespace Anorisoft.ExpressionObservers
                 }
         }
 
+        /// <summary>
+        /// Creates the bindingtree.
+        /// </summary>
+        /// <param name="tree">The tree.</param>
+        /// <param name="bindings">The bindings.</param>
+        /// <param name="node">The node.</param>
+        /// <returns></returns>
         private static List<IBindingNode> CreateBindingtree(
             ITree tree,
             ReadOnlyCollection<MemberBinding> bindings,

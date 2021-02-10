@@ -346,14 +346,24 @@ namespace Anorisoft.WinUI.Common.Parameters
             expressionString = OwnerString + this.propertyExpression.ToString()
                                    .Remove(0, constantExpression.ToString().Length);
 
-            if (!(constantExpression.Value is IReadOnlyParameter owner))
+            var owner = constantExpression.Value;
+            IReadOnlyParameter parameter;
+            if (constantExpression.Value is IReadOnlyParameter o)
+            {
+                parameter = o;
+            }
+            else if (rootPropertyInfo.GetValue(constantExpression.Value) is IReadOnlyParameter p)
+            {
+                parameter = p;
+            }
+            else
             {
                 throw new InvalidOperationException(
-                    "Trying to subscribe PropertyChanged listener in object that "
-                    + $"owns '{rootPropertyInfo.Name}' property, but the object does not implements IReadOnlyParameter.");
+                  "Trying to subscribe PropertyChanged listener in object that "
+                  + $"owns '{rootPropertyInfo.Name}' property, but the object does not implements IReadOnlyParameter.");
             }
 
-            var root = new ParameterObserverRootNode<object>(rootPropertyInfo, this.action, owner, owner);
+            var root = new ParameterObserverRootNode<object>(rootPropertyInfo, this.action, owner, parameter);
 
             ParameterObserverNode previousNode = root;
             foreach (var currentNode in propertyInfos.Select(name => new ParameterObserverNode(name, this.action)))

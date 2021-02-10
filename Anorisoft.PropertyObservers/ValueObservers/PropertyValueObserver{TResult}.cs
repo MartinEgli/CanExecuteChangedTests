@@ -8,20 +8,35 @@ using System;
 using System.Linq.Expressions;
 using JetBrains.Annotations;
 
-namespace Anorisoft.PropertyObservers
+namespace Anorisoft.PropertyObservers.ValueObservers
 {
-    public sealed class PropertyObserver<TResult> : PropertyObserverBase<TResult> 
+    public sealed class PropertyValueObserver<TResult> : PropertyValueObserverBase<TResult> 
         where TResult : struct
     {
+        /// <summary>
+        /// Gets the action.
+        /// </summary>
+        /// <value>
+        /// The action.
+        /// </value>
         [NotNull] public Action Action { get; }
 
-        internal PropertyObserver(
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PropertyValueObserver{TResult}"/> class.
+        /// </summary>
+        /// <param name="propertyExpression">The property expression.</param>
+        /// <param name="action">The action.</param>
+        /// <exception cref="ArgumentNullException">action</exception>
+        internal PropertyValueObserver(
             [NotNull] Expression<Func< TResult>> propertyExpression,
             [NotNull] Action action) : base(propertyExpression)
         {
             Action = action ?? throw new ArgumentNullException(nameof(action));
         }
 
+        /// <summary>
+        /// The action
+        /// </summary>
         protected override void OnAction() => Action();
     }
 }

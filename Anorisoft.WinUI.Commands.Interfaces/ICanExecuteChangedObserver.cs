@@ -9,7 +9,7 @@ namespace Anorisoft.WinUI.Commands.Interfaces
     public interface ICanExecuteChangedObserver
     {
         /// <summary>
-        ///     Called when [can execute changed].
+        /// Called when [can execute changed].
         /// </summary>
         void RaisePropertyChanged();
     }

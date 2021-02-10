@@ -70,7 +70,7 @@ namespace Anorisoft.WinUI.Commands
             bool autoActivate,
             [NotNull] ICanExecuteSubject canExecuteSubject,
             [NotNull] [ItemNotNull] params ICanExecuteChangedSubject[] observers)
-            : base(execute, canExecuteSubject.CanExecute)
+            : base(execute, canExecuteSubject)
         {
             if (canExecuteSubject == null)
             {
@@ -125,7 +125,7 @@ namespace Anorisoft.WinUI.Commands
         /// <param name="canExecuteSubject">The can execute subject.</param>
         public ActivatableCanExecuteObserverCommand(
             [NotNull] Action execute,
-            [NotNull] ICanExecuteSubject canExecuteSubject)
+            [NotNull] ICanExecuteObserver canExecuteSubject)
             : this(execute, false, canExecuteSubject)
         {
         }

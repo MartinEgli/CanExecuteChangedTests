@@ -12,5 +12,12 @@ namespace Anorisoft.WinUI.Commands.Interfaces
     /// </summary>
     public interface ICanExecuteObserver : ICanExecuteSubject
     {
+        /// <summary>
+        /// Gets the can execute.
+        /// </summary>
+        /// <value>
+        /// The can execute.
+        /// </value>
+
     }
 }

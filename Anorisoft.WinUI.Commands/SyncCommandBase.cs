@@ -4,6 +4,8 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using Anorisoft.WinUI.Commands.Interfaces;
+
 namespace Anorisoft.WinUI.Commands
 {
     using System;
@@ -49,6 +51,24 @@ namespace Anorisoft.WinUI.Commands
             : this(execute) =>
             this.canExecute = canExecute ?? throw new ArgumentNullException(nameof(canExecute));
 
+
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SyncCommandBase"/> class.
+        /// </summary>
+        /// <param name="execute">The execute.</param>
+        /// <param name="canExecute">The can execute.</param>
+        /// <exception cref="ArgumentNullException">canExecute</exception>
+        protected SyncCommandBase([NotNull] Action execute, [NotNull] ICanExecuteSubject canExecuteSubject)
+            : this(execute)
+        {
+            if (canExecuteSubject == null)
+            {
+                throw new ArgumentNullException(nameof(canExecuteSubject));
+            }
+            this.canExecute = canExecuteSubject.CanExecute;
+        }
+
         /// <summary>
         ///     Determines whether this instance can execute.
         /// </summary>
@@ -60,12 +80,12 @@ namespace Anorisoft.WinUI.Commands
         /// <summary>
         ///     Executes this instance.
         /// </summary>
-        void Interfaces.ICommand.Execute()
-        {
-            this.execute();
-        }
+        void Interfaces.ICommand.Execute() => this.execute();
 
 
+        /// <summary>
+        /// Executes this instance.
+        /// </summary>
         public void Execute()
         {
             if (this.CanExecute())

@@ -8,7 +8,7 @@ using System;
 using System.ComponentModel;
 using System.Reflection;
 
-namespace Anorisoft.PropertyObservers
+namespace Anorisoft.PropertyObservers.Common
 {
     internal class RootPropertyObserverNode : PropertyObserverNode , IEquatable<RootPropertyObserverNode>
     {

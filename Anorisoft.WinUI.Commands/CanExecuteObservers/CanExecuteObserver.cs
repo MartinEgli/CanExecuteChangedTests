@@ -25,7 +25,7 @@ namespace Anorisoft.WinUI.Commands.CanExecuteObservers
             {
                 throw new ArgumentNullException(nameof(canExecuteExpression));
             }
-            var observesAndGet = PropertyObserver.ObservesAndGet(canExecuteExpression, () => this.Update.Raise(), false);
+            var observesAndGet = PropertyValueObserver.ObservesAndGet(canExecuteExpression, () => this.Update.Raise(), false);
             this.Observer = observesAndGet;
             this.CanExecute = observesAndGet.GetValue;
         }

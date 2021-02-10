@@ -3,11 +3,12 @@ using System.ComponentModel;
 using System.Linq.Expressions;
 using Anorisoft.ExpressionObservers;
 using Anorisoft.ExpressionObservers.Nodes;
+using Anorisoft.PropertyObservers.Common;
 using JetBrains.Annotations;
 
-namespace Anorisoft.PropertyObservers
+namespace Anorisoft.PropertyObservers.ValueObservers
 {
-    public abstract class PropertyObserverBase<TParameter1, TParameter2, TResult> : PropertyObserverBase
+    public abstract class PropertyValueObserverBase<TParameter1, TParameter2, TResult> : PropertyObserverBase
         where TParameter1 : INotifyPropertyChanged
         where TParameter2 : INotifyPropertyChanged
         where TResult : struct
@@ -17,7 +18,20 @@ namespace Anorisoft.PropertyObservers
         /// </summary>
         private readonly Expression<Func<TParameter1, TParameter2, TResult>> propertyExpression;
 
-        protected PropertyObserverBase(
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PropertyValueObserverBase{TParameter1, TParameter2, TResult}"/> class.
+        /// </summary>
+        /// <param name="parameter1">The parameter1.</param>
+        /// <param name="parameter2">The parameter2.</param>
+        /// <param name="propertyExpression">The property expression.</param>
+        /// <exception cref="ArgumentNullException">
+        /// propertyExpression
+        /// or
+        /// parameter1
+        /// or
+        /// parameter2
+        /// </exception>
+        protected PropertyValueObserverBase(
             [NotNull] TParameter1 parameter1,
             [NotNull] TParameter2 parameter2,
             [NotNull] Expression<Func<TParameter1, TParameter2, TResult>> propertyExpression)
@@ -42,6 +56,12 @@ namespace Anorisoft.PropertyObservers
         [CanBeNull]
         public TParameter1 Parameter1 { get; }
 
+        /// <summary>
+        /// Gets the parameter2.
+        /// </summary>
+        /// <value>
+        /// The parameter2.
+        /// </value>
         [CanBeNull]
         public TParameter2 Parameter2 { get; }
 
@@ -62,6 +82,13 @@ namespace Anorisoft.PropertyObservers
             return expressionString;
         }
 
+        /// <summary>
+        /// Creates the chain.
+        /// </summary>
+        /// <param name="parameter1">The parameter1.</param>
+        /// <param name="parameter2">The parameter2.</param>
+        /// <param name="nodes">The nodes.</param>
+        /// <exception cref="NotSupportedException"></exception>
         private void CreateChain(TParameter1 parameter1, TParameter2 parameter2, ITree nodes)
         {
             foreach (var treeRoot in nodes.Roots)

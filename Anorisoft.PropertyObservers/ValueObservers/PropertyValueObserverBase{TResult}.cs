@@ -1,20 +1,24 @@
 ﻿using System;
 using System.Linq.Expressions;
 using Anorisoft.ExpressionObservers;
-using Anorisoft.ExpressionObservers.Nodes;
+using Anorisoft.PropertyObservers.Common;
 using JetBrains.Annotations;
 
-namespace Anorisoft.PropertyObservers
+namespace Anorisoft.PropertyObservers.ValueObservers
 {
-    public abstract class PropertyObserverBase<TResult> : PropertyObserverBase
-        where TResult : struct
+    public abstract class PropertyValueObserverBase<TResult> : PropertyObserverBase
     {
         /// <summary>
         ///     The property expression
         /// </summary>
         private readonly Expression<Func<TResult>> propertyExpression;
 
-        protected PropertyObserverBase(
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PropertyValueObserverBase{TResult}"/> class.
+        /// </summary>
+        /// <param name="propertyExpression">The property expression.</param>
+        /// <exception cref="ArgumentNullException">propertyExpression</exception>
+        protected PropertyValueObserverBase(
             [NotNull] Expression<Func<TResult>> propertyExpression)
         {
             this.propertyExpression = propertyExpression ?? throw new ArgumentNullException(nameof(propertyExpression));

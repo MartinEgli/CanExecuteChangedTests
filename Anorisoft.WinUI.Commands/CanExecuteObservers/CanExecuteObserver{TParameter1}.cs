@@ -21,14 +21,14 @@ namespace Anorisoft.WinUI.Commands.CanExecuteObservers
         /// <summary>
         ///     Initializes a new instance of the <see cref="CanExecuteObserver{TOwner}" /> class.
         /// </summary>
-        /// <param name="owner">The owner.</param>
+        /// <param name="parameter">The owner.</param>
         /// <param name="canExecuteExpression">The can execute expression.</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public CanExecuteObserver([NotNull] TParameter owner, [NotNull] Expression<Func<TParameter, bool>> canExecuteExpression)
+        public CanExecuteObserver([NotNull] TParameter parameter, [NotNull] Expression<Func<TParameter, bool>> canExecuteExpression)
         {
-            if (owner == null)
+            if (parameter == null)
             {
-                throw new ArgumentNullException(nameof(owner));
+                throw new ArgumentNullException(nameof(parameter));
             }
 
             if (canExecuteExpression == null)
@@ -36,9 +36,12 @@ namespace Anorisoft.WinUI.Commands.CanExecuteObservers
                 throw new ArgumentNullException(nameof(canExecuteExpression));
             }
 
-            this.Owner = owner;
-            this.Observer = PropertyObserver.Observes<TParameter, bool>(owner, canExecuteExpression, () => this.Update.Raise());
-            this.CanExecute = () => canExecuteExpression.Compile()(owner);
+            this.Parameter = parameter;
+             var observesAndGet = PropertyValueObserver.ObservesAndGet(canExecuteExpression, parameter,() => this.Update.Raise(), false);
+            this.Observer = observesAndGet;
+            this.CanExecute = observesAndGet.GetValue;
+            //this.Observer = PropertyValueObserver.Observes<TParameter, bool>(parameter, canExecuteExpression, () => this.Update.Raise());
+            //this.CanExecute = () => canExecuteExpression.Compile()(parameter);
         }
 
         /// <summary>
@@ -47,7 +50,7 @@ namespace Anorisoft.WinUI.Commands.CanExecuteObservers
         /// <value>
         ///     The owner.
         /// </value>
-        public TParameter Owner { get; }
+        public TParameter Parameter { get; }
 
         /// <summary>
         ///     Occurs when [can execute changed].
@@ -57,14 +60,14 @@ namespace Anorisoft.WinUI.Commands.CanExecuteObservers
         /// <summary>
         ///     Creates the specified owner.
         /// </summary>
-        /// <param name="owner">The owner.</param>
+        /// <param name="parameter">The owner.</param>
         /// <param name="canExecuteExpression">The can execute expression.</param>
         /// <returns></returns>
         public static CanExecuteObserver<TParameter> Create(
-            TParameter owner,
+            TParameter parameter,
             Expression<Func<TParameter, bool>> canExecuteExpression)
         {
-            var instance = new CanExecuteObserver<TParameter>(owner, canExecuteExpression);
+            var instance = new CanExecuteObserver<TParameter>(parameter, canExecuteExpression);
             instance.Subscribe();
             return instance;
         }

@@ -7,9 +7,7 @@ namespace Anorisoft.ExpressionObservers
 {
     public static class ExpressionGetter
     {
-       
-
-        public static Func<TResult?> CreateValueGetter<TResult>(
+       public static Func<TResult?> CreateValueGetter<TResult>(
             Expression<Func<TResult>> expression)
             where TResult : struct
         {
@@ -28,9 +26,36 @@ namespace Anorisoft.ExpressionObservers
             return lambda.Compile();
         }
 
+        public static Func<TResult> CreateReferenceGetter<TResult>(
+            ReadOnlyCollection<ParameterExpression> parameters, Tree tree)
+            where TResult : class
+        {
+            var body = ExpressionCreator.CreateValueBody(typeof(TResult), tree);
+            var lambda = Expression.Lambda<Func<TResult>>(body, parameters);
+            return lambda.Compile();
+        }
+
         public static Func<TResult> CreateValueGetter<TResult>(
             ReadOnlyCollection<ParameterExpression> parameters, Tree tree, TResult fallback)
             where TResult : struct
+        {
+            var body = ExpressionCreator.CreateValueBody(typeof(TResult), tree, Fallback(fallback));
+            var lambda = Expression.Lambda<Func<TResult>>(body, parameters);
+            return lambda.Compile();
+        }
+
+        public static Func<TParameter1, TResult> CreateValueGetter<TParameter1, TResult>(
+            ReadOnlyCollection<ParameterExpression> parameters, Tree tree, TResult fallback)
+            where TResult : struct
+        {
+            var body = ExpressionCreator.CreateValueBody(typeof(TResult), tree, Fallback(fallback));
+            var lambda = Expression.Lambda<Func<TParameter1, TResult>>(body, parameters);
+            return lambda.Compile();
+        }
+
+        public static Func<TResult> CreateReferenceGetter<TResult>(
+            ReadOnlyCollection<ParameterExpression> parameters, Tree tree, TResult fallback)
+            where TResult : class
         {
             var body = ExpressionCreator.CreateValueBody(typeof(TResult), tree, Fallback(fallback));
             var lambda = Expression.Lambda<Func<TResult>>(body, parameters);
