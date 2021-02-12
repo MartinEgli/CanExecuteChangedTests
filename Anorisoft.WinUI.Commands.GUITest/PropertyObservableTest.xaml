@@ -7,13 +7,13 @@
         mc:Ignorable="d"
         Title="PropertyObservableTest" Height="450" Width="800" d:DataContext="{d:DesignInstance local:PropertyObservableTestViewModel}">
     <StackPanel>
-        <Button Command="{Binding TestAndCommand}">Test Command</Button>
-        <Button Command="{Binding TestOrCommand}">Test Command</Button>
+        <Button Command="{Binding TestAndCommand}">And Command</Button>
+        <Button Command="{Binding TestOrCommand}">Or Command</Button>
         <CheckBox
-            Content="Throw Exception"
+            Content="Condition 1"
             IsChecked="{Binding Condition1}" />
         <CheckBox
-            Content="Throw Exception"
+            Content="Condition 2"
             IsChecked="{Binding Condition2}" />
 
     </StackPanel>

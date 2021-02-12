@@ -30,6 +30,17 @@ namespace Anorisoft.WinUI.Commands.CanExecuteObservers
             this.CanExecute = observesAndGet.GetValue;
         }
 
+        public CanExecuteObserver([NotNull] Expression<Func<bool>> canExecuteExpression, bool fallback)
+        {
+            if (canExecuteExpression == null)
+            {
+                throw new ArgumentNullException(nameof(canExecuteExpression));
+            }
+            var observesAndGet = PropertyValueObserver.ObservesAndGet(canExecuteExpression, () => this.Update.Raise(), fallback);
+            this.Observer = observesAndGet;
+            this.CanExecute = observesAndGet.GetValue;
+        }
+
         /// <summary>
         ///     Occurs when [can execute changed].
         /// </summary>
@@ -43,6 +54,13 @@ namespace Anorisoft.WinUI.Commands.CanExecuteObservers
         public static CanExecuteObserver Create([NotNull] Expression<Func<bool>> canExecuteExpression)
         {
             var instance = new CanExecuteObserver(canExecuteExpression);
+            instance.Subscribe();
+            return instance;
+        }
+
+        public static CanExecuteObserver Create([NotNull] Expression<Func<bool>> canExecuteExpression, bool fallback)
+        {
+            var instance = new CanExecuteObserver(canExecuteExpression, fallback);
             instance.Subscribe();
             return instance;
         }

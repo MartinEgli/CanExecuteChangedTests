@@ -1,6 +1,8 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Anorisoft.ExpressionObservers;
 using Anorisoft.WinUI.Commands.CanExecuteObservers;
+using Anorisoft.WinUI.Commands.Factory;
 using JetBrains.Annotations;
 
 namespace Anorisoft.WinUI.Commands.GUITest
@@ -11,22 +13,39 @@ namespace Anorisoft.WinUI.Commands.GUITest
         public PropertyObservableNullReferenceTestViewModel()
         {
 
-            var canExecuteObserverAnd = new PropertyObserverFactory().ObservesCanExecute(() => this.Condition1.Condition && this.Condition2.Condition);
-            TestAndCommand = new ActivatableCanExecuteObserverCommand(() => { }, canExecuteObserverAnd);
+//            var canExecuteObserverAnd = new PropertyObserverFactory().ObservesCanExecute(() => this.Condition1.Condition && this.Condition2.Condition);
+            TestAndCommand = CommandFactory.Factory
+                .Command(() => { })
+                .ObservesCanExecute(() => this.Condition1.Condition || this.Condition2.Condition)
+                .Build();
             TestAndCommand.Activate();
 
-            var canExecuteObserverOr = new PropertyObserverFactory().ObservesCanExecute(() => this.Condition1.Condition || this.Condition2.Condition);
-            TestOrCommand = new ActivatableCanExecuteObserverCommand(() => { }, canExecuteObserverOr);
-            TestOrCommand.Activate();
+            var getter = ExpressionGetter.CreateValueGetter(() => this.Condition1.Condition || this.Condition2.Condition, false);
+            TestOrCommand = CommandFactory.Factory
+                .Command(() => { })
+                .CanExecute(getter)
+                .ObservesProperty(() => this.Condition1.Condition)
+                .ObservesProperty(() => this.Condition2.Condition)
+                .AutoActivate()
+                .Build();
 
+ //           TestAndCommand.Activate();
+
+            //var canExecuteObserverAnd = new PropertyObserverFactory().ObservesCanExecute(() => this.Condition1.Condition && this.Condition2.Condition);
+            //TestAndCommand = new ActivatableCanExecuteObserverCommand(() => { }, canExecuteObserverAnd);
+            //TestAndCommand.Activate();
+
+            //var canExecuteObserverOr = new PropertyObserverFactory().ObservesCanExecute(() => this.Condition1.Condition || this.Condition2.Condition);
+            //TestOrCommand = new ActivatableCanExecuteObserverCommand(() => { }, canExecuteObserverOr);
+            //TestOrCommand.Activate();
         }
 
-        public ActivatableCanExecuteObserverCommand TestAndCommand
+        public ISyncCommand TestAndCommand
         {
             get;
         }
 
-        public ActivatableCanExecuteObserverCommand TestOrCommand
+        public ISyncCommand TestOrCommand
         {
             get;
         }

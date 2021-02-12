@@ -25,7 +25,7 @@ namespace Anorisoft.WinUI.Commands
     /// </summary>
     /// <seealso cref="Anorisoft.WinUI.Commands.CommandBase" />
     /// <seealso cref="Anorisoft.WinUI.Commands.Interfaces.IAsyncCommand{T}" />
-    public abstract class AsyncCommandBase : CommandBase, IAsyncCommand, IExecutable, INotifyPropertyChanged, IDispatchableContext
+    public abstract class AsyncCommandBase : CommandBase, IAsyncCommand, IExecutable, INotifyPropertyChanged
     {
         /// <summary>
         ///     The can execute
@@ -95,7 +95,6 @@ namespace Anorisoft.WinUI.Commands
         protected AsyncCommandBase([NotNull] Func<Task> execute)
         {
             this.execute = execute ?? throw new ArgumentNullException(nameof(execute));
-            SynchronizationContext = System.Threading.SynchronizationContext.Current;
         }
 
         /// <summary>
@@ -189,6 +188,5 @@ namespace Anorisoft.WinUI.Commands
         protected virtual void RaisePropertyChanged([CallerMemberName] string propertyName = null) =>
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
-        public SynchronizationContext SynchronizationContext { get; }
     }
 }

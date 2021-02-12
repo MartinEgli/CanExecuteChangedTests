@@ -68,6 +68,48 @@ namespace Anorisoft.ExpressionObservers.UnitTests
             Assert.AreEqual(2, callCount);
         }
 
+
+
+        [Test]
+        public void PropertyGenericObserver_instance1_IntProperty()
+        {
+            var instance = new NotifyPropertyChangedClass1();
+            var callCount = 0;
+            using var observes = PropertyObserver.Observes(() => instance1.IntProperty, () => callCount++);
+            Assert.AreEqual(0, callCount);
+            instance1.IntProperty = 1;
+            Assert.AreEqual(0, callCount);
+            observes.Subscribe();
+            Assert.AreEqual(1, callCount);
+            instance1.IntProperty = 2;
+            Assert.AreEqual(2, callCount);
+            observes.Unsubscribe();
+            Assert.AreEqual(2, callCount);
+            instance1.IntProperty = 3;
+            Assert.AreEqual(2, callCount);
+        }
+
+        [Test]
+        public void PropertyGenericObserver_instance1()
+        {
+            var instance = new NotifyPropertyChangedClass1();
+            var callCount = 0;
+            using var observes = PropertyObserver.Observes(() => instance.Class2, () => callCount++);
+            Assert.AreEqual(0, callCount);
+            instance.IntProperty = 1;
+            Assert.AreEqual(0, callCount);
+            observes.Subscribe();
+            Assert.AreEqual(1, callCount);
+            instance.IntProperty = 2;
+            Assert.AreEqual(1, callCount);
+            instance.Class2 = new NotifyPropertyChangedClass2();
+            Assert.AreEqual(2, callCount);
+            observes.Unsubscribe();
+            Assert.AreEqual(2, callCount);
+            instance.IntProperty = 3;
+            Assert.AreEqual(2, callCount);
+        }
+
         [Test]
         public void PropertyObserver_instance1_IntProperty()
         {

@@ -6,6 +6,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Anorisoft.WinUI.Commands.Factory;
 using Anorisoft.WinUI.Commands.Interfaces;
 using Anorisoft.WinUI.Common;
 using CanExecuteChangedTests;
@@ -13,7 +15,7 @@ using JetBrains.Annotations;
 
 namespace Anorisoft.WinUI.Commands
 {
-    public class ActivatableCanExecuteObserverCommand : SyncCommandBase,
+    public class ActivatableCanExecuteObserverCommand : SyncCommandBase, ISyncCommand,
         ICanExecuteChangedObserver,
         IDisposable,
         IActivatable
@@ -43,21 +45,15 @@ namespace Anorisoft.WinUI.Commands
         public ActivatableCanExecuteObserverCommand(
             [NotNull] Action execute,
             bool autoActivate,
-            [NotNull] ICanExecuteChangedSubject observer,
             [NotNull] [ItemNotNull] params ICanExecuteChangedSubject[] observers)
             : base(execute)
         {
-            if (observer == null)
-            {
-                throw new ArgumentNullException(nameof(observers));
-            }
-
+           
             if (observers == null)
             {
                 throw new ArgumentNullException(nameof(observers));
             }
 
-            this.observers.Add(observer);
             this.observers.AddRange(observers);
             if (autoActivate)
             {
@@ -98,9 +94,8 @@ namespace Anorisoft.WinUI.Commands
         /// <param name="observers">The observers.</param>
         public ActivatableCanExecuteObserverCommand(
             [NotNull] Action execute,
-            [NotNull] ICanExecuteChangedSubject observer,
             [NotNull] [ItemNotNull] params ICanExecuteChangedSubject[] observers)
-            : this(execute, false, observer, observers)
+            : this(execute, false, observers)
         {
         }
 
@@ -125,7 +120,7 @@ namespace Anorisoft.WinUI.Commands
         /// <param name="canExecuteSubject">The can execute subject.</param>
         public ActivatableCanExecuteObserverCommand(
             [NotNull] Action execute,
-            [NotNull] ICanExecuteObserver canExecuteSubject)
+            [NotNull] ICanExecuteSubject canExecuteSubject)
             : this(execute, false, canExecuteSubject)
         {
         }
@@ -145,23 +140,30 @@ namespace Anorisoft.WinUI.Commands
         public ActivatableCanExecuteObserverCommand(
             [NotNull] Action execute,
             [NotNull] Func<bool> canExecute,
-            [NotNull] ICanExecuteChangedSubject observer,
             [NotNull] [ItemNotNull] params ICanExecuteChangedSubject[] observers)
+            : this(execute,true, canExecute)
+        {
+            
+        }
+
+
+        public ActivatableCanExecuteObserverCommand(
+            [NotNull] Action execute,
+            bool autoActivate,
+            [NotNull] Func<bool> canExecute,
+            [NotNull][ItemNotNull] params ICanExecuteChangedSubject[] observers)
             : base(execute, canExecute)
         {
-            if (observer == null)
-            {
-                throw new ArgumentNullException(nameof(observers));
-            }
-
             if (observers == null)
             {
                 throw new ArgumentNullException(nameof(observers));
             }
 
-            this.observers.Add(observer);
             this.observers.AddRange(observers);
-            this.Subscribe();
+            if (autoActivate)
+            {
+                this.Activate();
+            }
         }
 
         /// <summary>
@@ -222,10 +224,7 @@ namespace Anorisoft.WinUI.Commands
         /// <summary>
         ///     Called when [can execute changed].
         /// </summary>
-        public void RaisePropertyChanged()
-        {
-            this.CanExecuteChanged.RaiseEmpty(this);
-        }
+        public void RaisePropertyChanged() => this.CanExecuteChanged.RaiseEmpty(this);
 
         /// <summary>
         ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.

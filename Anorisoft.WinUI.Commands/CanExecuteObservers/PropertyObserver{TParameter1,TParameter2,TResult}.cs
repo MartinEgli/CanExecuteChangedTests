@@ -21,11 +21,10 @@ namespace Anorisoft.WinUI.Commands.CanExecuteObservers
     /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <seealso cref="Anorisoft.WinUI.Commands.CanExecuteObservers.PropertyObserverBase{TResult}" />
     /// <seealso cref="Anorisoft.WinUI.Commands.Interfaces.IPropertyObserver" />
-    public sealed class PropertyValueObserver<TParameter1, TParameter2, TResult> : PropertyObserverBase<TResult>,
+    public sealed class PropertyObserver<TParameter1, TParameter2, TResult> : PropertyObserverBase<TResult>,
         IPropertyObserver
         where TParameter1 : INotifyPropertyChanged
         where TParameter2 : INotifyPropertyChanged
-        where TResult : struct
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="PropertyValueObserver{TParameter,TResult}" /> class.
@@ -36,7 +35,7 @@ namespace Anorisoft.WinUI.Commands.CanExecuteObservers
         /// <exception cref="ArgumentNullException">parameter1
         /// or
         /// propertyExpression</exception>
-        public PropertyValueObserver([NotNull] TParameter1 parameter1, [NotNull] TParameter2 parameter2,
+        public PropertyObserver([NotNull] TParameter1 parameter1, [NotNull] TParameter2 parameter2,
             Expression<Func<TParameter1, TParameter2, TResult>> propertyExpression)
         {
             this.Parameter1 = parameter1 ?? throw new ArgumentNullException(nameof(parameter1));
@@ -48,7 +47,7 @@ namespace Anorisoft.WinUI.Commands.CanExecuteObservers
             }
 
             this.Observer =
-                PropertyValueObserver.Observes(parameter1, parameter2, propertyExpression, () => this.Update.Raise());
+                PropertyObserver.Observes(parameter1, parameter2, propertyExpression, () => this.Update.Raise());
             this.PropertyExpression = Observer.ExpressionString;
         }
 
@@ -79,13 +78,13 @@ namespace Anorisoft.WinUI.Commands.CanExecuteObservers
         /// <param name="parameter2">The parameter2.</param>
         /// <param name="propertyExpression">The property expression.</param>
         /// <returns></returns>
-        public static PropertyValueObserver<TParameter1, TParameter2, TResult> Create(
+        public static PropertyObserver<TParameter1, TParameter2, TResult> Create(
             [NotNull] TParameter1 parameter1,
             [NotNull] TParameter2 parameter2,
             [NotNull] Expression<Func<TParameter1, TParameter2, TResult>> propertyExpression)
         {
             var instance =
-                new PropertyValueObserver<TParameter1, TParameter2, TResult>(parameter1, parameter2,
+                new PropertyObserver<TParameter1, TParameter2, TResult>(parameter1, parameter2,
                     propertyExpression);
             instance.Subscribe();
             return instance;

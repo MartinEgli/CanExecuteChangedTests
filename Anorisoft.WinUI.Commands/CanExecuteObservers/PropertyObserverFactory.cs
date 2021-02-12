@@ -12,17 +12,18 @@ namespace Anorisoft.WinUI.Commands.CanExecuteObservers
 
     public class PropertyObserverFactory
     {
+
         /// <summary>
         ///     Observeses the property.
         /// </summary>
         /// <typeparam name="TResult">The type of the type.</typeparam>
         /// <param name="propertyExpression">The property expression.</param>
         /// <returns></returns>
-        public PropertyValueObserver<TResult> ObservesProperty<TResult>(
-            Expression<Func<TResult>> propertyExpression) 
-            where TResult : struct => 
-            PropertyValueObserver<TResult>.Create(propertyExpression);
+        public PropertyObserver<TResult> ObservesProperty<TResult>(
+            Expression<Func<TResult>> propertyExpression) =>
+            PropertyObserver<TResult>.Create(propertyExpression);
 
+      
         /// <summary>
         ///     Observeses the property.
         /// </summary>
@@ -31,12 +32,12 @@ namespace Anorisoft.WinUI.Commands.CanExecuteObservers
         /// <param name="parameter">The owner.</param>
         /// <param name="propertyExpression">The property expression.</param>
         /// <returns></returns>
-        public PropertyValueObserver<TParameter, TResult> ObservesProperty<TParameter, TResult>(
+        public PropertyObserver<TParameter, TResult> ObservesProperty<TParameter, TResult>(
             TParameter parameter,
             Expression<Func<TParameter, TResult>> propertyExpression)
             where TParameter : INotifyPropertyChanged
             where TResult : struct =>
-            PropertyValueObserver<TParameter, TResult>.Create(parameter, propertyExpression);
+            PropertyObserver<TParameter, TResult>.Create(parameter, propertyExpression);
 
         /// <summary>
         ///     Observeses the can execute.

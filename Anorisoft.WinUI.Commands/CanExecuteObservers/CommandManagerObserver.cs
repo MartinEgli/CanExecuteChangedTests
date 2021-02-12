@@ -14,6 +14,10 @@ namespace Anorisoft.WinUI.Commands.CanExecuteObservers
 
     using JetBrains.Annotations;
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <seealso cref="Anorisoft.WinUI.Commands.Interfaces.ICanExecuteChangedSubject" />
     public class CommandManagerObserver : ICanExecuteChangedSubject
     {
         /// <summary>
@@ -21,6 +25,14 @@ namespace Anorisoft.WinUI.Commands.CanExecuteObservers
         /// </summary>
         private readonly IDictionary<ICanExecuteChangedObserver, EventHandler> dictionary =
             new Dictionary<ICanExecuteChangedObserver, EventHandler>();
+
+        /// <summary>
+        /// Gets the observer.
+        /// </summary>
+        /// <value>
+        /// The observer.
+        /// </value>
+        public static ICanExecuteChangedSubject Observer { get; } = new CommandManagerObserver();
 
         /// <summary>
         ///     Adds the specified observer.

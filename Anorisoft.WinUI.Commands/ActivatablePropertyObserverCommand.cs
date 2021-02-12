@@ -4,6 +4,8 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using Anorisoft.WinUI.Commands.Factory;
+
 namespace Anorisoft.WinUI.Commands
 {
     using JetBrains.Annotations;
@@ -21,7 +23,7 @@ namespace Anorisoft.WinUI.Commands
     /// <seealso cref="Anorisoft.WinUI.Commands.ActivatablePropertyObserverCommandBase" />
     /// <seealso cref="Anorisoft.WinUI.Commands.Interfaces.ICommand" />
     /// <see cref="ActivatablePropertyObserverCommandBase" />
-    public class ActivatablePropertyObserverCommand : ActivatablePropertyObserverCommandBase, Interfaces.ICommand
+    public class ActivatablePropertyObserverCommand : ActivatablePropertyObserverCommandBase, Interfaces.ICommand, ISyncCommand
     {
         /// <summary>
         /// The execute method

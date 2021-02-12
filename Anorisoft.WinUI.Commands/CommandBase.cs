@@ -4,31 +4,21 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using System;
+using System.Diagnostics;
 using System.Threading;
+using System.Windows.Input;
 using Anorisoft.WinUI.Common;
+using JetBrains.Annotations;
 
 namespace Anorisoft.WinUI.Commands
 {
-    using JetBrains.Annotations;
-
-    using System;
-    using System.Diagnostics;
-    using System.Windows.Input;
-
     public abstract class CommandBase : ICommand, IDispatchableContext
     {
         /// <summary>
-        /// Occurs when changes occur that affect whether or not the command should execute.
+        /// Initializes a new instance of the <see cref="CommandBase"/> class.
         /// </summary>
-        public abstract event EventHandler CanExecuteChanged;
-
-        /// <summary>
-        /// Gets the synchronization context.
-        /// </summary>
-        /// <value>
-        /// The synchronization context.
-        /// </value>
-        public SynchronizationContext SynchronizationContext { get; } = SynchronizationContext.Current;
+        protected CommandBase() => SynchronizationContext = System.Threading.SynchronizationContext.Current;
 
         /// <summary>
         /// Gets or sets a value indicating whether this instance has can execute.
@@ -37,6 +27,11 @@ namespace Anorisoft.WinUI.Commands
         ///   <c>true</c> if this instance has can execute; otherwise, <c>false</c>.
         /// </value>
         protected abstract bool HasCanExecute { get; }
+
+        /// <summary>
+        /// Occurs when changes occur that affect whether or not the command should execute.
+        /// </summary>
+        public abstract event EventHandler CanExecuteChanged;
 
         /// <summary>
         ///     Defines the method that determines whether the command can execute in its current state.
@@ -59,10 +54,15 @@ namespace Anorisoft.WinUI.Commands
         ///     Data used by the command.  If the command does not require data to be passed, this object can
         ///     be set to <see langword="null" />.
         /// </param>
-        void ICommand.Execute([CanBeNull] object parameter)
-        {
-            this.Execute(parameter);
-        }
+        void ICommand.Execute([CanBeNull] object parameter) => this.Execute(parameter);
+
+        /// <summary>
+        /// Gets the synchronization context.
+        /// </summary>
+        /// <value>
+        /// The synchronization context.
+        /// </value>
+        [NotNull] public SynchronizationContext SynchronizationContext { get; }
 
         /// <summary>
         ///     Determines whether this instance can execute the specified parameter.

@@ -82,6 +82,16 @@ namespace Anorisoft.ExpressionObservers
             return lambda.Compile();
         }
 
+        public static Func<TResult> CreateValueGetter<TResult>(
+            Expression<Func<TResult>> expression, TResult fallback)
+            where TResult : struct
+        {
+            var parameters = expression.Parameters;
+            var body = ExpressionCreator.CreateValueBody(typeof(TResult), expression.Body, Fallback(fallback));
+            var lambda = Expression.Lambda<Func<TResult>>(body, parameters);
+            return lambda.Compile();
+        }
+
         public static Func<TParameter1, TParameter2, TResult?> CreateValueGetter<TParameter1, TParameter2, TResult>(
             Expression<Func<TParameter1, TParameter2, TResult>> expression)
             where TResult : struct
