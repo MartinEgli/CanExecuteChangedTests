@@ -1,144 +1,119 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="ConcurrencyCommandBase.cs" company="Anori Soft">
+// <copyright file="ConcurrencyRelayCommand {T}.cs" company="Anori Soft">
 // Copyright (c) Anori Soft. All rights reserved.
 // </copyright>
 // -----------------------------------------------------------------------
 
+using Anorisoft.WinUI.Commands.Interfaces;
+using Anorisoft.WinUI.Common;
+using JetBrains.Annotations;
+using System;
+using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Input;
+using System.Windows.Threading;
+
 namespace Anorisoft.WinUI.Commands
 {
-    using Anorisoft.WinUI.Commands.Interfaces;
-    using Anorisoft.WinUI.Common;
-
-    using JetBrains.Annotations;
-
-    using System;
-    using System.ComponentModel;
-    using System.Diagnostics;
-    using System.Runtime.CompilerServices;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using System.Windows.Threading;
-
     /// <summary>
     ///     Asynchronous Relay Command
     /// </summary>
     /// <seealso cref="System.Windows.Input.ICommand" />
     /// <seealso cref="System.IDisposable" />
-    public abstract class ConcurrencyCommandBase : CommandBase, ICommand, IDisposable, INotifyPropertyChanged
+    public class ConcurrencyCommand<T> : CommandBase, ISyncCommand<T>, IDisposable
     {
+        /// <summary>
+        ///     The action
+        /// </summary>
+        private readonly Action<T, CancellationToken> action;
+
         /// <summary>
         ///     The cancel
         /// </summary>
-        [CanBeNull]
         private readonly Action cancel;
 
         /// <summary>
         ///     The can execute
         /// </summary>
-        [CanBeNull]
-        private readonly Func<bool> canExecute;
+        private readonly Predicate<T> canExecute;
 
         /// <summary>
         ///     The completed
         /// </summary>
-        [CanBeNull]
-        private readonly Action completed;
+        private readonly Action<T> completed;
+
+        /// <summary>
+        ///     The dispatcher
+        /// </summary>
+        private readonly Dispatcher dispatcher;
 
         /// <summary>
         ///     The error
         /// </summary>
-        [CanBeNull]
         private readonly Action<Exception> error;
-
-        /// <summary>
-        ///     The execute
-        /// </summary>
-        [NotNull]
-        private readonly Action<CancellationToken> execute;
 
         /// <summary>
         ///     The finally task scheduler
         /// </summary>
-        [NotNull]
         private readonly TaskScheduler finallyTaskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
 
         /// <summary>
         ///     The post actions task scheduler
         /// </summary>
-        [NotNull]
         private readonly TaskScheduler postTaskScheduler = TaskScheduler.Default;
 
         /// <summary>
         ///     The task factory
         /// </summary>
-        [NotNull]
         private readonly TaskFactory taskFactory = new TaskFactory();
 
         /// <summary>
         ///     The actions task scheduler
         /// </summary>
-        [NotNull]
         private readonly TaskScheduler taskScheduler = TaskScheduler.Default;
-
-        private readonly DirectCommand cancelCommand;
 
         /// <summary>
         ///     The cancellation token source
         /// </summary>
-        [CanBeNull]
         private CancellationTokenSource cancellationTokenSource;
-
-        /// <summary>
-        ///     The exception
-        /// </summary>
-        [CanBeNull]
-        private Exception exception;
-
-        /// <summary>
-        ///     The is execute
-        /// </summary>
-        private bool isExecuting;
 
         /// <summary>
         ///     The task
         /// </summary>
-        [CanBeNull]
         private Task task;
-
-        /// <summary>
-        ///     The is canceled
-        /// </summary>
-        private bool wasCanceled;
-
-        /// <summary>
-        ///     The has errors
-        /// </summary>
-        private bool wasFaulty;
-
-        private bool wasSuccessfuly;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ConcurrencyRelayCommand" /> class.
         /// </summary>
-        /// <param name="execute">The execute.</param>
+        /// <param name="action">The action.</param>
         /// <param name="canExecute">The can execute.</param>
         /// <param name="completed">The completed.</param>
         /// <param name="error">The error.</param>
         /// <param name="cancel">The cancel.</param>
-        protected ConcurrencyCommandBase(
-            [NotNull] Action<CancellationToken> execute,
-            [CanBeNull] Func<bool> canExecute = null,
-            [CanBeNull] Action completed = null,
-            [CanBeNull] Action<Exception> error = null,
-            [CanBeNull] Action cancel = null)
+        public ConcurrencyCommand(
+            Action<T, CancellationToken> action,
+            Predicate<T> canExecute = null,
+            Action<T> completed = null,
+            Action<Exception> error = null,
+            Action cancel = null)
         {
-            this.execute = execute;
+            this.action = action;
             this.canExecute = canExecute;
             this.completed = completed;
             this.error = error;
             this.cancel = cancel;
-            this.Dispatcher = Dispatcher.CurrentDispatcher;
-            this.cancelCommand = new DirectCommand(this.Cancel, () => this.IsExecuting);
+            this.dispatcher = Dispatcher.CurrentDispatcher;
+            this.CancelCommand = new RelayCommand(this.Cancel, () => this.IsExecute);
+        }
+
+        /// <summary>
+        ///     Occurs when changes occur that affect whether or not the command should execute.
+        /// </summary>
+        public override event EventHandler CanExecuteChanged
+        {
+            add => CommandManager.RequerySuggested += value;
+            remove => CommandManager.RequerySuggested -= value;
         }
 
         /// <summary>
@@ -147,13 +122,7 @@ namespace Anorisoft.WinUI.Commands
         /// <value>
         ///     The cancel command.
         /// </value>
-        public ICommand CancelCommand => this.cancelCommand;
-
-        /// <summary>
-        ///     The dispatcher
-        /// </summary>
-        [NotNull]
-        public Dispatcher Dispatcher { get; }
+        public ISyncCommand CancelCommand { get; set; }
 
         /// <summary>
         ///     Gets the exception.
@@ -161,11 +130,7 @@ namespace Anorisoft.WinUI.Commands
         /// <value>
         ///     The exception.
         /// </value>
-        public Exception Exception
-        {
-            get => this.exception;
-            private set => this.SetProperty(ref this.exception, value);
-        }
+        public Exception Exception { get; private set; }
 
         /// <summary>
         ///     Gets a value indicating whether this instance has errors.
@@ -173,23 +138,7 @@ namespace Anorisoft.WinUI.Commands
         /// <value>
         ///     <c>true</c> if this instance has errors; otherwise, <c>false</c>.
         /// </value>
-        public bool WasFaulty
-        {
-            get => this.wasFaulty;
-            private set => this.SetProperty(ref this.wasFaulty, value);
-        }
-
-        /// <summary>
-        ///     Gets or sets a value indicating whether this instance is execute.
-        /// </summary>
-        /// <value>
-        ///     <c>true</c> if this instance is execute; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsExecuting
-        {
-            get => this.isExecuting;
-            private set => this.SetProperty(ref this.isExecuting, value);
-        }
+        public bool HasErrors { get; private set; }
 
         /// <summary>
         ///     Gets a value indicating whether this instance is canceled.
@@ -197,23 +146,15 @@ namespace Anorisoft.WinUI.Commands
         /// <value>
         ///     <c>true</c> if this instance is canceled; otherwise, <c>false</c>.
         /// </value>
-        public bool WasCanceled
-        {
-            get => this.wasCanceled;
-            private set => this.SetProperty(ref this.wasCanceled, value);
-        }
+        public bool IsCanceled { get; private set; }
 
         /// <summary>
-        ///     Gets or sets a value indicating whether [was successful].
+        ///     Gets or sets a value indicating whether this instance is execute.
         /// </summary>
         /// <value>
-        ///     <c>true</c> if [was successful]; otherwise, <c>false</c>.
+        ///     <c>true</c> if this instance is execute; otherwise, <c>false</c>.
         /// </value>
-        public bool WasSuccessfuly
-        {
-            get => this.wasSuccessfuly;
-            set => this.SetProperty(ref this.wasSuccessfuly, value);
-        }
+        public bool IsExecute { get; private set; }
 
         /// <summary>
         ///     Gets or sets a value indicating whether this instance has can execute.
@@ -224,19 +165,23 @@ namespace Anorisoft.WinUI.Commands
         protected override bool HasCanExecute => this.canExecute != null;
 
         /// <summary>
-        ///     Determines whether this instance can execute.
+        ///     Defines the method that determines whether the command can execute in its current state.
         /// </summary>
+        /// <param name="parameter">
+        ///     Data used by the command.  If the command does not require data to be passed, this object can
+        ///     be set to <see langword="null" />.
+        /// </param>
         /// <returns>
-        ///     <c>true</c> if this instance can execute; otherwise, <c>false</c>.
+        ///     <see langword="true" /> if this command can be executed; otherwise, <see langword="false" />.
         /// </returns>
-        public bool CanExecute()
+        public bool CanExecute([CanBeNull] T parameter)
         {
-            if (this.IsExecuting)
+            if (this.IsExecute)
             {
                 return false;
             }
 
-            if (this.canExecute != null && !this.canExecute())
+            if (this.canExecute != null && !this.canExecute(parameter))
             {
                 return false;
             }
@@ -255,23 +200,34 @@ namespace Anorisoft.WinUI.Commands
         }
 
         /// <summary>
-        ///     Executes this instance.
+        ///     Defines the method to be called when the command is invoked.
         /// </summary>
-        public void Execute()
+        /// <param name="parameter">
+        ///     Data used by the command.  If the command does not require data to be passed, this object can
+        ///     be set to <see langword="null" />.
+        /// </param>
+        public void Execute([CanBeNull] T parameter)
         {
+            if (!this.CanExecute(parameter))
+            {
+                return;
+            }
+
             try
             {
                 this.OnBegin();
                 this.task?.Dispose();
                 this.cancellationTokenSource = new CancellationTokenSource();
                 var token = this.cancellationTokenSource.Token;
+
                 this.task = this.taskFactory
                     .StartNew(
-                        () => this.OnAction(token),
+                        p => this.OnAction((T)p, token),
+                        parameter,
                         token,
                         TaskCreationOptions.DenyChildAttach,
                         this.taskScheduler)
-                    .ContinueWith(this.OnPostAction, this.postTaskScheduler)
+                    .ContinueWith((t, p) => this.OnPostAction(t, (T)p), parameter, this.postTaskScheduler)
                     .ContinueWith(t => this.OnFinally(), this.finallyTaskScheduler);
             }
             catch (TaskCanceledException ex)
@@ -315,32 +271,21 @@ namespace Anorisoft.WinUI.Commands
         }
 
         /// <summary>
-        ///     Occurs when a property value changes.
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        /// <summary>
         ///     Cancels this instance.
         /// </summary>
         public void Cancel() => this.cancellationTokenSource?.Cancel();
 
         /// <summary>
-        ///     Raises the can execute cancel command.
-        /// </summary>
-        /// <returns></returns>
-        public void RaiseCanExecuteCancelCommand() => this.cancelCommand.RaiseCanExecuteChanged();
-
-        /// <summary>
         ///     Raises the can execute command.
         /// </summary>
-        public abstract void RaiseCanExecuteCommand();
+        public void RaiseCanExecuteCommand() => this.Dispatch(CommandManager.InvalidateRequerySuggested);
 
         /// <summary>
         ///     Determines whether this instance can execute the specified parameter.
         /// </summary>
         /// <param name="parameter">The parameter.</param>
         /// <returns></returns>
-        protected sealed override bool CanExecute(object parameter) => this.CanExecute();
+        protected sealed override bool CanExecute(object parameter) => this.CanExecute((T)parameter);
 
         /// <summary>
         ///     Releases unmanaged and - optionally - managed resources.
@@ -368,69 +313,39 @@ namespace Anorisoft.WinUI.Commands
         }
 
         /// <summary>
-        ///     Handle the internal invocation of <see cref="ICommand.Execute(object)" />
+        ///     Handle the internal invocation of <see cref="ISyncCommand.Execute(object)" />
         /// </summary>
         /// <param name="parameter">Command Parameter</param>
-        protected sealed override void Execute(object parameter) => this.Execute();
+        protected sealed override void Execute(object parameter) => this.Execute((T)parameter);
 
         /// <summary>
-        ///     Raises the property changed.
+        ///     Called when [action].
         /// </summary>
-        /// <param name="propertyName">Name of the property.</param>
-        protected virtual void RaisePropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        /// <summary>
-        ///     Sets the property.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="storage">The storage.</param>
-        /// <param name="value">The value.</param>
-        /// <param name="propertyName">Name of the property.</param>
-        /// <returns></returns>
-        [NotifyPropertyChangedInvocator]
-        protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
-        {
-            if (Equals(storage, value))
-            {
-                return false;
-            }
-
-            storage = value;
-            this.RaisePropertyChanged(propertyName);
-            return true;
-        }
-
-        /// <summary>
-        ///     Called when [execute].
-        /// </summary>
+        /// <param name="parameter">The parameter.</param>
         /// <param name="token">The token.</param>
-        private void OnAction(CancellationToken token) => this.execute(token);
+        private void OnAction(T parameter, CancellationToken token) => this.action(parameter, token);
 
         /// <summary>
         ///     Called when [begin].
         /// </summary>
         private void OnBegin()
         {
-            Debug.WriteLine("OnBegin");
-            this.WasCanceled = false;
-            this.WasFaulty = false;
-            this.WasSuccessfuly = false;
+            this.IsCanceled = false;
+            this.HasErrors = false;
             this.Exception = null;
-            this.IsExecuting = true;
-            this.RaiseCanExecuteCancelCommand();
+            this.IsExecute = true;
             this.RaiseCanExecuteCommand();
         }
 
         /// <summary>
         ///     Called when [canceled].
         /// </summary>
+        /// <param name="t">The t.</param>
+        /// <param name="obj">The object.</param>
         private void OnCanceled()
         {
             Debug.WriteLine("OnCanceled");
-            this.WasCanceled = true;
+            this.IsCanceled = true;
             this.cancel.Raise();
         }
 
@@ -441,7 +356,7 @@ namespace Anorisoft.WinUI.Commands
         private void OnFaulted(Exception exception)
         {
             Debug.WriteLine("OnFaulted");
-            this.WasFaulty = true;
+            this.HasErrors = true;
             this.Exception = exception;
             this.error.Raise(exception);
         }
@@ -452,16 +367,16 @@ namespace Anorisoft.WinUI.Commands
         private void OnFinally()
         {
             Debug.WriteLine("OnFinally");
-            this.IsExecuting = false;
-            this.RaiseCanExecuteCancelCommand();
+            this.IsExecute = false;
             this.RaiseCanExecuteCommand();
         }
 
         /// <summary>
-        ///     Called when [post execute].
+        ///     Called when [post action].
         /// </summary>
         /// <param name="t">The t.</param>
-        private void OnPostAction(Task t)
+        /// <param name="parameter">The parameter.</param>
+        private void OnPostAction(Task t, T parameter)
         {
             switch (t.Status)
             {
@@ -474,7 +389,7 @@ namespace Anorisoft.WinUI.Commands
                     break;
 
                 case TaskStatus.RanToCompletion:
-                    this.OnRanToCompletion();
+                    this.OnRanToCompletion(parameter);
                     break;
             }
         }
@@ -482,11 +397,12 @@ namespace Anorisoft.WinUI.Commands
         /// <summary>
         ///     Called when [ran to completion].
         /// </summary>
-        private void OnRanToCompletion()
+        /// <param name="t">The t.</param>
+        /// <param name="parameter">The parameter.</param>
+        private void OnRanToCompletion(T parameter)
         {
             Debug.WriteLine("OnRanToCompletion");
-            this.WasSuccessfuly = true;
-            this.completed.Raise();
+            this.completed.Raise(parameter);
         }
     }
 }

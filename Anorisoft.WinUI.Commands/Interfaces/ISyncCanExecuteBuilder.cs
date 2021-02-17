@@ -1,0 +1,24 @@
+﻿using System;
+using System.Linq.Expressions;
+using JetBrains.Annotations;
+
+namespace Anorisoft.WinUI.Commands.Interfaces
+{
+    public interface ISyncCanExecuteBuilder
+    {
+        [NotNull]
+        IActivatableSyncCommand Build();
+
+        [NotNull]
+        IActivatableSyncCommand Build([NotNull] Action<IActivatableSyncCommand> setCommand);
+
+        [NotNull]
+        ISyncCanExecuteBuilder ObservesProperty<TType>([NotNull] Expression<Func<TType>> expression);
+
+        [NotNull]
+        ISyncCanExecuteBuilder ObservesCommandManager();
+
+        [NotNull]
+        ISyncCanExecuteBuilder AutoActivate();
+    }
+}

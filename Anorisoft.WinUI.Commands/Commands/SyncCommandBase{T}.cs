@@ -20,7 +20,7 @@ namespace Anorisoft.WinUI.Commands
     /// </summary>
     /// <typeparam name="T">Parameter type</typeparam>
     /// <seealso cref="T:System.Windows.Input.ICommand" />
-    public abstract class SyncCommandBase<T> : CommandBase, Interfaces.ICommand<T>, IDispatchableContext
+    public abstract class SyncCommandBase<T> : CommandBase, Interfaces.ISyncCommand<T>, IDispatchableContext
     {
         /// <summary>
         /// Gets or sets a value indicating whether this instance has can execute.

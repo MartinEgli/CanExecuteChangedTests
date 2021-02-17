@@ -26,7 +26,7 @@ namespace Anorisoft.WinUI.Commands
             [CanBeNull] Action completed = null,
             [CanBeNull] Action<Exception> error = null,
             [CanBeNull] Action cancel = null)
-            : base(execute, null, completed, error, cancel)
+            : base(execute, completed, error, cancel)
         {
         }
 

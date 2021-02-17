@@ -7,93 +7,60 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Anorisoft.WinUI.Commands.Interfaces;
 
 namespace Anorisoft.WinUI.Commands.Factory
 {
     public class CommandFactory : ICommandFactory
     {
-        public ISyncCommandBuilder Command(Action execute) => new SyncCommandBuilder(execute);
+        public static ICommandFactory Factory { get; } = new CommandFactory();
 
-        public ISyncCommandBuilder<T> Command<T>(Action<T> execute)
-        {
-            return new SyncCommandBuilder<T>(execute);
-        }
-
-        public IAsyncCommandBuilder Command(Func<Task> execute)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IAsyncCommandBuilder<T> Command<T>(Func<T, Task> execute)
-        {
-            throw new NotImplementedException();
-        }
+        public ISyncCommandBuilder Command(Action execute)
+            => new SyncCommandBuilder(execute);
 
         public ISyncCanExecuteBuilder Command(Action execute, Func<bool> canExecute)
-        {
-            throw new NotImplementedException();
-        }
+            => new SyncCommandBuilder(execute).CanExecute(canExecute);
+
+        public ISyncCommandBuilder<T> Command<T>(Action<T> execute)
+            => new SyncCommandBuilder<T>(execute);
 
         public ISyncCanExecuteBuilder<T> Command<T>(Action<T> execute, Predicate<T> canExecute)
-        {
-            throw new NotImplementedException();
-        }
+            => new SyncCommandBuilder<T>(execute).CanExecute(canExecute);
+
+        public IAsyncCommandBuilder Command(Func<Task> execute)
+            => new AsyncCommandBuilder(execute);
 
         public IAsyncCanExecuteBuilder Command(Func<Task> execute, Func<bool> canExecute)
-        {
-            throw new NotImplementedException();
-        }
+            => new AsyncCommandBuilder(execute).CanExecute(canExecute);
+
+        public IAsyncCommandBuilder<T> Command<T>(Func<T, Task> execute)
+            => new AsyncCommandBuilder<T>(execute);
 
         public IAsyncCanExecuteBuilder<T> Command<T>(Func<T, Task> execute, Predicate<T> canExecute)
-        {
-            throw new NotImplementedException();
-        }
+            => new AsyncCommandBuilder<T>(execute).CanExecute(canExecute);
 
-        public ISyncCommandBuilder Command(Action<CancellationToken> execute)
-        {
-            throw new NotImplementedException();
-        }
+        public IConcurrencySyncCommandBuilder Command(Action<CancellationToken> execute)
+            => new ConcurrencySyncCommandBuilder(execute);
 
-        public ISyncCommandBuilder<T> Command<T>(Action<T, CancellationToken> execute)
-        {
-            throw new NotImplementedException();
-        }
+        public IConcurrencySyncCommandBuilder<T> Command<T>(Action<T, CancellationToken> execute)
+            => new ConcurrencySyncCommandBuilder<T>(execute);
 
-        public IAsyncCanExecuteBuilder Command(Func<CancellationToken, Task> execute)
-        {
-            throw new NotImplementedException();
-        }
+        public IConcurrencyAsyncCommandBuilder Command(Func<CancellationToken, Task> execute)
+            => new ConcurrencyAsyncCommandBuilder(execute);
 
-        public IAsyncCanExecuteBuilder<T> Command<T>(Func<T, CancellationToken, Task> execute)
-        {
-            throw new NotImplementedException();
-        }
+        public IConcurrencyAsyncCommandBuilder<T> Command<T>(Func<T, CancellationToken, Task> execute)
+            => new ConcurrencyAsyncCommandBuilder<T>(execute);
 
-        public ISyncCanExecuteBuilder Command(Action<CancellationToken> execute, Func<bool> canExecute)
-        {
-            throw new NotImplementedException();
-        }
+        public IConcurrencySyncCanExecuteBuilder Command(Action<CancellationToken> execute, Func<bool> canExecute)
+            => new ConcurrencySyncCommandBuilder(execute).CanExecute(canExecute);
 
-        public ISyncCanExecuteBuilder<T> Command<T>(Action<T, CancellationToken> execute, Predicate<T> canExecute)
-        {
-            throw new NotImplementedException();
-        }
+        public IConcurrencySyncCanExecuteBuilder<T> Command<T>(Action<T, CancellationToken> execute, Predicate<T> canExecute)
+            => new ConcurrencySyncCommandBuilder<T>(execute).CanExecute(canExecute);
 
-        public IAsyncCanExecuteBuilder Command(Func<CancellationToken, Task> execute, Func<bool> canExecute)
-        {
-            throw new NotImplementedException();
-        }
+        public IConcurrencyAsyncCanExecuteBuilder Command(Func<CancellationToken, Task> execute, Func<bool> canExecute)
+            => new ConcurrencyAsyncCommandBuilder(execute).CanExecute(canExecute);
 
-        public IAsyncCanExecuteBuilder<T> Command<T>(Func<T, CancellationToken, Task> execute, Predicate<T> canExecute)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IAsyncCanExecuteBuilder<T> Command<T>(Func<T, Task> execute, Func<T, bool> canExecute)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static ICommandFactory Factory { get; } = new CommandFactory();
+        public IConcurrencyAsyncCanExecuteBuilder<T> Command<T>(Func<T, CancellationToken, Task> execute, Predicate<T> canExecute)
+            => new ConcurrencyAsyncCommandBuilder<T>(execute).CanExecute(canExecute);
     }
 }

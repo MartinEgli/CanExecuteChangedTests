@@ -17,6 +17,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Anorisoft.WinUI.Common\Anorisoft.WinUI.Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="PresentationCore" />
   </ItemGroup>
 </Project>

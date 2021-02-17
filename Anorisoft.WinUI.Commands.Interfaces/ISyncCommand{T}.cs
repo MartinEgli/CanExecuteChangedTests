@@ -4,9 +4,11 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using JetBrains.Annotations;
+
 namespace Anorisoft.WinUI.Commands.Interfaces
 {
-    public interface ICommand<in T> : System.Windows.Input.ICommand
+    public interface ISyncCommand<in T> : System.Windows.Input.ICommand
     {
         /// <summary>
         /// Determines whether this instance can execute the specified parameter.
@@ -15,12 +17,12 @@ namespace Anorisoft.WinUI.Commands.Interfaces
         /// <returns>
         ///   <c>true</c> if this instance can execute the specified parameter; otherwise, <c>false</c>.
         /// </returns>
-        bool CanExecute(T parameter);
+        bool CanExecute([CanBeNull] T parameter);
 
         /// <summary>
         /// Executes the specified parameter.
         /// </summary>
         /// <param name="parameter">The parameter.</param>
-        void Execute(T parameter);
+        void Execute([CanBeNull] T parameter);
     }
 }

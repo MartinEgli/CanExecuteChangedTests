@@ -1,8 +1,14 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Threading;
+using System.Threading.Tasks;
 using Anorisoft.WinUI.Commands.CanExecuteObservers;
+using Anorisoft.WinUI.Commands.Factory;
+using Anorisoft.WinUI.Commands.Interfaces;
+using Anorisoft.WinUI.Common;
 using JetBrains.Annotations;
+using ICommand = System.Windows.Input.ICommand;
 
 namespace Anorisoft.WinUI.Commands.GUITest
 {
@@ -13,10 +19,22 @@ namespace Anorisoft.WinUI.Commands.GUITest
 
         public PropertyObservableTestViewModel()
         {
-            var canExecuteObserverAnd =
-                new PropertyObserverFactory().ObservesCanExecute(() => this.Condition1 && this.Condition2);
-            TestAndCommand = new ActivatableCanExecuteObserverCommand(() => { }, canExecuteObserverAnd);
-            TestAndCommand.Activate();
+            var commandFactory = Factory.CommandFactory.Factory;
+            //var canExecuteObserverAnd =
+            //    new PropertyObserverFactory().ObservesCanExecute(() => this.Condition1 && this.Condition2);
+            //TestAndCommand = new ActivatableCanExecuteObserverCommand(() => { }, canExecuteObserverAnd);
+
+            Action syncExecution = () => { };
+            Action<CancellationToken> concurrencySyncExecution = (c) => { };
+            Func<CancellationToken, Task> concurrencyAsyncExecution = async (c) => await Task.Yield();
+
+            IConcurrencyAsyncCommand testAndCommand;
+            TestAndCommand = testAndCommand = commandFactory
+                .Command(concurrencyAsyncExecution)
+                .ObservesCanExecute(() => this.Condition1 && this.Condition2)
+                .Build();
+
+            ((IActivatable)testAndCommand).Activate();
 
             var canExecuteObserverOr =
                 new PropertyObserverFactory().ObservesCanExecute(() => this.Condition1 || this.Condition2);
@@ -26,7 +44,7 @@ namespace Anorisoft.WinUI.Commands.GUITest
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public ActivatableCanExecuteObserverCommand TestAndCommand { get; }
+        public ICommand TestAndCommand { get; }
 
         public ActivatableCanExecuteObserverCommand TestOrCommand { get; }
 

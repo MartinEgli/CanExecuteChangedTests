@@ -43,7 +43,7 @@ namespace Anorisoft.WinUI.Commands
     ///     </code>
     ///     </example>
     /// </remarks>
-    public class ActivatablePropertyObserverCommand<T> : ActivatablePropertyObserverCommandBase, Interfaces.ICommand<T>
+    public class ActivatablePropertyObserverCommand<T> : ActivatablePropertyObserverCommandBase, Interfaces.ISyncCommand<T>
     {
         /// <summary>
         ///     The execute method

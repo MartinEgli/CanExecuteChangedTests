@@ -1,25 +1,17 @@
-﻿// -----------------------------------------------------------------------
-// <copyright file="IAsyncCommand.cs" company="Anori Soft">
-// Copyright (c) Anori Soft. All rights reserved.
-// </copyright>
-// -----------------------------------------------------------------------
-
-using Anorisoft.WinUI.Common;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using JetBrains.Annotations;
 
 namespace Anorisoft.WinUI.Commands.Interfaces
 {
-    using System.Threading.Tasks;
-    using System.Windows.Input;
-
-    public interface IAsyncCommand : System.Windows.Input.ICommand
+    public interface IConcurrencyAsyncCommand : System.Windows.Input.ICommand
     {
         /// <summary>
         /// Executes the asynchronous.
         /// </summary>
         /// <returns></returns>
         [NotNull]
-        Task ExecuteAsync();
+        Task ExecuteAsync(CancellationToken token);
 
         /// <summary>
         /// Determines whether this instance can execute.

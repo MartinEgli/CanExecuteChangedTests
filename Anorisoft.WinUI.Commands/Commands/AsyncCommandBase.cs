@@ -1,49 +1,45 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="AsyncCommandBase{T}.cs" company="Anori Soft">
+// <copyright file="AsyncCommandBase.cs" company="Anori Soft">
 // Copyright (c) Anori Soft. All rights reserved.
 // </copyright>
 // -----------------------------------------------------------------------
 
+using System;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
+using Anorisoft.WinUI.Commands.Interfaces;
+using Anorisoft.WinUI.Common;
+using CanExecuteChangedTests;
+using JetBrains.Annotations;
+
 namespace Anorisoft.WinUI.Commands
 {
-    using Anorisoft.WinUI.Commands.Interfaces;
-
-    using CanExecuteChangedTests;
-
-    using JetBrains.Annotations;
-
-    using System;
-    using System.ComponentModel;
-    using System.Runtime.CompilerServices;
-    using System.Threading.Tasks;
-
-    public interface IExecutable
-    {
-        bool IsExecuting { get; }
-    }
-
     /// <summary>
     ///     AsyncCommandBase class.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
     /// <seealso cref="Anorisoft.WinUI.Commands.CommandBase" />
     /// <seealso cref="Anorisoft.WinUI.Commands.Interfaces.IAsyncCommand{T}" />
-    public abstract class AsyncCommandBase<T> : CommandBase, IAsyncCommand<T>, IExecutable, INotifyPropertyChanged
+    public abstract class AsyncCommandBase : 
+        CommandBase, 
+        IAsyncCommand,
+        IExecutable,
+        INotifyPropertyChanged
     {
         /// <summary>
         ///     The can execute
         /// </summary>
-        private readonly Predicate<T> canExecute;
+        [CanBeNull] private readonly Func<bool> canExecute;
 
         /// <summary>
         ///     The error handler
         /// </summary>
-        private readonly Action<Exception> error;
+        [CanBeNull] private readonly Action<Exception> error;
 
         /// <summary>
         ///     The execute
         /// </summary>
-        private readonly Func<T, Task> execute;
+        [NotNull] private readonly Func<Task> execute;
 
         /// <summary>
         ///     The is executing
@@ -55,15 +51,13 @@ namespace Anorisoft.WinUI.Commands
         /// </summary>
         /// <param name="execute">The execute.</param>
         /// <param name="canExecute">The can execute.</param>
-        /// <param name="errorHandler">The error handler.</param>
+        /// <param name="error">The error handler.</param>
         protected AsyncCommandBase(
-            [NotNull] Func<T, Task> execute,
-            [NotNull] Predicate<T> canExecute,
+            [NotNull] Func<Task> execute,
+            [NotNull] Func<bool> canExecute,
             [NotNull] Action<Exception> error)
-            : this(execute, canExecute)
-        {
+            : this(execute, canExecute) =>
             this.error = error ?? throw new ArgumentNullException(nameof(error));
-        }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="AsyncRelayCommand{T}" /> class.
@@ -71,10 +65,29 @@ namespace Anorisoft.WinUI.Commands
         /// <param name="execute">The execute.</param>
         /// <param name="canExecute">The can execute.</param>
         /// <exception cref="ArgumentNullException">canExecute</exception>
-        protected AsyncCommandBase([NotNull] Func<T, Task> execute, [NotNull] Predicate<T> canExecute)
+        protected AsyncCommandBase(
+            [NotNull] Func<Task> execute,
+            [NotNull] Func<bool> canExecute)
+            : this(execute) =>
+            this.canExecute = canExecute ?? throw new ArgumentNullException(nameof(canExecute));
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AsyncCommandBase"/> class.
+        /// </summary>
+        /// <param name="execute">The execute.</param>
+        /// <param name="canExecuteSubject">The can execute subject.</param>
+        /// <exception cref="ArgumentNullException">canExecuteSubject</exception>
+        protected AsyncCommandBase(
+            [NotNull] Func<Task> execute,
+            [NotNull] ICanExecuteSubject canExecuteSubject)
             : this(execute)
         {
-            this.canExecute = canExecute ?? throw new ArgumentNullException(nameof(canExecute));
+            if (canExecuteSubject == null)
+            {
+                throw new ArgumentNullException(nameof(canExecuteSubject));
+            }
+
+            this.canExecute = canExecuteSubject.CanExecute;
         }
 
         /// <summary>
@@ -83,21 +96,20 @@ namespace Anorisoft.WinUI.Commands
         /// <param name="execute">The execute.</param>
         /// <param name="error">The error.</param>
         /// <exception cref="ArgumentNullException">errorHandler</exception>
-        protected AsyncCommandBase([NotNull] Func<T, Task> execute, [NotNull] Action<Exception> error)
-            : this(execute)
-        {
+        protected AsyncCommandBase(
+            [NotNull] Func<Task> execute,
+            [NotNull] Action<Exception> error)
+            : this(execute) =>
             this.error = error ?? throw new ArgumentNullException(nameof(error));
-        }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="AsyncRelayCommand{T}" /> class.
         /// </summary>
         /// <param name="execute">The execute.</param>
         /// <exception cref="ArgumentNullException">execute</exception>
-        protected AsyncCommandBase([NotNull] Func<T, Task> execute)
-        {
+        protected AsyncCommandBase(
+            [NotNull] Func<Task> execute) =>
             this.execute = execute ?? throw new ArgumentNullException(nameof(execute));
-        }
 
         /// <summary>
         ///     Gets or sets a value indicating whether this instance has can execute.
@@ -110,28 +122,23 @@ namespace Anorisoft.WinUI.Commands
         /// <summary>
         ///     Determines whether this instance can execute the specified parameter.
         /// </summary>
-        /// <param name="parameter">The parameter.</param>
         /// <returns>
         ///     <c>true</c> if this instance can execute the specified parameter; otherwise, <c>false</c>.
         /// </returns>
-        public virtual bool CanExecute([CanBeNull] T parameter)
-        {
-            return !this.isExecuting && (this.canExecute == null || this.canExecute(parameter));
-        }
+        public virtual bool CanExecute() => (!this.isExecuting) && (this.canExecute == null || this.canExecute());
 
         /// <summary>
         ///     Executes the asynchronous.
         /// </summary>
-        /// <param name="parameter">The parameter.</param>
-        public async Task ExecuteAsync(T parameter)
+        public async Task ExecuteAsync()
         {
-            if (this.CanExecute(parameter))
+            if (this.CanExecute())
             {
                 try
                 {
                     this.IsExecuting = true;
 
-                    await this.execute(parameter).ConfigureAwait(true);
+                    await this.execute().ConfigureAwait(false);
                 }
                 finally
                 {
@@ -155,7 +162,7 @@ namespace Anorisoft.WinUI.Commands
 
                 this.isExecuting = value;
                 this.RaisePropertyChanged();
-                this.RaiseCanExecuteChanged();
+                this.Dispatch(me => me.RaiseCanExecuteChanged());
             }
         }
 
@@ -174,14 +181,14 @@ namespace Anorisoft.WinUI.Commands
         /// </summary>
         /// <param name="parameter">The parameter.</param>
         /// <returns></returns>
-        protected sealed override bool CanExecute(object parameter) => this.CanExecute((T)parameter);
+        protected sealed override bool CanExecute(object parameter) => this.CanExecute();
 
         /// <summary>
-        ///     Handle the internal invocation of <see cref="ICommand.Execute(object)" />
+        ///     Handle the internal invocation of <see cref="ISyncCommand.Execute(object)" />
         /// </summary>
         /// <param name="parameter">Command Parameter</param>
         protected sealed override void Execute(object parameter) =>
-            this.ExecuteAsync((T)parameter).FireAndForgetSafeAsync(this.error);
+            this.ExecuteAsync().FireAndForgetSafeAsync(this.error);
 
         /// <summary>
         ///     Called when [property changed].

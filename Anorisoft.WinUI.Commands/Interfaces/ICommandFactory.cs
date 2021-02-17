@@ -7,6 +7,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Anorisoft.WinUI.Commands.Interfaces;
 
 namespace Anorisoft.WinUI.Commands.Factory
 {
@@ -28,20 +29,20 @@ namespace Anorisoft.WinUI.Commands.Factory
 
         IAsyncCanExecuteBuilder<T> Command<T>(Func<T, Task> execute, Predicate<T> canExecute);
 
-        ISyncCommandBuilder Command(Action<CancellationToken> execute);
+        IConcurrencySyncCommandBuilder Command(Action<CancellationToken> execute);
 
-        ISyncCommandBuilder<T> Command<T>(Action<T, CancellationToken> execute);
+        IConcurrencySyncCommandBuilder<T> Command<T>(Action<T, CancellationToken> execute);
 
-        IAsyncCanExecuteBuilder Command(Func<CancellationToken, Task> execute);
+        IConcurrencyAsyncCommandBuilder Command(Func<CancellationToken, Task> execute);
 
-        IAsyncCanExecuteBuilder<T> Command<T>(Func<T, CancellationToken, Task> execute);
+        IConcurrencyAsyncCommandBuilder<T> Command<T>(Func<T, CancellationToken, Task> execute);
 
-        ISyncCanExecuteBuilder Command(Action<CancellationToken> execute, Func<bool> canExecute);
+        IConcurrencySyncCanExecuteBuilder Command(Action<CancellationToken> execute, Func<bool> canExecute);
 
-        ISyncCanExecuteBuilder<T> Command<T>(Action<T, CancellationToken> execute, Predicate<T> canExecute);
+        IConcurrencySyncCanExecuteBuilder<T> Command<T>(Action<T, CancellationToken> execute, Predicate<T> canExecute);
 
-        IAsyncCanExecuteBuilder Command(Func<CancellationToken, Task> execute, Func<bool> canExecute);
+        IConcurrencyAsyncCanExecuteBuilder Command(Func<CancellationToken, Task> execute, Func<bool> canExecute);
 
-        IAsyncCanExecuteBuilder<T> Command<T>(Func<T, CancellationToken, Task> execute, Predicate<T> canExecute);
+        IConcurrencyAsyncCanExecuteBuilder<T> Command<T>(Func<T, CancellationToken, Task> execute, Predicate<T> canExecute);
     }
 }

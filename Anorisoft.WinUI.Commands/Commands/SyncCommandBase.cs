@@ -4,33 +4,28 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using System;
 using Anorisoft.WinUI.Commands.Interfaces;
+using JetBrains.Annotations;
 
 namespace Anorisoft.WinUI.Commands
 {
-    using System;
-    using System.Windows.Input;
-
-    using JetBrains.Annotations;
-
     /// <summary>
     ///     A Command whose sole purpose is to relay its functionality to other objects by invoking delegates.
     ///     The default return value for the CanExecute method is 'true'.
     /// </summary>
     /// <seealso cref="System.Windows.Input.ICommand" />
-    public abstract class SyncCommandBase : CommandBase, Interfaces.ICommand
+    public abstract class SyncCommandBase : CommandBase, Interfaces.ISyncCommand
     {
         /// <summary>
         ///     The can execute
         /// </summary>
-        [CanBeNull]
-        private readonly Func<bool> canExecute;
+        [CanBeNull] private readonly Func<bool> canExecute;
 
         /// <summary>
         ///     The execute
         /// </summary>
-        [NotNull]
-        private readonly Action execute;
+        [NotNull] private readonly Action execute;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SyncCommandBase" /> class and the Command can
@@ -38,7 +33,8 @@ namespace Anorisoft.WinUI.Commands
         /// </summary>
         /// <param name="execute">The execution logic.</param>
         /// <exception cref="ArgumentNullException">execute</exception>
-        protected SyncCommandBase([NotNull] Action execute) =>
+        protected SyncCommandBase(
+            [NotNull] Action execute) =>
             this.execute = execute ?? throw new ArgumentNullException(nameof(execute));
 
         /// <summary>
@@ -47,11 +43,11 @@ namespace Anorisoft.WinUI.Commands
         /// <param name="execute">The execute.</param>
         /// <param name="canExecute">The can execute.</param>
         /// <exception cref="ArgumentNullException">canExecute</exception>
-        protected SyncCommandBase([NotNull] Action execute, [NotNull] Func<bool> canExecute)
+        protected SyncCommandBase(
+            [NotNull] Action execute,
+            [NotNull] Func<bool> canExecute)
             : this(execute) =>
             this.canExecute = canExecute ?? throw new ArgumentNullException(nameof(canExecute));
-
-
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SyncCommandBase"/> class.
@@ -59,15 +55,26 @@ namespace Anorisoft.WinUI.Commands
         /// <param name="execute">The execute.</param>
         /// <param name="canExecute">The can execute.</param>
         /// <exception cref="ArgumentNullException">canExecute</exception>
-        protected SyncCommandBase([NotNull] Action execute, [NotNull] ICanExecuteSubject canExecuteSubject)
+        protected SyncCommandBase(
+            [NotNull] Action execute,
+            [NotNull] ICanExecuteSubject canExecuteSubject)
             : this(execute)
         {
             if (canExecuteSubject == null)
             {
                 throw new ArgumentNullException(nameof(canExecuteSubject));
             }
+
             this.canExecute = canExecuteSubject.CanExecute;
         }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance has can execute.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance has can execute; otherwise, <c>false</c>.
+        /// </value>
+        protected override bool HasCanExecute => this.canExecute != null;
 
         /// <summary>
         ///     Determines whether this instance can execute.
@@ -80,8 +87,7 @@ namespace Anorisoft.WinUI.Commands
         /// <summary>
         ///     Executes this instance.
         /// </summary>
-        void Interfaces.ICommand.Execute() => this.execute();
-
+        void Interfaces.ISyncCommand.Execute() => this.execute();
 
         /// <summary>
         /// Executes this instance.
@@ -93,6 +99,7 @@ namespace Anorisoft.WinUI.Commands
                 this.execute();
             }
         }
+
         /// <summary>
         ///     Determines whether this instance can execute the specified parameter.
         /// </summary>
@@ -101,17 +108,9 @@ namespace Anorisoft.WinUI.Commands
         protected sealed override bool CanExecute(object parameter) => this.CanExecute();
 
         /// <summary>
-        ///     Handle the internal invocation of <see cref="ICommand.Execute" />
+        ///     Handle the internal invocation of <see cref="System.Windows.Input.ICommand.Execute" />
         /// </summary>
         /// <param name="parameter">Command Parameter</param>
         protected sealed override void Execute(object parameter) => this.Execute();
-
-        /// <summary>
-        /// Gets or sets a value indicating whether this instance has can execute.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if this instance has can execute; otherwise, <c>false</c>.
-        /// </value>
-        protected override bool HasCanExecute => this.canExecute != null;
     }
 }

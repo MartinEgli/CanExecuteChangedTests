@@ -24,7 +24,7 @@ namespace CanExecuteChangedTests
     ///     The default return value for the CanExecute method is 'true'.
     /// </summary>
     /// <seealso cref="System.Windows.Input.ICommand" />
-    public class ActivatableRelayCommand<T> : ICommand<T>, IActivatable
+    public class ActivatableRelayCommand<T> : ISyncCommand<T>, IActivatable
     {
         /// <summary>
         ///     The can execute

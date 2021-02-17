@@ -123,4 +123,7 @@
   <data name="CanExecuteFunctionAlreadyDefined" xml:space="preserve">
     <value>The CanExecute function is already defined</value>
   </data>
+  <data name="ObserverIsAlreadyBeingObserved" xml:space="preserve">
+    <value>{0} is already being observed.</value>
+  </data>
 </root>

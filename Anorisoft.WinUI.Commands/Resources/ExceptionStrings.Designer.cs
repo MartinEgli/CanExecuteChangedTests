@@ -77,5 +77,14 @@ namespace Anorisoft.WinUI.Commands.Resources {
                 return ResourceManager.GetString("CanExecuteFunctionAlreadyDefined", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} is already being observed..
+        /// </summary>
+        internal static string ObserverIsAlreadyBeingObserved {
+            get {
+                return ResourceManager.GetString("ObserverIsAlreadyBeingObserved", resourceCulture);
+            }
+        }
     }
 }

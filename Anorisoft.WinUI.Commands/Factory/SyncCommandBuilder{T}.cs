@@ -9,12 +9,12 @@ using JetBrains.Annotations;
 
 namespace Anorisoft.WinUI.Commands.Factory
 {
-    public class SyncCommandBuilder : ISyncCommandBuilder, ISyncCanExecuteBuilder
+    public class SyncCommandBuilder<T> : ISyncCommandBuilder<T>, ISyncCanExecuteBuilder<T>
     {
         /// <summary>
         /// The execute
         /// </summary>
-        private readonly Action execute;
+        private readonly Action<T> execute;
 
         /// <summary>
         /// The observes
@@ -29,7 +29,7 @@ namespace Anorisoft.WinUI.Commands.Factory
         /// <summary>
         /// The can execute function
         /// </summary>
-        private Func<bool> canExecuteFunction;
+        private Predicate<T> canExecuteFunction;
 
         /// <summary>
         /// The is automatic actiate
@@ -41,7 +41,7 @@ namespace Anorisoft.WinUI.Commands.Factory
         /// </summary>
         /// <param name="execute">The execute.</param>
         /// <exception cref="ArgumentNullException">execute</exception>
-        public SyncCommandBuilder([NotNull] Action execute) =>
+        public SyncCommandBuilder([NotNull] Action<T> execute) =>
             this.execute = execute ?? throw new ArgumentNullException(nameof(execute));
 
         /// <summary>
@@ -49,19 +49,19 @@ namespace Anorisoft.WinUI.Commands.Factory
         /// </summary>
         /// <returns></returns>
         [NotNull]
-        public IActivatableSyncCommand Build()
+        public IActivatableSyncCommand<T> Build()
         {
             if (observes.Any())
             {
                 if (canExecuteFunction != null)
                 {
-                    return new ActivatableCanExecuteObserverCommand(execute, isAutoActiate, canExecuteFunction,
+                    return new ActivatableCanExecuteObserverCommand<T>(execute, isAutoActiate, canExecuteFunction,
                         observes.ToArray());
                 }
 
                 if (canExecuteExpression != null)
                 {
-                    return new ActivatableCanExecuteObserverCommand(execute, isAutoActiate, canExecuteExpression,
+                    return new ActivatableCanExecuteObserverCommand<T>(execute, isAutoActiate, canExecuteExpression,
                         observes.ToArray());
                 }
 
@@ -70,15 +70,15 @@ namespace Anorisoft.WinUI.Commands.Factory
 
             if (canExecuteFunction != null)
             {
-                return new ActivatableCanExecuteObserverCommand(execute, isAutoActiate, canExecuteFunction);
+                return new ActivatableCanExecuteObserverCommand<T>(execute, isAutoActiate, canExecuteFunction);
             }
 
             if (canExecuteExpression != null)
             {
-                return new ActivatableCanExecuteObserverCommand(execute, isAutoActiate, canExecuteExpression);
+                return new ActivatableCanExecuteObserverCommand<T>(execute, isAutoActiate, canExecuteExpression);
             }
 
-            return new ActivatableCanExecuteObserverCommand(execute, isAutoActiate);
+            return new ActivatableCanExecuteObserverCommand<T>(execute, isAutoActiate);
         }
 
         /// <summary>
@@ -88,7 +88,7 @@ namespace Anorisoft.WinUI.Commands.Factory
         /// <param name="expression">The expression.</param>
         /// <returns></returns>
         [NotNull]
-        public ISyncCanExecuteBuilder ObservesProperty<TType>([NotNull] Expression<Func<TType>> expression)
+        public ISyncCanExecuteBuilder<T> ObservesProperty<TType>([NotNull] Expression<Func<TType>> expression)
         {
             if (expression == null) throw new ArgumentNullException(nameof(expression));
             this.observes.Add(new PropertyObserverFactory().ObservesProperty(expression));
@@ -103,7 +103,7 @@ namespace Anorisoft.WinUI.Commands.Factory
         /// <exception cref="CommandFactoryException">
         /// </exception>
         [NotNull]
-        public ISyncCanExecuteBuilder CanExecute([NotNull] Func<bool> canExecute)
+        public ISyncCanExecuteBuilder<T> CanExecute([NotNull] Predicate<T> canExecute)
         {
             if (this.canExecuteFunction != null)
             {
@@ -127,7 +127,7 @@ namespace Anorisoft.WinUI.Commands.Factory
         /// <exception cref="CommandFactoryException">
         /// </exception>
         [NotNull]
-        public ISyncCanExecuteBuilder ObservesCanExecute([NotNull] Expression<Func<bool>> canExecute)
+        public ISyncCanExecuteBuilder<T> ObservesCanExecute([NotNull] Expression<Func<bool>> canExecute)
         {
             if (canExecute == null) throw new ArgumentNullException(nameof(canExecute));
             if (this.canExecuteExpression != null)
@@ -153,7 +153,7 @@ namespace Anorisoft.WinUI.Commands.Factory
         /// <exception cref="CommandFactoryException">
         /// </exception>
         [NotNull]
-        public ISyncCanExecuteBuilder ObservesCanExecute([NotNull] Expression<Func<bool>> canExecute, bool fallback)
+        public ISyncCanExecuteBuilder<T> ObservesCanExecute([NotNull] Expression<Func<bool>> canExecute, bool fallback)
         {
             if (canExecute == null) throw new ArgumentNullException(nameof(canExecute));
             if (this.canExecuteExpression != null)
@@ -175,7 +175,7 @@ namespace Anorisoft.WinUI.Commands.Factory
         /// </summary>
         /// <returns></returns>
         [NotNull]
-        public ISyncCanExecuteBuilder ObservesCommandManager()
+        public ISyncCanExecuteBuilder<T> ObservesCommandManager()
         {
             if (observes.Contains(CommandManagerObserver.Observer))
             {
@@ -191,7 +191,7 @@ namespace Anorisoft.WinUI.Commands.Factory
         /// </summary>
         /// <returns></returns>
         [NotNull]
-        public ISyncCanExecuteBuilder AutoActivate()
+        public ISyncCanExecuteBuilder<T> AutoActivate()
         {
             isAutoActiate = true;
             return this;

@@ -3,6 +3,7 @@ using System.Runtime.CompilerServices;
 using Anorisoft.ExpressionObservers;
 using Anorisoft.WinUI.Commands.CanExecuteObservers;
 using Anorisoft.WinUI.Commands.Factory;
+using Anorisoft.WinUI.Commands.Interfaces;
 using JetBrains.Annotations;
 
 namespace Anorisoft.WinUI.Commands.GUITest
@@ -40,12 +41,12 @@ namespace Anorisoft.WinUI.Commands.GUITest
             //TestOrCommand.Activate();
         }
 
-        public ISyncCommand TestAndCommand
+        public IActivatableSyncCommand TestAndCommand
         {
             get;
         }
 
-        public ISyncCommand TestOrCommand
+        public IActivatableSyncCommand TestOrCommand
         {
             get;
         }

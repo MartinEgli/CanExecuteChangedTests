@@ -4,15 +4,13 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using System;
+using System.Threading.Tasks;
+using Anorisoft.WinUI.Common;
+using JetBrains.Annotations;
+
 namespace Anorisoft.WinUI.Commands
 {
-    using Anorisoft.WinUI.Common;
-
-    using JetBrains.Annotations;
-
-    using System;
-    using System.Threading.Tasks;
-
     public class AsyncCommand : AsyncCommandBase
     {
         /// <summary>
@@ -66,9 +64,6 @@ namespace Anorisoft.WinUI.Commands
         /// <summary>
         ///     Raises the can execute changed.
         /// </summary>
-        public override void RaiseCanExecuteChanged()
-        {
-            this.CanExecuteChanged.RaiseEmpty(this);
-        }
+        public override void RaiseCanExecuteChanged() => this.CanExecuteChanged.RaiseEmpty(this);
     }
 }

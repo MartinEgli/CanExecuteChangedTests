@@ -5,6 +5,7 @@
 // -----------------------------------------------------------------------
 
 using Anorisoft.WinUI.Commands.Factory;
+using Anorisoft.WinUI.Commands.Interfaces;
 
 namespace Anorisoft.WinUI.Commands
 {
@@ -21,9 +22,9 @@ namespace Anorisoft.WinUI.Commands
     /// <see cref="CanExecute()" />.
     /// </summary>
     /// <seealso cref="Anorisoft.WinUI.Commands.ActivatablePropertyObserverCommandBase" />
-    /// <seealso cref="Anorisoft.WinUI.Commands.Interfaces.ICommand" />
+    /// <seealso cref="ISyncCommand" />
     /// <see cref="ActivatablePropertyObserverCommandBase" />
-    public class ActivatablePropertyObserverCommand : ActivatablePropertyObserverCommandBase, Interfaces.ICommand, ISyncCommand
+    public class ActivatablePropertyObserverCommand : ActivatablePropertyObserverCommandBase, Interfaces.ISyncCommand, IActivatableSyncCommand
     {
         /// <summary>
         /// The execute method
@@ -72,7 +73,7 @@ namespace Anorisoft.WinUI.Commands
         /// <summary>
         ///     Executes the command.
         /// </summary>
-        void Interfaces.ICommand.Execute()
+        void Interfaces.ISyncCommand.Execute()
         {
             this.execute();
         }

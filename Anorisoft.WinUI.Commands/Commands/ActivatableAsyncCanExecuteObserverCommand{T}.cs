@@ -6,16 +6,17 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using Anorisoft.WinUI.Commands.Factory;
+using System.Threading.Tasks;
 using Anorisoft.WinUI.Commands.Interfaces;
+using Anorisoft.WinUI.Commands.Resources;
 using Anorisoft.WinUI.Common;
 using CanExecuteChangedTests;
 using JetBrains.Annotations;
 
 namespace Anorisoft.WinUI.Commands
 {
-    public class ActivatableCanExecuteObserverCommand : SyncCommandBase, ISyncCommand,
+    public class ActivatableAsyncCanExecuteObserverCommand<T> :
+        AsyncCommandBase<T>,
         ICanExecuteChangedObserver,
         IDisposable,
         IActivatable
@@ -31,38 +32,75 @@ namespace Anorisoft.WinUI.Commands
         private bool isActive;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="ActivatableCanExecuteObserverCommand" /> class.
+        /// Initializes a new instance of the <see cref="ActivatableCanExecuteObserverCommand" /> class.
         /// </summary>
         /// <param name="execute">The execute.</param>
         /// <param name="autoActivate">if set to <c>true</c> [automatic activate].</param>
-        /// <param name="observer">The observer.</param>
         /// <param name="observers">The observers.</param>
-        /// <exception cref="ArgumentNullException">
-        ///     observer
-        ///     or
-        ///     observer
-        /// </exception>
-        public ActivatableCanExecuteObserverCommand(
-            [NotNull] Action execute,
+        /// <exception cref="ArgumentNullException">observer
+        /// or
+        /// observer</exception>
+        public ActivatableAsyncCanExecuteObserverCommand(
+            [NotNull] Func<T, Task> execute,
             bool autoActivate,
             [NotNull] [ItemNotNull] params ICanExecuteChangedSubject[] observers)
             : base(execute)
         {
-           
             if (observers == null)
             {
                 throw new ArgumentNullException(nameof(observers));
             }
 
-            this.observers.AddRange(observers);
+            AddIfNotContains(observers);
+
             if (autoActivate)
             {
                 this.Activate();
             }
         }
 
-        public ActivatableCanExecuteObserverCommand(
-            [NotNull] Action execute,
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ActivatableAsyncCanExecuteObserverCommand"/> class.
+        /// </summary>
+        /// <param name="execute">The execute.</param>
+        /// <param name="error">The error.</param>
+        public ActivatableAsyncCanExecuteObserverCommand(
+            [NotNull] Func<T, Task> execute,
+            [NotNull] Action<Exception> error)
+            : this(execute, false, error)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ActivatableAsyncCanExecuteObserverCommand" /> class.
+        /// </summary>
+        /// <param name="execute">The execute.</param>
+        /// <param name="autoActivate">if set to <c>true</c> [automatic activate].</param>
+        /// <param name="error">The error.</param>
+        public ActivatableAsyncCanExecuteObserverCommand(
+            [NotNull] Func<T, Task> execute,
+            bool autoActivate,
+            [NotNull] Action<Exception> error)
+            : base(execute, error)
+        {
+            if (autoActivate)
+            {
+                this.Activate();
+            }
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ActivatableCanExecuteObserverCommand" /> class.
+        /// </summary>
+        /// <param name="execute">The execute.</param>
+        /// <param name="autoActivate">if set to <c>true</c> [automatic activate].</param>
+        /// <param name="canExecuteSubject">The can execute subject.</param>
+        /// <param name="observers">The observers.</param>
+        /// <exception cref="ArgumentNullException">canExecuteSubject
+        /// or
+        /// observers</exception>
+        public ActivatableAsyncCanExecuteObserverCommand(
+            [NotNull] Func<T, Task> execute,
             bool autoActivate,
             [NotNull] ICanExecuteSubject canExecuteSubject,
             [NotNull] [ItemNotNull] params ICanExecuteChangedSubject[] observers)
@@ -79,7 +117,9 @@ namespace Anorisoft.WinUI.Commands
             }
 
             this.observers.Add(canExecuteSubject);
-            this.observers.AddRange(observers);
+
+            AddIfNotContains(observers);
+
             if (autoActivate)
             {
                 this.Activate();
@@ -90,23 +130,22 @@ namespace Anorisoft.WinUI.Commands
         /// Initializes a new instance of the <see cref="ActivatableCanExecuteObserverCommand" /> class.
         /// </summary>
         /// <param name="execute">The execute.</param>
-        /// <param name="observer">The observer.</param>
         /// <param name="observers">The observers.</param>
-        public ActivatableCanExecuteObserverCommand(
-            [NotNull] Action execute,
+        public ActivatableAsyncCanExecuteObserverCommand(
+            [NotNull] Func<T, Task> execute,
             [NotNull] [ItemNotNull] params ICanExecuteChangedSubject[] observers)
             : this(execute, false, observers)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ActivatableCanExecuteObserverCommand"/> class.
+        /// Initializes a new instance of the <see cref="ActivatableCanExecuteObserverCommand" /> class.
         /// </summary>
         /// <param name="execute">The execute.</param>
         /// <param name="canExecuteSubject">The can execute subject.</param>
         /// <param name="observers">The observers.</param>
-        public ActivatableCanExecuteObserverCommand(
-            [NotNull] Action execute,
+        public ActivatableAsyncCanExecuteObserverCommand(
+            [NotNull] Func<T, Task> execute,
             [NotNull] ICanExecuteSubject canExecuteSubject,
             [NotNull] [ItemNotNull] params ICanExecuteChangedSubject[] observers)
             : this(execute, false, canExecuteSubject, observers)
@@ -114,44 +153,47 @@ namespace Anorisoft.WinUI.Commands
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ActivatableCanExecuteObserverCommand"/> class.
+        /// Initializes a new instance of the <see cref="ActivatableCanExecuteObserverCommand" /> class.
         /// </summary>
         /// <param name="execute">The execute.</param>
         /// <param name="canExecuteSubject">The can execute subject.</param>
-        public ActivatableCanExecuteObserverCommand(
-            [NotNull] Action execute,
+        public ActivatableAsyncCanExecuteObserverCommand(
+            [NotNull] Func<T, Task> execute,
             [NotNull] ICanExecuteSubject canExecuteSubject)
             : this(execute, false, canExecuteSubject)
         {
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="ActivatableCanExecuteObserverCommand" /> class.
+        /// Initializes a new instance of the <see cref="ActivatableCanExecuteObserverCommand" /> class.
         /// </summary>
         /// <param name="execute">The execute.</param>
         /// <param name="canExecute">The can execute.</param>
-        /// <param name="observer">The observer.</param>
         /// <param name="observers">The observers.</param>
-        /// <exception cref="ArgumentNullException">
-        ///     observers
-        ///     or
-        ///     observers
-        /// </exception>
-        public ActivatableCanExecuteObserverCommand(
-            [NotNull] Action execute,
-            [NotNull] Func<bool> canExecute,
+        /// <exception cref="ArgumentNullException">observers
+        /// or
+        /// observers</exception>
+        public ActivatableAsyncCanExecuteObserverCommand(
+            [NotNull] Func<T, Task> execute,
+            [NotNull] Predicate<T> canExecute,
             [NotNull] [ItemNotNull] params ICanExecuteChangedSubject[] observers)
-            : this(execute,true, canExecute)
+            : this(execute, false, canExecute, observers)
         {
-            
         }
 
-
-        public ActivatableCanExecuteObserverCommand(
-            [NotNull] Action execute,
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ActivatableCanExecuteObserverCommand" /> class.
+        /// </summary>
+        /// <param name="execute">The execute.</param>
+        /// <param name="autoActivate">if set to <c>true</c> [automatic activate].</param>
+        /// <param name="canExecute">The can execute.</param>
+        /// <param name="observers">The observers.</param>
+        /// <exception cref="ArgumentNullException">observers</exception>
+        public ActivatableAsyncCanExecuteObserverCommand(
+            [NotNull] Func<T, Task> execute,
             bool autoActivate,
-            [NotNull] Func<bool> canExecute,
-            [NotNull][ItemNotNull] params ICanExecuteChangedSubject[] observers)
+            [NotNull] Predicate<T> canExecute,
+            [NotNull] [ItemNotNull] params ICanExecuteChangedSubject[] observers)
             : base(execute, canExecute)
         {
             if (observers == null)
@@ -159,7 +201,8 @@ namespace Anorisoft.WinUI.Commands
                 throw new ArgumentNullException(nameof(observers));
             }
 
-            this.observers.AddRange(observers);
+            AddIfNotContains(observers);
+
             if (autoActivate)
             {
                 this.Activate();
@@ -167,15 +210,15 @@ namespace Anorisoft.WinUI.Commands
         }
 
         /// <summary>
-        ///     Notifies that the value for <see cref="P:Anorisoft.WinUI.Common.IActivated.IsActive" /> property has changed.
+        /// Notifies that the value for <see cref="P:Anorisoft.WinUI.Common.IActivated.IsActive" /> property has changed.
         /// </summary>
         public event EventHandler<EventArgs<bool>> IsActiveChanged;
 
         /// <summary>
-        ///     Gets or sets a value indicating whether the object is active.
+        /// Gets or sets a value indicating whether the object is active.
         /// </summary>
         /// <value>
-        ///     <see langword="true" /> if the object is active; otherwise <see langword="false" />.
+        ///   <see langword="true" /> if the object is active; otherwise <see langword="false" />.
         /// </value>
         public bool IsActive
         {
@@ -194,7 +237,7 @@ namespace Anorisoft.WinUI.Commands
         }
 
         /// <summary>
-        ///     Activates this instance.
+        /// Activates this instance.
         /// </summary>
         public void Activate()
         {
@@ -208,7 +251,7 @@ namespace Anorisoft.WinUI.Commands
         }
 
         /// <summary>
-        ///     Deactivates this instance.
+        /// Deactivates this instance.
         /// </summary>
         public void Deactivate()
         {
@@ -222,12 +265,12 @@ namespace Anorisoft.WinUI.Commands
         }
 
         /// <summary>
-        ///     Called when [can execute changed].
+        /// Called when [can execute changed].
         /// </summary>
         public void RaisePropertyChanged() => this.CanExecuteChanged.RaiseEmpty(this);
 
         /// <summary>
-        ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
         public void Dispose()
         {
@@ -236,9 +279,14 @@ namespace Anorisoft.WinUI.Commands
         }
 
         /// <summary>
-        ///     Occurs when changes occur that affect whether or not the command should execute.
+        /// Occurs when changes occur that affect whether or not the command should execute.
         /// </summary>
         public override event EventHandler CanExecuteChanged;
+
+        /// <summary>
+        /// Raises the can execute changed.
+        /// </summary>
+        public override void RaiseCanExecuteChanged() => this.CanExecuteChanged.RaiseEmpty(this);
 
         /// <summary>
         ///     Releases unmanaged and - optionally - managed resources.
@@ -261,5 +309,25 @@ namespace Anorisoft.WinUI.Commands
         ///     Unsubscribes this instance.
         /// </summary>
         protected void Unsubscribe() => this.observers.ForEach(observer => observer.Remove(this));
+
+        /// <summary>
+        /// Adds if not contains.
+        /// </summary>
+        /// <param name="observers">The observers.</param>
+        /// <exception cref="ArgumentException">propertyObserver</exception>
+        private void AddIfNotContains(IEnumerable<ICanExecuteChangedSubject> observers)
+        {
+            foreach (var propertyObserver in observers)
+            {
+                if (this.observers.Contains(propertyObserver))
+                {
+                    throw new ArgumentException(
+                        string.Format(ExceptionStrings.ObserverIsAlreadyBeingObserved, propertyObserver),
+                        nameof(propertyObserver));
+                }
+
+                this.observers.Add(propertyObserver);
+            }
+        }
     }
 }
