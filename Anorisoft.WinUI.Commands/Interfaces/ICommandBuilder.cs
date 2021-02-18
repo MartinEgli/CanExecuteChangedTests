@@ -7,11 +7,11 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Anorisoft.WinUI.Commands.Interfaces;
+using Anorisoft.WinUI.Commands.Factory;
 
-namespace Anorisoft.WinUI.Commands.Factory
+namespace Anorisoft.WinUI.Commands.Interfaces
 {
-    public interface ICommandFactory
+    public interface ICommandBuilder
     {
         ISyncCommandBuilder Command(Action execute);
 

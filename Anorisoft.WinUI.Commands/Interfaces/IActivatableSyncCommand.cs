@@ -2,7 +2,7 @@
 
 namespace Anorisoft.WinUI.Commands.Interfaces
 {
-    public interface IActivatableSyncCommand : ISyncCommand, IActivatable
+    public interface IActivatableSyncCommand : ISyncCommand, IActivatable<IActivatableSyncCommand>
     {
     }
 }

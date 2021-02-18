@@ -8,14 +8,13 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Anorisoft.WinUI.Commands.Factory;
 using Anorisoft.WinUI.Commands.Interfaces;
 using Anorisoft.WinUI.Commands.Resources;
 using Anorisoft.WinUI.Common;
 using CanExecuteChangedTests;
 using JetBrains.Annotations;
 
-namespace Anorisoft.WinUI.Commands
+namespace Anorisoft.WinUI.Commands.Commands
 {
     public class ActivatableConcurrencyAsyncCanExecuteObserverCommand<T> :
         ConcurrencyAsyncCommandBase<T>, IActivatable,

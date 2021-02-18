@@ -3,7 +3,9 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Anorisoft.WinUI.Commands.Builder;
 using Anorisoft.WinUI.Commands.CanExecuteObservers;
+using Anorisoft.WinUI.Commands.Commands;
 using Anorisoft.WinUI.Commands.Factory;
 using Anorisoft.WinUI.Commands.Interfaces;
 using Anorisoft.WinUI.Common;
@@ -19,7 +21,7 @@ namespace Anorisoft.WinUI.Commands.GUITest
 
         public PropertyObservableTestViewModel()
         {
-            var commandFactory = Factory.CommandFactory.Factory;
+            var commandFactory = CommandBuilder.Builder;
             //var canExecuteObserverAnd =
             //    new PropertyObserverFactory().ObservesCanExecute(() => this.Condition1 && this.Condition2);
             //TestAndCommand = new ActivatableCanExecuteObserverCommand(() => { }, canExecuteObserverAnd);

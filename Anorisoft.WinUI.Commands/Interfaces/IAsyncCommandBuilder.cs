@@ -20,5 +20,8 @@ namespace Anorisoft.WinUI.Commands.Interfaces
 
         [NotNull]
         IAsyncCommandBuilder ObservesCommandManager();
+
+        [NotNull]
+        IAsyncCommandBuilder AutoActivate();
     }
 }

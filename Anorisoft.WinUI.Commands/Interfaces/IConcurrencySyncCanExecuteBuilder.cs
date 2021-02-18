@@ -7,18 +7,18 @@ namespace Anorisoft.WinUI.Commands.Interfaces
     public interface IConcurrencySyncCanExecuteBuilder
     {
         [NotNull]
-        IActivatableSyncCommand Build();
+        IConcurrencySyncCommand Build();
 
         [NotNull]
-        IActivatableSyncCommand Build([NotNull] Action<IActivatableSyncCommand> setCommand);
+        IConcurrencySyncCommand Build([NotNull] Action<IConcurrencySyncCommand> setCommand);
 
         [NotNull]
         IConcurrencySyncCanExecuteBuilder ObservesProperty<TType>([NotNull] Expression<Func<TType>> expression);
 
         [NotNull]
         IConcurrencySyncCanExecuteBuilder ObservesCommandManager();
-
+        
         [NotNull]
-        IConcurrencySyncCanExecuteBuilder AutoActivate();
+        IActivatableConcurrencySyncCanExecuteBuilder Activatable();
     }
 }

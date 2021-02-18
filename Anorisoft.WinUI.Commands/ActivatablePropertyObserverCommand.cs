@@ -24,7 +24,8 @@ namespace Anorisoft.WinUI.Commands
     /// <seealso cref="Anorisoft.WinUI.Commands.ActivatablePropertyObserverCommandBase" />
     /// <seealso cref="ISyncCommand" />
     /// <see cref="ActivatablePropertyObserverCommandBase" />
-    public class ActivatablePropertyObserverCommand : ActivatablePropertyObserverCommandBase, Interfaces.ISyncCommand, IActivatableSyncCommand
+    public class ActivatablePropertyObserverCommand :
+        ActivatablePropertyObserverCommandBase, Interfaces.ISyncCommand, IActivatableSyncCommand
     {
         /// <summary>
         /// The execute method

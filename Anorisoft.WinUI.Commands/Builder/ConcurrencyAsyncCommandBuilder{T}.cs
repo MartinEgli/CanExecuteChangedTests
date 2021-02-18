@@ -2,22 +2,23 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading;
 using System.Threading.Tasks;
+using Anorisoft.WinUI.Commands.Builder;
 using Anorisoft.WinUI.Commands.CanExecuteObservers;
+using Anorisoft.WinUI.Commands.Commands;
 using Anorisoft.WinUI.Commands.Exeptions;
 using Anorisoft.WinUI.Commands.Interfaces;
 using JetBrains.Annotations;
 
 namespace Anorisoft.WinUI.Commands.Factory
 {
-    public class AsyncCommandBuilder<T> : 
-        IAsyncCommandBuilder<T>, 
-        IAsyncCanExecuteBuilder<T>
+    public class ConcurrencyAsyncCommandBuilder<T> : IConcurrencyAsyncCommandBuilder<T>, IConcurrencyAsyncCanExecuteBuilder<T>
     {
         /// <summary>
         /// The execute
         /// </summary>
-        private readonly Func<T,Task> execute;
+        private readonly Func<T, CancellationToken, Task> execute;
 
         /// <summary>
         /// The observes
@@ -40,11 +41,11 @@ namespace Anorisoft.WinUI.Commands.Factory
         private bool isAutoActiate = false;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SyncCommandBuilder"/> class.
+        /// Initializes a new instance of the <see cref="SyncCommandBuilder" /> class.
         /// </summary>
         /// <param name="execute">The execute.</param>
         /// <exception cref="ArgumentNullException">execute</exception>
-        public AsyncCommandBuilder([NotNull] Func<T, Task> execute) =>
+        public ConcurrencyAsyncCommandBuilder([NotNull] Func<T, CancellationToken, Task> execute) =>
             this.execute = execute ?? throw new ArgumentNullException(nameof(execute));
 
         /// <summary>
@@ -52,19 +53,19 @@ namespace Anorisoft.WinUI.Commands.Factory
         /// </summary>
         /// <returns></returns>
         [NotNull]
-        public IAsyncCommand<T> Build()
+        public IConcurrencyAsyncCommand<T> Build()
         {
             if (observes.Any())
             {
                 if (canExecuteFunction != null)
                 {
-                    return new ActivatableAsyncCanExecuteObserverCommand<T>(execute, isAutoActiate, canExecuteFunction,
+                    return new ActivatableConcurrencyAsyncCanExecuteObserverCommand<T>(execute, isAutoActiate, canExecuteFunction,
                         observes.ToArray());
                 }
 
                 if (canExecuteExpression != null)
                 {
-                    return new ActivatableAsyncCanExecuteObserverCommand<T>(execute, isAutoActiate, canExecuteExpression,
+                    return new ActivatableConcurrencyAsyncCanExecuteObserverCommand<T>(execute, isAutoActiate, canExecuteExpression,
                         observes.ToArray());
                 }
 
@@ -73,15 +74,15 @@ namespace Anorisoft.WinUI.Commands.Factory
 
             if (canExecuteFunction != null)
             {
-                return new ActivatableAsyncCanExecuteObserverCommand<T>(execute, isAutoActiate, canExecuteFunction);
+                return new ActivatableConcurrencyAsyncCanExecuteObserverCommand<T>(execute, isAutoActiate, canExecuteFunction);
             }
 
             if (canExecuteExpression != null)
             {
-                return new ActivatableAsyncCanExecuteObserverCommand<T>(execute, isAutoActiate, canExecuteExpression);
+                return new ActivatableConcurrencyAsyncCanExecuteObserverCommand<T>(execute, isAutoActiate, canExecuteExpression);
             }
 
-            return new ActivatableAsyncCanExecuteObserverCommand<T>(execute, isAutoActiate);
+            return new ActivatableConcurrencyAsyncCanExecuteObserverCommand<T>(execute, isAutoActiate);
         }
 
         /// <summary>
@@ -91,7 +92,7 @@ namespace Anorisoft.WinUI.Commands.Factory
         /// <param name="expression">The expression.</param>
         /// <returns></returns>
         [NotNull]
-        public IAsyncCanExecuteBuilder<T> ObservesProperty<TType>([NotNull] Expression<Func<TType>> expression)
+        public IConcurrencyAsyncCanExecuteBuilder<T> ObservesProperty<TType>([NotNull] Expression<Func<TType>> expression)
         {
             if (expression == null) throw new ArgumentNullException(nameof(expression));
             this.observes.Add(new PropertyObserverFactory().ObservesProperty(expression));
@@ -106,7 +107,7 @@ namespace Anorisoft.WinUI.Commands.Factory
         /// <exception cref="CommandFactoryException">
         /// </exception>
         [NotNull]
-        public IAsyncCanExecuteBuilder<T> CanExecute([NotNull] Predicate<T> canExecute)
+        public IConcurrencyAsyncCanExecuteBuilder<T> CanExecute([NotNull] Predicate<T> canExecute)
         {
             if (this.canExecuteFunction != null)
             {
@@ -130,7 +131,7 @@ namespace Anorisoft.WinUI.Commands.Factory
         /// <exception cref="CommandFactoryException">
         /// </exception>
         [NotNull]
-        public IAsyncCanExecuteBuilder<T> ObservesCanExecute([NotNull] Expression<Func<bool>> canExecute)
+        public IConcurrencyAsyncCanExecuteBuilder<T> ObservesCanExecute([NotNull] Expression<Func<bool>> canExecute)
         {
             if (canExecute == null) throw new ArgumentNullException(nameof(canExecute));
             if (this.canExecuteExpression != null)
@@ -156,7 +157,7 @@ namespace Anorisoft.WinUI.Commands.Factory
         /// <exception cref="CommandFactoryException">
         /// </exception>
         [NotNull]
-        public IAsyncCanExecuteBuilder<T> ObservesCanExecute([NotNull] Expression<Func<bool>> canExecute, bool fallback)
+        public IConcurrencyAsyncCanExecuteBuilder<T> ObservesCanExecute([NotNull] Expression<Func<bool>> canExecute, bool fallback)
         {
             if (canExecute == null) throw new ArgumentNullException(nameof(canExecute));
             if (this.canExecuteExpression != null)
@@ -178,7 +179,7 @@ namespace Anorisoft.WinUI.Commands.Factory
         /// </summary>
         /// <returns></returns>
         [NotNull]
-        public IAsyncCommandBuilder<T> ObservesCommandManager()
+        public IConcurrencyAsyncCanExecuteBuilder<T> ObservesCommandManager()
         {
             if (observes.Contains(CommandManagerObserver.Observer))
             {
@@ -194,7 +195,7 @@ namespace Anorisoft.WinUI.Commands.Factory
         /// </summary>
         /// <returns></returns>
         [NotNull]
-        public IAsyncCanExecuteBuilder<T> AutoActivate()
+        public IConcurrencyAsyncCanExecuteBuilder<T> AutoActivate()
         {
             isAutoActiate = true;
             return this;

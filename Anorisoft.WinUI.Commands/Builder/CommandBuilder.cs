@@ -7,13 +7,14 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Anorisoft.WinUI.Commands.Factory;
 using Anorisoft.WinUI.Commands.Interfaces;
 
-namespace Anorisoft.WinUI.Commands.Factory
+namespace Anorisoft.WinUI.Commands.Builder
 {
-    public class CommandFactory : ICommandFactory
+    public class CommandBuilder : ICommandBuilder
     {
-        public static ICommandFactory Factory { get; } = new CommandFactory();
+        public static ICommandBuilder Builder { get; } = new CommandBuilder();
 
         public ISyncCommandBuilder Command(Action execute)
             => new SyncCommandBuilder(execute);

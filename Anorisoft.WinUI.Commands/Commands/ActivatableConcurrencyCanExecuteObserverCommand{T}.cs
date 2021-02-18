@@ -13,11 +13,11 @@ using Anorisoft.WinUI.Common;
 using CanExecuteChangedTests;
 using JetBrains.Annotations;
 
-namespace Anorisoft.WinUI.Commands
+namespace Anorisoft.WinUI.Commands.Commands
 {
     public class ActivatableConcurrencyCanExecuteObserverCommand<T> :
         ConcurrencyCommandBase<T>,
-        IActivatableSyncCommand<T>, IActivatable,
+        IActivatableConcurrencySyncCommand<T>,
         ICanExecuteChangedObserver,
         IDisposable
     {
@@ -184,15 +184,6 @@ namespace Anorisoft.WinUI.Commands
         public void RaisePropertyChanged() => this.CanExecuteChanged.RaiseEmpty(this);
 
         /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-        /// </summary>
-        public void Dispose()
-        {
-            this.Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <summary>
         /// Notifies that the value for <see cref="P:Anorisoft.WinUI.Common.IActivated.IsActive" /> property has changed.
         /// </summary>
         public event EventHandler<EventArgs<bool>> IsActiveChanged;
@@ -227,29 +218,32 @@ namespace Anorisoft.WinUI.Commands
         /// <summary>
         /// Activates this instance.
         /// </summary>
-        public void Activate()
+        public IActivatableConcurrencySyncCommand<T> Activate()
         {
             if (this.IsActive)
             {
-                return;
+                return this;
             }
 
             this.Subscribe();
             this.IsActive = true;
+            return this;
+
         }
 
         /// <summary>
         /// Deactivates this instance.
         /// </summary>
-        public void Deactivate()
+        public IActivatableConcurrencySyncCommand<T> Deactivate()
         {
             if (!this.IsActive)
             {
-                return;
+                return this;
             }
 
             this.Unsubscribe();
             this.IsActive = false;
+            return this;
         }
 
         /// <summary>
@@ -264,9 +258,12 @@ namespace Anorisoft.WinUI.Commands
         ///     <c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only
         ///     unmanaged resources.
         /// </param>
-        protected virtual void Dispose(bool disposing)
+        protected override void Dispose(bool disposing)
         {
-            this.Unsubscribe();
+            if (disposing)
+            {
+                this.Unsubscribe();
+            }
         }
 
         /// <summary>

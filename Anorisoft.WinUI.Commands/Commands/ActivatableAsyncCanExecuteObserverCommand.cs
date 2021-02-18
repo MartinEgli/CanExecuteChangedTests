@@ -13,13 +13,13 @@ using Anorisoft.WinUI.Common;
 using CanExecuteChangedTests;
 using JetBrains.Annotations;
 
-namespace Anorisoft.WinUI.Commands
+namespace Anorisoft.WinUI.Commands.Commands
 {
     public class ActivatableAsyncCanExecuteObserverCommand :
         AsyncCommandBase,
+        IActivatableAsyncCommand,
         ICanExecuteChangedObserver,
-        IDisposable,
-        IActivatable
+        IDisposable
     {
         /// <summary>
         ///     The observers
@@ -239,29 +239,32 @@ namespace Anorisoft.WinUI.Commands
         /// <summary>
         /// Activates this instance.
         /// </summary>
-        public void Activate()
+        public IActivatableAsyncCommand Activate()
         {
             if (this.IsActive)
             {
-                return;
+                return this;
             }
 
             this.Subscribe();
             this.IsActive = true;
+            return this;
+
         }
 
         /// <summary>
         /// Deactivates this instance.
         /// </summary>
-        public void Deactivate()
+        public IActivatableAsyncCommand Deactivate()
         {
             if (!this.IsActive)
             {
-                return;
+                return this;
             }
 
             this.Unsubscribe();
             this.IsActive = false;
+            return this;
         }
 
         /// <summary>

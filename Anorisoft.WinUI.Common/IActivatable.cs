@@ -21,4 +21,18 @@ namespace Anorisoft.WinUI.Common
         /// </summary>
         void Deactivate();
     }
+
+    public interface IActivatable<out TSelf> : IActivated
+
+    {
+        /// <summary>
+        ///     Activates this instance.
+        /// </summary>
+        TSelf Activate();
+
+        /// <summary>
+        ///     Deactivates this instance.
+        /// </summary>
+        TSelf Deactivate();
+    }
 }

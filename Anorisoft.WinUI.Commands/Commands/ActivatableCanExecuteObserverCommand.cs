@@ -6,19 +6,18 @@
 
 using System;
 using System.Collections.Generic;
-using Anorisoft.WinUI.Commands.Factory;
 using Anorisoft.WinUI.Commands.Interfaces;
 using Anorisoft.WinUI.Commands.Resources;
 using Anorisoft.WinUI.Common;
 using CanExecuteChangedTests;
 using JetBrains.Annotations;
 
-namespace Anorisoft.WinUI.Commands
+namespace Anorisoft.WinUI.Commands.Commands
 {
     public class ActivatableCanExecuteObserverCommand :
         SyncCommandBase,
         IActivatableSyncCommand,
-        ICanExecuteChangedObserver, IActivatable,
+        ICanExecuteChangedObserver, 
         IDisposable
     {
         /// <summary>
@@ -147,7 +146,7 @@ namespace Anorisoft.WinUI.Commands
             [NotNull] Action execute,
             [NotNull] Func<bool> canExecute,
             [NotNull] [ItemNotNull] params ICanExecuteChangedSubject[] observers)
-            : this(execute, false, canExecute)
+            : this(execute, false, canExecute, observers)
         {
         }
 
@@ -228,29 +227,31 @@ namespace Anorisoft.WinUI.Commands
         /// <summary>
         /// Activates this instance.
         /// </summary>
-        public void Activate()
+        public IActivatableSyncCommand Activate()
         {
             if (this.IsActive)
             {
-                return;
+                return this;
             }
 
             this.Subscribe();
             this.IsActive = true;
+            return this;
         }
 
         /// <summary>
         /// Deactivates this instance.
         /// </summary>
-        public void Deactivate()
+        public IActivatableSyncCommand Deactivate()
         {
             if (!this.IsActive)
             {
-                return;
+                return this;
             }
 
             this.Unsubscribe();
             this.IsActive = false;
+            return this;
         }
 
         /// <summary>

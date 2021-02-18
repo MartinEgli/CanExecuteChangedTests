@@ -7,20 +7,18 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
-using Anorisoft.WinUI.Commands.Factory;
 using Anorisoft.WinUI.Commands.Interfaces;
 using Anorisoft.WinUI.Commands.Resources;
 using Anorisoft.WinUI.Common;
 using CanExecuteChangedTests;
 using JetBrains.Annotations;
 
-namespace Anorisoft.WinUI.Commands
+namespace Anorisoft.WinUI.Commands.Commands
 {
     public class ActivatableConcurrencyCanExecuteObserverCommand :
         ConcurrencyCommandBase,
-        IActivatableSyncCommand, IActivatable,
-        ICanExecuteChangedObserver,
-        IDisposable
+        IActivatableConcurrencySyncCommand, 
+        ICanExecuteChangedObserver
     {
         /// <summary>
         ///     The observers
@@ -147,7 +145,7 @@ namespace Anorisoft.WinUI.Commands
             [NotNull] Action<CancellationToken> execute,
             [NotNull] Func<bool> canExecute,
             [NotNull] [ItemNotNull] params ICanExecuteChangedSubject[] observers)
-            : this(execute, false, canExecute)
+            : this(execute, false, canExecute, observers)
         {
         }
 
@@ -185,15 +183,6 @@ namespace Anorisoft.WinUI.Commands
         public void RaisePropertyChanged() => this.CanExecuteChanged.RaiseEmpty(this);
 
         /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-        /// </summary>
-        public void Dispose()
-        {
-            this.Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <summary>
         /// Notifies that the value for <see cref="P:Anorisoft.WinUI.Common.IActivated.IsActive" /> property has changed.
         /// </summary>
         public event EventHandler<EventArgs<bool>> IsActiveChanged;
@@ -228,29 +217,31 @@ namespace Anorisoft.WinUI.Commands
         /// <summary>
         /// Activates this instance.
         /// </summary>
-        public void Activate()
+        public IActivatableConcurrencySyncCommand Activate()
         {
             if (this.IsActive)
             {
-                return;
+                return this;
             }
 
             this.Subscribe();
             this.IsActive = true;
+            return this;
         }
 
         /// <summary>
         /// Deactivates this instance.
         /// </summary>
-        public void Deactivate()
+        public IActivatableConcurrencySyncCommand Deactivate()
         {
             if (!this.IsActive)
             {
-                return;
+                return this;
             }
 
             this.Unsubscribe();
             this.IsActive = false;
+            return this;
         }
 
         /// <summary>
@@ -265,10 +256,7 @@ namespace Anorisoft.WinUI.Commands
         ///     <c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only
         ///     unmanaged resources.
         /// </param>
-        protected virtual void Dispose(bool disposing)
-        {
-            this.Unsubscribe();
-        }
+        protected override void Dispose(bool disposing) => this.Unsubscribe();
 
         /// <summary>
         ///     Subscribes this instance.
@@ -298,5 +286,8 @@ namespace Anorisoft.WinUI.Commands
                 this.observers.Add(propertyObserver);
             }
         }
+
+
+       
     }
 }

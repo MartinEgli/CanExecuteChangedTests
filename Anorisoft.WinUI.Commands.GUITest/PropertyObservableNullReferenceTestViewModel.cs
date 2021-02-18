@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Anorisoft.ExpressionObservers;
+using Anorisoft.WinUI.Commands.Builder;
 using Anorisoft.WinUI.Commands.CanExecuteObservers;
 using Anorisoft.WinUI.Commands.Factory;
 using Anorisoft.WinUI.Commands.Interfaces;
@@ -15,18 +16,19 @@ namespace Anorisoft.WinUI.Commands.GUITest
         {
 
 //            var canExecuteObserverAnd = new PropertyObserverFactory().ObservesCanExecute(() => this.Condition1.Condition && this.Condition2.Condition);
-            TestAndCommand = CommandFactory.Factory
+            TestAndCommand = CommandBuilder.Builder
                 .Command(() => { })
-                .ObservesCanExecute(() => this.Condition1.Condition || this.Condition2.Condition)
+                .ObservesCanExecute(() => this.Condition1.Condition || this.Condition2.Condition).Activatable()
                 .Build();
             TestAndCommand.Activate();
 
             var getter = ExpressionGetter.CreateValueGetter(() => this.Condition1.Condition || this.Condition2.Condition, false);
-            TestOrCommand = CommandFactory.Factory
+            TestOrCommand = CommandBuilder.Builder
                 .Command(() => { })
                 .CanExecute(getter)
                 .ObservesProperty(() => this.Condition1.Condition)
                 .ObservesProperty(() => this.Condition2.Condition)
+                .Activatable()
                 .AutoActivate()
                 .Build();
 

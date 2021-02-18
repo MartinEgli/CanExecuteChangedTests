@@ -420,6 +420,13 @@ namespace Anorisoft.WinUI.Commands
         /// </summary>
         /// <param name="parameter">Command Parameter</param>
         protected sealed override void Execute(object parameter) => this.Execute();
+     
+        /// <summary>
+        /// Executes the specified token.
+        /// </summary>
+        /// <param name="token">The token.</param>
+        /// <exception cref="NotImplementedException"></exception>
+        public void Execute(CancellationToken token) => execute(token);
 
         /// <summary>
         ///     Raises the property changed.

@@ -19,6 +19,6 @@ namespace Anorisoft.WinUI.Commands.Interfaces
         IConcurrencyAsyncCanExecuteBuilder ObservesCommandManager();
 
         [NotNull]
-        IConcurrencyAsyncCanExecuteBuilder AutoActivate();
+        IActivatableConcurrencyAsyncCanExecuteBuilder Activatable();
     }
 }

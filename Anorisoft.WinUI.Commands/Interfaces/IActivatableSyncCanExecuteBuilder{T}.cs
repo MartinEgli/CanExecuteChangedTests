@@ -4,7 +4,7 @@ using JetBrains.Annotations;
 
 namespace Anorisoft.WinUI.Commands.Interfaces
 {
-    public interface ISyncCanExecuteBuilder<in T>
+    public interface IActivatableSyncCanExecuteBuilder<in T>
     {
         [NotNull]
         IActivatableSyncCommand<T> Build();
@@ -13,12 +13,12 @@ namespace Anorisoft.WinUI.Commands.Interfaces
         IActivatableSyncCommand<T> Build([NotNull] Action<IActivatableSyncCommand<T>> setCommand);
 
         [NotNull]
-        ISyncCanExecuteBuilder<T> ObservesProperty<TType>([NotNull] Expression<Func<TType>> canExecute);
+        IActivatableSyncCanExecuteBuilder<T> ObservesProperty<TType>([NotNull] Expression<Func<TType>> expression);
 
         [NotNull]
-        ISyncCanExecuteBuilder<T> ObservesCommandManager();
+        IActivatableSyncCanExecuteBuilder<T> ObservesCommandManager();
 
         [NotNull]
-        IActivatableSyncCanExecuteBuilder<T> Activatable();
+        IActivatableSyncCanExecuteBuilder<T> AutoActivate();
     }
 }

@@ -5,8 +5,14 @@ using JetBrains.Annotations;
 
 namespace Anorisoft.WinUI.Commands.Interfaces
 {
-    public interface ISyncCommandBuilder<T> : ISyncCanExecuteBuilder<T>
+    public interface ISyncCommandBuilder<T> 
     {
+        [NotNull]
+        ISyncCommand<T> Build();
+
+        [NotNull]
+        ISyncCommand<T> Build([NotNull] Action<ISyncCommand<T>> setCommand);
+
         [NotNull]
         ISyncCanExecuteBuilder<T> CanExecute([NotNull] Predicate<T> canExecute);
 
@@ -15,5 +21,8 @@ namespace Anorisoft.WinUI.Commands.Interfaces
 
         [NotNull]
         ISyncCanExecuteBuilder<T> ObservesCanExecute([NotNull] Expression<Func<bool>> canExecute, bool fallback);
+
+        [NotNull]
+        IActivatableSyncCanExecuteBuilder<T> Activatable();
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Anorisoft.WinUI.Commands.Interfaces
 {
-    public interface IActivatableAsyncCommand : IAsyncCommand, IActivatable
+    public interface IActivatableAsyncCommand : IAsyncCommand, IActivatable<IActivatableAsyncCommand>
     {
     }
 }
