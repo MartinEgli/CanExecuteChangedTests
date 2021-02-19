@@ -4,16 +4,15 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using System;
+using System.Threading.Tasks;
+using System.Windows.Input;
+using Anorisoft.WinUI.Commands.Commands;
+using Anorisoft.WinUI.Common;
+using JetBrains.Annotations;
+
 namespace Anorisoft.WinUI.Commands
 {
-    using System;
-    using System.Threading.Tasks;
-    using System.Windows.Input;
-
-    using Anorisoft.WinUI.Common;
-
-    using JetBrains.Annotations;
-
     public class AsyncRelayCommand<T> : AsyncCommandBase<T>
     {
         /// <summary>
@@ -63,15 +62,6 @@ namespace Anorisoft.WinUI.Commands
         ///     Occurs when [can execute changed internal].
         /// </summary>
 #pragma warning disable S3264 // Events should be invoked
-        private event EventHandler CanExecuteChangedInternal;
-
-#pragma warning restore S3264 // Events should be invoked
-
-        /// <summary>
-        ///     Raises the can execute changed.
-        /// </summary>
-        public override void RaiseCanExecuteChanged() => this.CanExecuteChangedInternal.RaiseEmpty(this);
-
         /// <summary>
         ///     Occurs when changes occur that affect whether or not the command should execute.
         /// </summary>
@@ -81,6 +71,14 @@ namespace Anorisoft.WinUI.Commands
             remove => this.Unsubscribe(value);
         }
 
+        private event EventHandler CanExecuteChangedInternal;
+
+#pragma warning restore S3264 // Events should be invoked
+
+        /// <summary>
+        ///     Raises the can execute changed.
+        /// </summary>
+        public override void RaiseCanExecuteChanged() => this.CanExecuteChangedInternal.RaiseEmpty(this);
         /// <summary>
         ///     Subscribes the specified value.
         /// </summary>

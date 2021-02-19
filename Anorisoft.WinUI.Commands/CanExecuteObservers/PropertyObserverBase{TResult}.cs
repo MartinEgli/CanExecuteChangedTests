@@ -4,14 +4,9 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-
-using System.ComponentModel;
-
 namespace Anorisoft.WinUI.Commands.CanExecuteObservers
 {
-    using Anorisoft.WinUI.Common;
     using System;
-
 
     public abstract class PropertyObserverBase<TResult> : PropertyObserverBase, IEquatable<PropertyObserverBase<TResult>>
     {
@@ -68,7 +63,7 @@ namespace Anorisoft.WinUI.Commands.CanExecuteObservers
                 return true;
             }
 
-            if(this.PropertyExpression != other.PropertyExpression)
+            if (this.PropertyExpression != other.PropertyExpression)
             {
                 return false;
             }
@@ -120,14 +115,6 @@ namespace Anorisoft.WinUI.Commands.CanExecuteObservers
                 return hashCode;
             }
         }
-
-        /// <summary>
-        ///     Gets or sets the property expression.
-        /// </summary>
-        /// <value>
-        ///     The property expression.
-        /// </value>
-        public string PropertyExpression { get; protected set; } = null!;
 
         /// <summary>
         ///     Returns a hash code for this instance.

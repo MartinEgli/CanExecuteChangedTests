@@ -17,7 +17,8 @@ using JetBrains.Annotations;
 namespace Anorisoft.WinUI.Commands.Commands
 {
     public class ActivatableConcurrencyAsyncCanExecuteObserverCommand<T> :
-        ConcurrencyAsyncCommandBase<T>, IActivatable,
+        ConcurrencyAsyncCommandBase<T>, 
+        IActivatableConcurrencyAsyncCommand<T>,
         ICanExecuteChangedObserver,
         IDisposable
     {
@@ -51,7 +52,7 @@ namespace Anorisoft.WinUI.Commands.Commands
                 throw new ArgumentNullException(nameof(observers));
             }
 
-            AddIfNotContains(observers);
+            this.observers.AddIfNotContains(observers);
 
             if (autoActivate)
             {
@@ -88,7 +89,7 @@ namespace Anorisoft.WinUI.Commands.Commands
 
             this.observers.Add(canExecuteSubject);
 
-            AddIfNotContains(observers);
+            this.observers.AddIfNotContains(observers);
 
             if (autoActivate)
             {
@@ -146,7 +147,7 @@ namespace Anorisoft.WinUI.Commands.Commands
             [NotNull] Func<T, CancellationToken, Task> execute,
             [NotNull] Predicate<T> canExecute,
             [NotNull] [ItemNotNull] params ICanExecuteChangedSubject[] observers)
-            : this(execute, false, canExecute)
+            : this(execute, false, canExecute, observers)
         {
         }
 
@@ -170,7 +171,7 @@ namespace Anorisoft.WinUI.Commands.Commands
                 throw new ArgumentNullException(nameof(observers));
             }
 
-            AddIfNotContains(observers);
+            this.observers.AddIfNotContains(observers);
 
             if (autoActivate)
             {
@@ -182,15 +183,6 @@ namespace Anorisoft.WinUI.Commands.Commands
         /// Called when [can execute changed].
         /// </summary>
         public void RaisePropertyChanged() => this.CanExecuteChanged.RaiseEmpty(this);
-
-        /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-        /// </summary>
-        public void Dispose()
-        {
-            this.Dispose(true);
-            GC.SuppressFinalize(this);
-        }
 
         /// <summary>
         /// Notifies that the value for <see cref="P:Anorisoft.WinUI.Common.IActivated.IsActive" /> property has changed.
@@ -264,9 +256,12 @@ namespace Anorisoft.WinUI.Commands.Commands
         ///     <c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only
         ///     unmanaged resources.
         /// </param>
-        protected virtual void Dispose(bool disposing)
+        protected override void Dispose(bool disposing)
         {
-            this.Unsubscribe();
+            if (disposing)
+            {
+                this.Unsubscribe();
+            }
         }
 
         /// <summary>
@@ -279,23 +274,6 @@ namespace Anorisoft.WinUI.Commands.Commands
         /// </summary>
         protected void Unsubscribe() => this.observers.ForEach(observer => observer.Remove(this));
 
-        /// <summary>
-        /// Adds if not contains.
-        /// </summary>
-        /// <param name="observers">The observers.</param>
-        /// <exception cref="ArgumentException">propertyObserver</exception>
-        private void AddIfNotContains(IEnumerable<ICanExecuteChangedSubject> observers)
-        {
-            foreach (var propertyObserver in observers)
-            {
-                if (this.observers.Contains(propertyObserver))
-                {
-                    throw new ArgumentException(string.Format(ExceptionStrings.ObserverIsAlreadyBeingObserved, propertyObserver),
-                        nameof(propertyObserver));
-                }
-
-                this.observers.Add(propertyObserver);
-            }
-        }
+       
     }
 }

@@ -21,7 +21,7 @@ namespace Anorisoft.WinUI.Commands
     ///     An <see cref="ICommand" /> whose delegates can be attached for <see cref="Execute" /> and <see cref="CanExecute" />
     ///     .
     /// </summary>
-    public abstract class ActivatablePropertyObserverCommandBase : ICommand, IActivatable, IDispatchableContext
+    public abstract class ActivatablePropertyObserverCommandBase : ICommand, IDispatchableContext
     {
         /// <summary>
         ///     The observed properties expressions
@@ -41,23 +41,13 @@ namespace Anorisoft.WinUI.Commands
         protected ActivatablePropertyObserverCommandBase() => SynchronizationContext = SynchronizationContext.Current;
 
         /// <summary>
-        ///     Fired if the <see cref="IsActive" /> property changes.
-        /// </summary>
-        public event EventHandler<EventArgs<bool>> IsActiveChanged;
-
-        /// <summary>
-        ///     Occurs when changes occur that affect whether or not the command should execute.
-        /// </summary>
-        public event EventHandler CanExecuteChanged;
-
-        /// <summary>
         ///     Gets or sets a value indicating whether the object is active.
         /// </summary>
         /// <value><see langword="true" /> if the object is active; otherwise <see langword="false" />.</value>
         public bool IsActive
         {
             get => this.isActive;
-            private set
+            protected set
             {
                 if (this.isActive == value)
                 {
@@ -71,22 +61,9 @@ namespace Anorisoft.WinUI.Commands
         }
 
         /// <summary>
-        ///     Gets the synchronization context.
+        ///     Occurs when changes occur that affect whether or not the command should execute.
         /// </summary>
-        /// <value>
-        ///     The synchronization context.
-        /// </value>
-        public SynchronizationContext SynchronizationContext { get; }
-
-        /// <summary>
-        ///     Activates this instance.
-        /// </summary>
-        public void Activate() => this.IsActive = true;
-
-        /// <summary>
-        ///     Deactivates this instance.
-        /// </summary>
-        public void Deactivate() => this.IsActive = false;
+        public event EventHandler CanExecuteChanged;
 
         /// <summary>
         ///     Defines the method that determines whether the command can execute in its current state.
@@ -108,6 +85,20 @@ namespace Anorisoft.WinUI.Commands
         ///     be set to <see langword="null" />.
         /// </param>
         void ICommand.Execute(object parameter) => this.Execute(parameter);
+
+        /// <summary>
+        ///     Gets the synchronization context.
+        /// </summary>
+        /// <value>
+        ///     The synchronization context.
+        /// </value>
+        public SynchronizationContext SynchronizationContext { get; }
+
+        /// <summary>
+        ///     Fired if the <see cref="IsActive" /> property changes.
+        /// </summary>
+        public event EventHandler<EventArgs<bool>> IsActiveChanged;
+
         /// <summary>
         ///     Raises <see cref="CanExecuteChanged" /> so every command invoker
         ///     can requery to check if the command can execute.

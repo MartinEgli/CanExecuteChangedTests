@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Anorisoft.WinUI.Commands.Builder;
 using Anorisoft.WinUI.Commands.CanExecuteObservers;
 using Anorisoft.WinUI.Commands.Commands;
-using Anorisoft.WinUI.Commands.Factory;
 using Anorisoft.WinUI.Commands.Interfaces;
 using Anorisoft.WinUI.Common;
 using JetBrains.Annotations;

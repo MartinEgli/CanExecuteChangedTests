@@ -4,16 +4,14 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using System;
+using Anorisoft.WinUI.Commands.Commands;
+using Anorisoft.WinUI.Commands.Interfaces;
+using Anorisoft.WinUI.Common;
+using JetBrains.Annotations;
+
 namespace Anorisoft.WinUI.Commands
 {
-    using Anorisoft.WinUI.Common;
-
-    using JetBrains.Annotations;
-
-    using System;
-
-    using Anorisoft.WinUI.Commands.Interfaces;
-
     /// <summary>
     /// </summary>
     /// <seealso cref="SyncCommandBase" />
@@ -29,12 +27,6 @@ namespace Anorisoft.WinUI.Commands
         public DirectCommand([NotNull] Action execute)
             : base(execute)
         {
-        }
-
-        public sealed override event EventHandler CanExecuteChanged
-        {
-            add => this.Subscribe(value);
-            remove => this.Unsubscribe(value);
         }
 
         /// <summary>
@@ -53,11 +45,16 @@ namespace Anorisoft.WinUI.Commands
         /// </summary>
         public void RaiseCanExecuteChanged() => this.CanExecuteChangedInternal.RaiseEmpty(this);
 
+        public sealed override event EventHandler CanExecuteChanged
+        {
+            add => this.Subscribe(value);
+            remove => this.Unsubscribe(value);
+        }
+
         /// <summary>
         ///     Occurs when [can execute changed internal].
         /// </summary>
 #pragma warning disable S3264 // Events should be invoked
-
         private event EventHandler CanExecuteChangedInternal;
 
 #pragma warning restore S3264 // Events should be invoked

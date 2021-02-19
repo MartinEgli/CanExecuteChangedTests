@@ -711,9 +711,8 @@ namespace Anorisoft.WinUI.Commands.Tests
 
             ICommand command =
                 new ActivatablePropertyObserverCommand(() => { }).ObservesCanExecute(
-                    commandTestObject.BoolPropertyExpression);
-            ((IActivatable)command).Activate();
-
+                    commandTestObject.BoolPropertyExpression).Activate();
+  
             command.CanExecuteChanged += delegate { canExecuteChangedRaised = true; };
 
             Assert.False(canExecuteChangedRaised);
@@ -756,9 +755,7 @@ namespace Anorisoft.WinUI.Commands.Tests
             ICommand command =
                 new ActivatablePropertyObserverCommand(() => { }).ObservesCanExecute(
                     commandTestObject,
-                    o2 => o2.BoolProperty);
-
-            ((IActivatable)command).Activate();
+                    o2 => o2.BoolProperty).Activate();
             command.CanExecuteChanged += delegate { canExecuteChangedRaised = true; };
 
             Assert.False(canExecuteChangedRaised);
@@ -807,8 +804,7 @@ namespace Anorisoft.WinUI.Commands.Tests
 
             ICommand command = new ActivatablePropertyObserverCommand(() => { })
                 .ObservesCanExecute(commandTestObject.BoolPropertyExpression)
-                .ObservesProperty(commandTestObject.IntPropertyExpression);
-            ((IActivatable)command).Activate();
+                .ObservesProperty(commandTestObject.IntPropertyExpression).Activate();
             command.CanExecuteChanged += delegate { canExecuteChangedRaised = true; };
 
             Assert.False(canExecuteChangedRaised);
@@ -1223,8 +1219,7 @@ namespace Anorisoft.WinUI.Commands.Tests
 
             ICommand command =
                 new ActivatablePropertyObserverCommand(() => { }).ObservesCanExecute(
-                    commandTestObject.BoolPropertyExpression);
-            ((IActivatable)command).Activate();
+                    commandTestObject.BoolPropertyExpression).Activate();
 
             command.CanExecuteChanged += delegate { canExecuteChangedRaised = true; };
 
@@ -1245,9 +1240,7 @@ namespace Anorisoft.WinUI.Commands.Tests
 
             ICommand command = new ActivatablePropertyObserverCommand(() => { })
                 .ObservesCanExecute(commandTestObject.BoolPropertyExpression)
-                .ObservesProperty(commandTestObject.IntPropertyExpression);
-
-            ((IActivatable)command).Activate();
+                .ObservesProperty(commandTestObject.IntPropertyExpression).Activate();
 
             command.CanExecuteChanged += delegate { canExecuteChangedRaised = true; };
 

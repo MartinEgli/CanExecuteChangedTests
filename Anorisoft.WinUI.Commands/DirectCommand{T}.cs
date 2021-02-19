@@ -4,16 +4,14 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using System;
+using Anorisoft.WinUI.Commands.Commands;
+using Anorisoft.WinUI.Commands.Interfaces;
+using Anorisoft.WinUI.Common;
+using JetBrains.Annotations;
+
 namespace Anorisoft.WinUI.Commands
 {
-    using Anorisoft.WinUI.Common;
-
-    using JetBrains.Annotations;
-
-    using System;
-
-    using Anorisoft.WinUI.Commands.Interfaces;
-
     /// <summary>
     /// </summary>
     /// <seealso cref="System.Windows.Input.ICommand" />
@@ -29,12 +27,6 @@ namespace Anorisoft.WinUI.Commands
         {
         }
 
-        public sealed override event EventHandler CanExecuteChanged
-        {
-            add => this.Subscribe(value);
-            remove => this.Unsubscribe(value);
-        }
-
         /// <summary>
         ///     Initializes a new instance of the <see cref="DirectCommand{T}" /> class.
         /// </summary>
@@ -45,18 +37,22 @@ namespace Anorisoft.WinUI.Commands
         {
         }
 
+        public sealed override event EventHandler CanExecuteChanged
+        {
+            add => this.Subscribe(value);
+            remove => this.Unsubscribe(value);
+        }
+
+        private event EventHandler CanExecuteChangedInternal;
+
         /// <summary>
         ///     Called when [can execute changed].
         /// </summary>
         public void RaiseCanExecuteChanged() => this.CanExecuteChangedInternal.RaiseEmpty(this);
-
         /// <summary>
         ///     Occurs when [can execute changed internal].
         /// </summary>
 #pragma warning disable S3264 // Events should be invoked
-
-        private event EventHandler CanExecuteChangedInternal;
-
 #pragma warning restore S3264 // Events should be invoked
 
         /// <summary>

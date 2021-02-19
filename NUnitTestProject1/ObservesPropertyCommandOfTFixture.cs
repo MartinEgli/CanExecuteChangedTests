@@ -36,7 +36,7 @@ namespace Anorisoft.WinUI.Commands.Tests
             var factory = new PropertyObserverFactory();
             var observer1 = factory.ObservesCanExecute(commandTestObject.BoolPropertyExpression);
 
-            ICommand command = new ActivatableCanExecuteObserverCommand<int?>(o => { }, observer1);
+            ICommand command = new ActivatableCanExecuteObserverCommand<int?>(o => { }, observer1).Activate();
 
             command.CanExecuteChanged += delegate { canExecuteChangedRaised = true; };
 
@@ -55,7 +55,7 @@ namespace Anorisoft.WinUI.Commands.Tests
             var canExecuteChangedRaised = false;
             var commandTestObject = new CommandTestObject();
             var observer = new PropertyObserverFactory().ObservesProperty(commandTestObject.IntPropertyExpression);
-            var command = new ActivatableCanExecuteObserverCommand<object>(o => { }, observer);
+            var command = new ActivatableCanExecuteObserverCommand<object>(o => { }, observer).Activate();
 
             command.CanExecuteChanged += delegate { canExecuteChangedRaised = true; };
             commandTestObject.RaisePropertyChanged(string.Empty);
@@ -69,7 +69,7 @@ namespace Anorisoft.WinUI.Commands.Tests
             var canExecuteChangedRaised = false;
             var commandTestObject = new CommandTestObject();
             var observer = new PropertyObserverFactory().ObservesProperty(commandTestObject.IntPropertyExpression);
-            var command = new ActivatableCanExecuteObserverCommand<object>(o => { }, observer);
+            var command = new ActivatableCanExecuteObserverCommand<object>(o => { }, observer).Activate();
 
             command.CanExecuteChanged += delegate { canExecuteChangedRaised = true; };
             commandTestObject.RaisePropertyChanged(null);
@@ -84,7 +84,7 @@ namespace Anorisoft.WinUI.Commands.Tests
             var commandTestObject = new CommandTestObject();
             var observer = new PropertyObserverFactory().ObservesProperty(commandTestObject, o => o.IntProperty);
 
-            var command = new ActivatableCanExecuteObserverCommand<object>(o => { }, observer);
+            var command = new ActivatableCanExecuteObserverCommand<object>(o => { }, observer).Activate();
 
             command.CanExecuteChanged += delegate { canExecuteChangedRaised = true; };
             commandTestObject.RaisePropertyChanged(string.Empty);
@@ -98,7 +98,7 @@ namespace Anorisoft.WinUI.Commands.Tests
             var canExecuteChangedRaised = false;
             var commandTestObject = new CommandTestObject();
             var observer = new PropertyObserverFactory().ObservesProperty(commandTestObject, o => o.IntProperty);
-            var command = new ActivatableCanExecuteObserverCommand<object>(o => { }, observer);
+            var command = new ActivatableCanExecuteObserverCommand<object>(o => { }, observer).Activate();
 
             command.CanExecuteChanged += delegate { canExecuteChangedRaised = true; };
 
@@ -133,7 +133,7 @@ namespace Anorisoft.WinUI.Commands.Tests
                 commandTestObject.ComplexPropertyInnerComplexPropertyIntPropertyExpression);
             var observer3 = factory.ObservesProperty(
                 commandTestObject.ComplexPropertyInnerComplexPropertyInnerComplexPropertyIntPropertyExpression);
-            var command = new ActivatableCanExecuteObserverCommand<object>(o => { }, observer1, observer2, observer3);
+            var command = new ActivatableCanExecuteObserverCommand<object>(o => { }, observer1, observer2, observer3).Activate();
 
             command.CanExecuteChanged += delegate { canExecuteChangedRaiseCount++; };
 
@@ -200,7 +200,7 @@ namespace Anorisoft.WinUI.Commands.Tests
             var observer3 = factory.ObservesProperty(
                 commandTestObject,
                 o => o.ComplexProperty.InnerComplexProperty.InnerComplexProperty.IntProperty);
-            var command = new ActivatableCanExecuteObserverCommand<object>(o => { }, observer1, observer2, observer3);
+            var command = new ActivatableCanExecuteObserverCommand<object>(o => { }, observer1, observer2, observer3).Activate();
 
             command.CanExecuteChanged += delegate { canExecuteChangedRaiseCount++; };
 
@@ -277,7 +277,7 @@ namespace Anorisoft.WinUI.Commands.Tests
             var factory = new PropertyObserverFactory();
             var canExecuteObserver = factory.ObservesCanExecute(commandTestObject.BoolPropertyExpression);
 
-            ICommand command = new ActivatableCanExecuteObserverCommand<object>(o => { }, canExecuteObserver);
+            ICommand command = new ActivatableCanExecuteObserverCommand<object>(o => { }, canExecuteObserver).Activate();
 
             command.CanExecuteChanged += delegate { canExecuteChangedRaised = true; };
 
@@ -300,7 +300,7 @@ namespace Anorisoft.WinUI.Commands.Tests
             var observer1 = factory.ObservesProperty(commandTestObject, o => o.IntProperty);
 
             ICommand command =
-                new ActivatableCanExecuteObserverCommand<object>(o => { }, canExecuteObserver, observer1);
+                new ActivatableCanExecuteObserverCommand<object>(o => { }, canExecuteObserver, observer1).Activate();
 
             command.CanExecuteChanged += delegate { canExecuteChangedRaised = true; };
 
@@ -330,7 +330,7 @@ namespace Anorisoft.WinUI.Commands.Tests
             var observer1 = factory.ObservesProperty(
                 commandTestObject.ComplexPropertyInnerComplexPropertyIntPropertyExpression);
 
-            var command = new ActivatableCanExecuteObserverCommand<object>(o => { }, observer1);
+            var command = new ActivatableCanExecuteObserverCommand<object>(o => { }, observer1).Activate();
 
             command.CanExecuteChanged += delegate { canExecuteChangedRaise = true; };
 
@@ -350,7 +350,7 @@ namespace Anorisoft.WinUI.Commands.Tests
             var observer1 = factory.ObservesProperty(
                 commandTestObject.ComplexPropertyInnerComplexPropertyIntPropertyExpression);
 
-            var command = new ActivatableCanExecuteObserverCommand<object>(o => { }, observer1);
+            var command = new ActivatableCanExecuteObserverCommand<object>(o => { }, observer1).Activate();
 
             command.CanExecuteChanged += delegate { canExecuteChangedRaise = true; };
 
@@ -370,7 +370,7 @@ namespace Anorisoft.WinUI.Commands.Tests
             var observer1 = factory.ObservesProperty(commandTestObject.IntPropertyExpression);
             var observer2 = factory.ObservesProperty(commandTestObject.BoolPropertyExpression);
 
-            var command = new ActivatableCanExecuteObserverCommand<object>(o => { }, observer1, observer2);
+            var command = new ActivatableCanExecuteObserverCommand<object>(o => { }, observer1, observer2).Activate();
 
             command.CanExecuteChanged += delegate { canExecuteChangedRaised = true; };
 
@@ -393,7 +393,7 @@ namespace Anorisoft.WinUI.Commands.Tests
             var factory = new PropertyObserverFactory();
             var observer1 = factory.ObservesProperty(commandTestObject.IntPropertyExpression);
 
-            var command = new ActivatableCanExecuteObserverCommand<object>(o => { }, observer1);
+            var command = new ActivatableCanExecuteObserverCommand<object>(o => { }, observer1).Activate();
 
             command.CanExecuteChanged += delegate { canExecuteChangedRaised = true; };
 
@@ -410,7 +410,7 @@ namespace Anorisoft.WinUI.Commands.Tests
             var factory = new PropertyObserverFactory();
             var canExecuteObserver = factory.ObservesCanExecute(commandTestObject, o => o.BoolProperty);
 
-            ICommand command = new ActivatableCanExecuteObserverCommand<object>(o => { }, canExecuteObserver);
+            ICommand command = new ActivatableCanExecuteObserverCommand<object>(o => { }, canExecuteObserver).Activate();
 
             command.CanExecuteChanged += delegate { canExecuteChangedRaised = true; };
 

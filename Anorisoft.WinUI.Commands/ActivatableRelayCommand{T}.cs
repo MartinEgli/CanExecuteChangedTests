@@ -6,6 +6,7 @@
 
 using System;
 using System.Windows.Input;
+using Anorisoft.WinUI.Commands.Commands;
 using Anorisoft.WinUI.Common;
 using CanExecuteChangedTests;
 using JetBrains.Annotations;

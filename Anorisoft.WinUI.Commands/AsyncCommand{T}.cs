@@ -4,15 +4,14 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using System;
+using System.Threading.Tasks;
+using Anorisoft.WinUI.Commands.Commands;
+using Anorisoft.WinUI.Common;
+using JetBrains.Annotations;
+
 namespace Anorisoft.WinUI.Commands
 {
-    using Anorisoft.WinUI.Common;
-
-    using JetBrains.Annotations;
-
-    using System;
-    using System.Threading.Tasks;
-
     public class AsyncCommand<T> : AsyncCommandBase<T>
     {
         /// <summary>

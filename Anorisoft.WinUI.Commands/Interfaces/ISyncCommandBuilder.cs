@@ -1,7 +1,6 @@
-﻿using System;
+﻿using JetBrains.Annotations;
+using System;
 using System.Linq.Expressions;
-using Anorisoft.WinUI.Commands.Factory;
-using JetBrains.Annotations;
 
 namespace Anorisoft.WinUI.Commands.Interfaces
 {
@@ -24,6 +23,5 @@ namespace Anorisoft.WinUI.Commands.Interfaces
 
         [NotNull]
         IActivatableSyncCanExecuteBuilder Activatable();
-
     }
 }

@@ -7,7 +7,6 @@
 using System;
 using System.Collections.Generic;
 using Anorisoft.WinUI.Commands.Interfaces;
-using Anorisoft.WinUI.Commands.Resources;
 using Anorisoft.WinUI.Common;
 using CanExecuteChangedTests;
 using JetBrains.Annotations;
@@ -17,7 +16,7 @@ namespace Anorisoft.WinUI.Commands.Commands
     public class ActivatableCanExecuteObserverCommand :
         SyncCommandBase,
         IActivatableSyncCommand,
-        ICanExecuteChangedObserver, 
+        ICanExecuteChangedObserver,
         IDisposable
     {
         /// <summary>
@@ -50,7 +49,7 @@ namespace Anorisoft.WinUI.Commands.Commands
                 throw new ArgumentNullException(nameof(observers));
             }
 
-            AddIfNotContains(observers);
+            this.observers.AddIfNotContains(observers);
 
             if (autoActivate)
             {
@@ -87,7 +86,7 @@ namespace Anorisoft.WinUI.Commands.Commands
 
             this.observers.Add(canExecuteSubject);
 
-            AddIfNotContains(observers);
+            this.observers.AddIfNotContains(observers);
 
             if (autoActivate)
             {
@@ -170,7 +169,7 @@ namespace Anorisoft.WinUI.Commands.Commands
                 throw new ArgumentNullException(nameof(observers));
             }
 
-            AddIfNotContains(observers);
+            this.observers.AddIfNotContains(observers);
 
             if (autoActivate)
             {
@@ -276,23 +275,13 @@ namespace Anorisoft.WinUI.Commands.Commands
         /// </summary>
         protected void Unsubscribe() => this.observers.ForEach(observer => observer.Remove(this));
 
-        /// <summary>
-        /// Adds if not contains.
-        /// </summary>
-        /// <param name="observers">The observers.</param>
-        /// <exception cref="ArgumentException">propertyObserver</exception>
-        private void AddIfNotContains(IEnumerable<ICanExecuteChangedSubject> observers)
+        public override bool CanExecute()
         {
-            foreach (var propertyObserver in observers)
+            if (!IsActive)
             {
-                if (this.observers.Contains(propertyObserver))
-                {
-                    throw new ArgumentException(string.Format(ExceptionStrings.ObserverIsAlreadyBeingObserved, propertyObserver),
-                        nameof(propertyObserver));
-                }
-
-                this.observers.Add(propertyObserver);
+                return false;
             }
+            return base.CanExecute();
         }
     }
 }

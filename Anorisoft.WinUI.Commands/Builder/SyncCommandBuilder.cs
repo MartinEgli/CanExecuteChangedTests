@@ -5,7 +5,6 @@ using System.Linq.Expressions;
 using Anorisoft.WinUI.Commands.CanExecuteObservers;
 using Anorisoft.WinUI.Commands.Commands;
 using Anorisoft.WinUI.Commands.Exeptions;
-using Anorisoft.WinUI.Commands.Factory;
 using Anorisoft.WinUI.Commands.Interfaces;
 using JetBrains.Annotations;
 
@@ -40,7 +39,7 @@ namespace Anorisoft.WinUI.Commands.Builder
         /// <summary>
         /// The is automatic actiate
         /// </summary>
-        private bool isAutoActivate;
+        private bool isAutoActivate = true;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SyncCommandBuilder"/> class.
@@ -50,69 +49,169 @@ namespace Anorisoft.WinUI.Commands.Builder
         public SyncCommandBuilder([NotNull] Action execute) =>
             this.execute = execute ?? throw new ArgumentNullException(nameof(execute));
 
+        /// <summary>
+        /// Builds the specified set command.
+        /// </summary>
+        /// <param name="setCommand">The set command.</param>
+        /// <returns></returns>
         IActivatableSyncCommand IActivatableSyncCanExecuteBuilder.Build(Action<IActivatableSyncCommand> setCommand)
             => Build(setCommand);
 
+        /// <summary>
+        /// Observeses the property.
+        /// </summary>
+        /// <typeparam name="TType">The type of the type.</typeparam>
+        /// <param name="expression">The expression.</param>
+        /// <returns></returns>
         IActivatableSyncCanExecuteBuilder IActivatableSyncCanExecuteBuilder.ObservesProperty<TType>(
             Expression<Func<TType>> expression)
             => ObservesProperty(expression);
 
+        /// <summary>
+        /// Observeses the command manager.
+        /// </summary>
+        /// <returns></returns>
         IActivatableSyncCanExecuteBuilder IActivatableSyncCanExecuteBuilder.ObservesCommandManager()
             => ObservesCommandManager();
 
+        /// <summary>
+        /// Automatics the activate.
+        /// </summary>
+        /// <returns></returns>
         IActivatableSyncCanExecuteBuilder IActivatableSyncCanExecuteBuilder.AutoActivate()
             => AutoActivate();
 
+        /// <summary>
+        /// Builds this instance.
+        /// </summary>
+        /// <returns></returns>
         IActivatableSyncCommand IActivatableSyncCanExecuteBuilder.Build()
             => Build();
 
+        /// <summary>
+        /// Builds the specified set command.
+        /// </summary>
+        /// <param name="setCommand">The set command.</param>
+        /// <returns></returns>
         IActivatableSyncCommand IActivatableSyncCommandBuilder.Build(Action<IActivatableSyncCommand> setCommand)
             => Build(setCommand);
 
+        /// <summary>
+        /// Determines whether this instance can execute the specified can execute.
+        /// </summary>
+        /// <param name="canExecute">The can execute.</param>
+        /// <returns></returns>
         IActivatableSyncCanExecuteBuilder IActivatableSyncCommandBuilder.CanExecute(Func<bool> canExecute)
             => CanExecute(canExecute);
 
+        /// <summary>
+        /// Observeses the can execute.
+        /// </summary>
+        /// <param name="canExecute">The can execute.</param>
+        /// <returns></returns>
         IActivatableSyncCanExecuteBuilder IActivatableSyncCommandBuilder.ObservesCanExecute(
             Expression<Func<bool>> canExecute)
             => ObservesCanExecute(canExecute);
 
+        /// <summary>
+        /// Observeses the can execute.
+        /// </summary>
+        /// <param name="canExecute">The can execute.</param>
+        /// <param name="fallback">if set to <c>true</c> [fallback].</param>
+        /// <returns></returns>
         IActivatableSyncCanExecuteBuilder IActivatableSyncCommandBuilder.ObservesCanExecute(
             Expression<Func<bool>> canExecute, bool fallback)
             => ObservesCanExecute(canExecute, fallback);
 
+        /// <summary>
+        /// Builds this instance.
+        /// </summary>
+        /// <returns></returns>
         IActivatableSyncCommand IActivatableSyncCommandBuilder.Build()
             => Build();
 
+        /// <summary>
+        /// Observeses the command manager.
+        /// </summary>
+        /// <returns></returns>
         ISyncCanExecuteBuilder ISyncCanExecuteBuilder.ObservesCommandManager()
             => ObservesCommandManager();
 
+        /// <summary>
+        /// Observeses the property.
+        /// </summary>
+        /// <typeparam name="TType">The type of the type.</typeparam>
+        /// <param name="expression">The expression.</param>
+        /// <returns></returns>
         ISyncCanExecuteBuilder ISyncCanExecuteBuilder.ObservesProperty<TType>(Expression<Func<TType>> expression)
             => ObservesProperty(expression);
 
+        /// <summary>
+        /// Builds the specified set command.
+        /// </summary>
+        /// <param name="setCommand">The set command.</param>
+        /// <returns></returns>
         ISyncCommand ISyncCanExecuteBuilder.Build(Action<ISyncCommand> setCommand)
             => Build(setCommand);
 
+        /// <summary>
+        /// Activatables this instance.
+        /// </summary>
+        /// <returns></returns>
         IActivatableSyncCanExecuteBuilder ISyncCanExecuteBuilder.Activatable()
             => Activatable();
 
+        /// <summary>
+        /// Builds this instance.
+        /// </summary>
+        /// <returns></returns>
         ISyncCommand ISyncCanExecuteBuilder.Build()
             => Build();
 
+        /// <summary>
+        /// Determines whether this instance can execute the specified can execute.
+        /// </summary>
+        /// <param name="canExecute">The can execute.</param>
+        /// <returns></returns>
         ISyncCanExecuteBuilder ISyncCommandBuilder.CanExecute(Func<bool> canExecute)
             => CanExecute(canExecute);
 
+        /// <summary>
+        /// Observeses the can execute.
+        /// </summary>
+        /// <param name="canExecute">The can execute.</param>
+        /// <returns></returns>
         ISyncCanExecuteBuilder ISyncCommandBuilder.ObservesCanExecute(Expression<Func<bool>> canExecute)
             => ObservesCanExecute(canExecute);
 
+        /// <summary>
+        /// Observeses the can execute.
+        /// </summary>
+        /// <param name="canExecute">The can execute.</param>
+        /// <param name="fallback">if set to <c>true</c> [fallback].</param>
+        /// <returns></returns>
         ISyncCanExecuteBuilder ISyncCommandBuilder.ObservesCanExecute(Expression<Func<bool>> canExecute, bool fallback)
             => ObservesCanExecute(canExecute, fallback);
 
+        /// <summary>
+        /// Builds the specified set command.
+        /// </summary>
+        /// <param name="setCommand">The set command.</param>
+        /// <returns></returns>
         ISyncCommand ISyncCommandBuilder.Build(Action<ISyncCommand> setCommand)
             => Build(setCommand);
 
+        /// <summary>
+        /// Activatables this instance.
+        /// </summary>
+        /// <returns></returns>
         IActivatableSyncCanExecuteBuilder ISyncCommandBuilder.Activatable()
             => Activatable();
 
+        /// <summary>
+        /// Builds this instance.
+        /// </summary>
+        /// <returns></returns>
         ISyncCommand ISyncCommandBuilder.Build() 
             => Build();
 
@@ -198,7 +297,7 @@ namespace Anorisoft.WinUI.Commands.Builder
         /// </summary>
         /// <param name="canExecute">The can execute.</param>
         /// <returns></returns>
-        /// <exception cref="CommandFactoryException">
+        /// <exception cref="CommandBuilderException">
         /// </exception>
         /// <exception cref="ArgumentNullException">canExecute</exception>
         [NotNull]
@@ -206,12 +305,12 @@ namespace Anorisoft.WinUI.Commands.Builder
         {
             if (this.canExecuteFunction != null)
             {
-                throw new CommandFactoryException(Resources.ExceptionStrings.CanExecuteFunctionAlreadyDefined);
+                throw new CommandBuilderException(Resources.ExceptionStrings.CanExecuteFunctionAlreadyDefined);
             }
 
             if (this.canExecuteExpression != null)
             {
-                throw new CommandFactoryException(Resources.ExceptionStrings.CanExecuteExpressionAlreadyDefined);
+                throw new CommandBuilderException(Resources.ExceptionStrings.CanExecuteExpressionAlreadyDefined);
             }
 
             this.canExecuteFunction = canExecute ?? throw new ArgumentNullException(nameof(canExecute));
@@ -224,7 +323,7 @@ namespace Anorisoft.WinUI.Commands.Builder
         /// <param name="canExecute">The can execute.</param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException">canExecute</exception>
-        /// <exception cref="CommandFactoryException">
+        /// <exception cref="CommandBuilderException">
         /// </exception>
         [NotNull]
         private SyncCommandBuilder ObservesCanExecute([NotNull] Expression<Func<bool>> canExecute)
@@ -232,12 +331,12 @@ namespace Anorisoft.WinUI.Commands.Builder
             if (canExecute == null) throw new ArgumentNullException(nameof(canExecute));
             if (this.canExecuteExpression != null)
             {
-                throw new CommandFactoryException(Resources.ExceptionStrings.CanExecuteExpressionAlreadyDefined);
+                throw new CommandBuilderException(Resources.ExceptionStrings.CanExecuteExpressionAlreadyDefined);
             }
 
             if (this.canExecuteFunction != null)
             {
-                throw new CommandFactoryException(Resources.ExceptionStrings.CanExecuteFunctionAlreadyDefined);
+                throw new CommandBuilderException(Resources.ExceptionStrings.CanExecuteFunctionAlreadyDefined);
             }
 
             this.canExecuteExpression = CanExecuteObserver.Create(canExecute);
@@ -251,7 +350,7 @@ namespace Anorisoft.WinUI.Commands.Builder
         /// <param name="fallback">if set to <c>true</c> [fallback].</param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException">canExecute</exception>
-        /// <exception cref="CommandFactoryException">
+        /// <exception cref="CommandBuilderException">
         /// </exception>
         [NotNull]
         private SyncCommandBuilder ObservesCanExecute([NotNull] Expression<Func<bool>> canExecute, bool fallback)
@@ -259,12 +358,12 @@ namespace Anorisoft.WinUI.Commands.Builder
             if (canExecute == null) throw new ArgumentNullException(nameof(canExecute));
             if (this.canExecuteExpression != null)
             {
-                throw new CommandFactoryException(Resources.ExceptionStrings.CanExecuteExpressionAlreadyDefined);
+                throw new CommandBuilderException(Resources.ExceptionStrings.CanExecuteExpressionAlreadyDefined);
             }
 
             if (this.canExecuteFunction != null)
             {
-                throw new CommandFactoryException(Resources.ExceptionStrings.CanExecuteFunctionAlreadyDefined);
+                throw new CommandBuilderException(Resources.ExceptionStrings.CanExecuteFunctionAlreadyDefined);
             }
 
             this.canExecuteExpression = CanExecuteObserver.Create(canExecute, fallback);
@@ -275,13 +374,13 @@ namespace Anorisoft.WinUI.Commands.Builder
         /// Observeses the command manager.
         /// </summary>
         /// <returns></returns>
-        /// <exception cref="CommandFactoryException"></exception>
+        /// <exception cref="CommandBuilderException"></exception>
         [NotNull]
         private SyncCommandBuilder ObservesCommandManager()
         {
             if (observes.Contains(CommandManagerObserver.Observer))
             {
-                throw new CommandFactoryException(Resources.ExceptionStrings.CanExecuteFunctionAlreadyDefined);
+                throw new CommandBuilderException(Resources.ExceptionStrings.CanExecuteFunctionAlreadyDefined);
             }
 
             this.observes.Add(CommandManagerObserver.Observer);
@@ -293,7 +392,11 @@ namespace Anorisoft.WinUI.Commands.Builder
         /// </summary>
         /// <returns></returns>
         [NotNull]
-        private SyncCommandBuilder Activatable() => this;
+        private SyncCommandBuilder Activatable()
+        {
+            isAutoActivate = false;
+            return this;
+        }
 
         /// <summary>
         /// Automatics the activate.

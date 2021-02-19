@@ -165,8 +165,9 @@ namespace Anorisoft.PropertyObservers.Common
 
                             break;
                         }
+                  
                     default:
-                        throw new NotSupportedException();
+                        throw new NotSupportedException($"{treeRoot}");
                 }
             }
         }

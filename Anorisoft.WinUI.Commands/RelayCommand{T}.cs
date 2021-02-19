@@ -4,13 +4,13 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using System;
+using System.Windows.Input;
+using Anorisoft.WinUI.Commands.Commands;
+using JetBrains.Annotations;
+
 namespace Anorisoft.WinUI.Commands
 {
-    using JetBrains.Annotations;
-
-    using System;
-    using System.Windows.Input;
-
     public class RelayCommand<T> : SyncCommandBase<T>
     {
         /// <summary>

@@ -4,19 +4,16 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace Anorisoft.WinUI.Commands
+using System;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
+using Anorisoft.WinUI.Commands.Interfaces;
+using CanExecuteChangedTests;
+using JetBrains.Annotations;
+
+namespace Anorisoft.WinUI.Commands.Commands
 {
-    using Anorisoft.WinUI.Commands.Interfaces;
-
-    using CanExecuteChangedTests;
-
-    using JetBrains.Annotations;
-
-    using System;
-    using System.ComponentModel;
-    using System.Runtime.CompilerServices;
-    using System.Threading.Tasks;
-
     public interface IExecutable
     {
         bool IsExecuting { get; }

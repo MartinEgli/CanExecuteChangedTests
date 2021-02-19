@@ -4,16 +4,15 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using System;
+using System.Windows.Input;
+using Anorisoft.WinUI.Commands.Commands;
+using Anorisoft.WinUI.Commands.Interfaces;
+using Anorisoft.WinUI.Common;
+using JetBrains.Annotations;
+
 namespace Anorisoft.WinUI.Commands
 {
-    using JetBrains.Annotations;
-
-    using System;
-    using System.Windows.Input;
-
-    using Anorisoft.WinUI.Commands.Interfaces;
-    using Anorisoft.WinUI.Common;
-
     /// <summary>
     /// </summary>
     /// <seealso cref="System.Windows.Input.ICommand" />
@@ -39,14 +38,6 @@ namespace Anorisoft.WinUI.Commands
         {
         }
 
-        /// <summary>
-        ///     Called when [can execute changed].
-        /// </summary>
-        public void RaiseCanExecuteChanged()
-        {
-            this.CanExecuteChangedInternal.RaiseEmpty(this);
-        }
-
         public sealed override event EventHandler CanExecuteChanged
         {
             add => this.Subscribe(value);
@@ -58,6 +49,13 @@ namespace Anorisoft.WinUI.Commands
         /// </summary>
         private event EventHandler CanExecuteChangedInternal;
 
+        /// <summary>
+        ///     Called when [can execute changed].
+        /// </summary>
+        public void RaiseCanExecuteChanged()
+        {
+            this.CanExecuteChangedInternal.RaiseEmpty(this);
+        }
         /// <summary>
         ///     Subscribes the specified value.
         /// </summary>

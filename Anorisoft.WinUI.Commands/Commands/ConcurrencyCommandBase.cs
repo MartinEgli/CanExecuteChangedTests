@@ -15,7 +15,7 @@ using Anorisoft.WinUI.Commands.Interfaces;
 using Anorisoft.WinUI.Common;
 using JetBrains.Annotations;
 
-namespace Anorisoft.WinUI.Commands
+namespace Anorisoft.WinUI.Commands.Commands
 {
     /// <summary>
     ///     Asynchronous Relay Command

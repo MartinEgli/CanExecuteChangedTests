@@ -10,6 +10,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Windows.Input;
+using Anorisoft.WinUI.Commands.Interfaces;
 using Anorisoft.WinUI.Common;
 using JetBrains.Annotations;
 
@@ -43,7 +44,8 @@ namespace Anorisoft.WinUI.Commands
     ///     </code>
     ///     </example>
     /// </remarks>
-    public class ActivatablePropertyObserverCommand<T> : ActivatablePropertyObserverCommandBase, Interfaces.ISyncCommand<T>
+    public class ActivatablePropertyObserverCommand<T> : ActivatablePropertyObserverCommandBase,
+        IActivatableSyncCommand<T>
     {
         /// <summary>
         ///     The execute method
@@ -96,6 +98,24 @@ namespace Anorisoft.WinUI.Commands
 
             this.execute = execute;
             this.canExecute = canExecute;
+        }
+
+        /// <summary>
+        ///     Activates this instance.
+        /// </summary>
+        public IActivatableSyncCommand<T> Activate()
+        {
+            this.IsActive = true;
+            return this;
+        }
+
+        /// <summary>
+        ///     Deactivates this instance.
+        /// </summary>
+        public IActivatableSyncCommand<T> Deactivate()
+        {
+            this.IsActive = false;
+            return this;
         }
 
         /// <summary>

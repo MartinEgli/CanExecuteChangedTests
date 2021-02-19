@@ -7,7 +7,6 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Anorisoft.WinUI.Commands.Factory;
 
 namespace Anorisoft.WinUI.Commands.Interfaces
 {

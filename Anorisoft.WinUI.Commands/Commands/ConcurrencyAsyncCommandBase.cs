@@ -4,9 +4,6 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-using Anorisoft.WinUI.Commands.Interfaces;
-using Anorisoft.WinUI.Common;
-using JetBrains.Annotations;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -14,8 +11,11 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
+using Anorisoft.WinUI.Commands.Interfaces;
+using Anorisoft.WinUI.Common;
+using JetBrains.Annotations;
 
-namespace Anorisoft.WinUI.Commands
+namespace Anorisoft.WinUI.Commands.Commands
 {
     /// <summary>
     ///     Asynchronous Relay Command

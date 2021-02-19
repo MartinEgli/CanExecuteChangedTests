@@ -3,7 +3,6 @@ using System.Runtime.CompilerServices;
 using Anorisoft.ExpressionObservers;
 using Anorisoft.WinUI.Commands.Builder;
 using Anorisoft.WinUI.Commands.CanExecuteObservers;
-using Anorisoft.WinUI.Commands.Factory;
 using Anorisoft.WinUI.Commands.Interfaces;
 using JetBrains.Annotations;
 

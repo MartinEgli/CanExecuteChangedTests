@@ -4,6 +4,8 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using Anorisoft.WinUI.Commands.Commands;
+
 namespace Anorisoft.WinUI.Commands
 {
     using Anorisoft.WinUI.Commands.Interfaces;
@@ -20,7 +22,7 @@ namespace Anorisoft.WinUI.Commands
     /// <summary>
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    /// <seealso cref="Anorisoft.WinUI.Commands.AsyncCommandBase{T}" />
+    /// <seealso cref="AsyncCommandBase{T}" />
     /// <seealso cref="Anorisoft.WinUI.Common.IActivatable" />
     /// <seealso cref="IAsyncCommand" />
     public class ActivatableAsyncRelayCommand<T> : AsyncCommandBase<T>, IActivatable

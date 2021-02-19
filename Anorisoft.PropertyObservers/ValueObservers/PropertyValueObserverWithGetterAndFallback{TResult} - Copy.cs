@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Linq.Expressions;
 using Anorisoft.ExpressionObservers;
 using Anorisoft.PropertyObservers.Common;
@@ -12,7 +13,8 @@ namespace Anorisoft.PropertyObservers.ValueObservers
     /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <seealso cref="PropertyObserverBase" />
     public sealed class PropertyValueObserverWithGetterAndFallback<TParameter1, TResult> : PropertyObserverBase
-        where TResult : struct
+        where TResult : struct 
+        where TParameter1 : INotifyPropertyChanged
     {
         public TParameter1 Parameter { get; }
 
@@ -23,7 +25,7 @@ namespace Anorisoft.PropertyObservers.ValueObservers
         /// <summary>
         /// The getter
         /// </summary>
-        [NotNull] private readonly Func<TResult> getter;
+        [NotNull] private readonly Func<TParameter1, TResult> getter;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PropertyValueObserverWithGetterAndFallback{TResult}"/> class.
@@ -47,8 +49,8 @@ namespace Anorisoft.PropertyObservers.ValueObservers
             var tree = ExpressionTree.GetTree(propertyExpression.Body);
             ExpressionString = propertyExpression.ToString();
 
-            base.CreateChain(tree);
-            this.getter = ExpressionGetter.CreateValueGetter(propertyExpression.Parameters, tree, fallback);
+            base.CreateChain(parameter, tree);
+            this.getter = ExpressionGetter.CreateValueGetter<TParameter1, TResult>(propertyExpression.Parameters, tree, fallback);
         }
 
         /// <summary>
@@ -66,6 +68,6 @@ namespace Anorisoft.PropertyObservers.ValueObservers
         /// Gets the value.
         /// </summary>
         /// <returns></returns>
-        public TResult GetValue() => getter();
+        public TResult GetValue(TParameter1 p) => getter(p);
     }
 }

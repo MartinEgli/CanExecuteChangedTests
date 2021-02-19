@@ -177,7 +177,7 @@ namespace Anorisoft.WinUI.Commands.Tests
             var canExecuteChangedRaised = false;
 
             var handlers = new DelegateObjectHandlers();
-            var command = new ActivatableCanExecuteObserverCommand<object>(handlers.Execute, o => false, new CommandManagerObserver());
+            var command = new ActivatableCanExecuteObserverCommand<object>(handlers.Execute,true, o => false, new CommandManagerObserver());
 
             command.CanExecuteChanged += delegate { canExecuteChangedRaised = true; };
 

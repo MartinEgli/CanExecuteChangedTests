@@ -4,15 +4,14 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using System;
+using System.Windows.Input;
+using Anorisoft.WinUI.Commands.Commands;
+using Anorisoft.WinUI.Commands.Interfaces;
+using JetBrains.Annotations;
+
 namespace Anorisoft.WinUI.Commands
 {
-    using JetBrains.Annotations;
-
-    using System;
-    using System.Windows.Input;
-
-    using Anorisoft.WinUI.Commands.Interfaces;
-
     /// <summary>
     /// </summary>
     /// <seealso cref="SyncCommandBase" />

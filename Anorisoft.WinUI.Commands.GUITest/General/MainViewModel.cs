@@ -14,7 +14,6 @@ using JetBrains.Annotations;
 
 namespace Anorisoft.WinUI.Commands.GUITest.General
 {
-    using AsyncCommand = Commands.AsyncCommand;
 
     internal class MainViewModel : INotifyPropertyChanged
     {

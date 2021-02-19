@@ -4,19 +4,16 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-using Anorisoft.WinUI.Commands.Factory;
+using System;
+using System.ComponentModel;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Windows.Input;
 using Anorisoft.WinUI.Commands.Interfaces;
+using JetBrains.Annotations;
 
 namespace Anorisoft.WinUI.Commands
 {
-    using JetBrains.Annotations;
-
-    using System;
-    using System.ComponentModel;
-    using System.Linq;
-    using System.Linq.Expressions;
-    using System.Windows.Input;
-
     /// <summary>
     /// An <see cref="ICommand" /> whose delegates do not take any parameters for <see cref="Execute()" /> and
     /// <see cref="CanExecute()" />.
@@ -25,19 +22,17 @@ namespace Anorisoft.WinUI.Commands
     /// <seealso cref="ISyncCommand" />
     /// <see cref="ActivatablePropertyObserverCommandBase" />
     public class ActivatablePropertyObserverCommand :
-        ActivatablePropertyObserverCommandBase, Interfaces.ISyncCommand, IActivatableSyncCommand
+        ActivatablePropertyObserverCommandBase, IActivatableSyncCommand
     {
         /// <summary>
         /// The execute method
         /// </summary>
-        [NotNull]
-        private readonly Action execute;
+        [NotNull] private readonly Action execute;
 
         /// <summary>
         ///     The can execute method
         /// </summary>
-        [NotNull]
-        private Func<bool> canExecute;
+        [NotNull] private Func<bool> canExecute;
 
         /// <summary>
         ///     Creates a new instance of <see cref="ActivatablePropertyObserverCommand" /> with the <see cref="Action" /> to
@@ -63,6 +58,24 @@ namespace Anorisoft.WinUI.Commands
         {
             this.execute = execute ?? throw new ArgumentNullException(nameof(execute));
             this.canExecute = canExecute ?? throw new ArgumentNullException(nameof(this.canExecute));
+        }
+
+        /// <summary>
+        ///     Activates this instance.
+        /// </summary>
+        public IActivatableSyncCommand Activate()
+        {
+            this.IsActive = true;
+            return this;
+        }
+
+        /// <summary>
+        ///     Deactivates this instance.
+        /// </summary>
+        public IActivatableSyncCommand Deactivate()
+        {
+            this.IsActive = false;
+            return this;
         }
 
         /// <summary>

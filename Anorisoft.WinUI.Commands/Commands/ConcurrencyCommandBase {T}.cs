@@ -4,6 +4,9 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using Anorisoft.WinUI.Commands.Interfaces;
+using Anorisoft.WinUI.Common;
+using JetBrains.Annotations;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -11,11 +14,8 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
-using Anorisoft.WinUI.Commands.Interfaces;
-using Anorisoft.WinUI.Common;
-using JetBrains.Annotations;
 
-namespace Anorisoft.WinUI.Commands
+namespace Anorisoft.WinUI.Commands.Commands
 {
     /// <summary>
     ///     Asynchronous Relay Command
@@ -61,7 +61,8 @@ namespace Anorisoft.WinUI.Commands
         /// <summary>
         ///     The finally task scheduler
         /// </summary>
-        [NotNull] private readonly TaskScheduler finallyTaskScheduler =
+        [NotNull]
+        private readonly TaskScheduler finallyTaskScheduler =
             TaskScheduler.FromCurrentSynchronizationContext();
 
         /// <summary>
@@ -188,6 +189,11 @@ namespace Anorisoft.WinUI.Commands
             this.Dispatcher = Dispatcher.CurrentDispatcher;
             this.cancelCommand = new DirectCommand(this.Cancel, () => this.IsExecuting);
         }
+
+        /// <summary>
+        ///     Occurs when a property value changes.
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
         ///     Gets or sets the cancel command.
@@ -361,12 +367,6 @@ namespace Anorisoft.WinUI.Commands
             this.Dispose(true);
             GC.SuppressFinalize(this);
         }
-
-        /// <summary>
-        ///     Occurs when a property value changes.
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
-
         /// <summary>
         ///     Cancels this instance.
         /// </summary>
@@ -382,6 +382,13 @@ namespace Anorisoft.WinUI.Commands
         ///     Raises the can execute command.
         /// </summary>
         public abstract void RaiseCanExecuteCommand();
+
+        /// <summary>
+        /// Executes the specified parameter.
+        /// </summary>
+        /// <param name="parameter">The parameter.</param>
+        /// <param name="token">The token.</param>
+        public void Execute(T parameter, CancellationToken token) => this.execute(parameter, token);
 
         /// <summary>
         ///     Determines whether this instance can execute the specified parameter.

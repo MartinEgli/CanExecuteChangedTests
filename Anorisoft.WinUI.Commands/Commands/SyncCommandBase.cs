@@ -8,7 +8,7 @@ using System;
 using Anorisoft.WinUI.Commands.Interfaces;
 using JetBrains.Annotations;
 
-namespace Anorisoft.WinUI.Commands
+namespace Anorisoft.WinUI.Commands.Commands
 {
     /// <summary>
     ///     A Command whose sole purpose is to relay its functionality to other objects by invoking delegates.
@@ -82,12 +82,12 @@ namespace Anorisoft.WinUI.Commands
         /// <returns>
         ///     <c>true</c> if this instance can execute; otherwise, <c>false</c>.
         /// </returns>
-        public bool CanExecute() => this.canExecute == null || this.canExecute();
+        public virtual bool CanExecute() => this.canExecute == null || this.canExecute();
 
         /// <summary>
         ///     Executes this instance.
         /// </summary>
-        void Interfaces.ISyncCommand.Execute() => this.execute();
+        void ISyncCommand.Execute() => this.execute();
 
         /// <summary>
         /// Executes this instance.

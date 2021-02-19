@@ -4,16 +4,14 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-using System.Threading;
 using Anorisoft.WinUI.Common;
+using JetBrains.Annotations;
+using System;
+using System.Windows.Input;
+using Anorisoft.WinUI.Commands.Interfaces;
 
-namespace Anorisoft.WinUI.Commands
+namespace Anorisoft.WinUI.Commands.Commands
 {
-    using JetBrains.Annotations;
-
-    using System;
-    using System.Windows.Input;
-
     /// <summary>
     ///     A Command whose sole purpose is to relay its functionality to other objects by invoking delegates.
     ///     The default return value for the CanExecute method is 'true'.
@@ -61,6 +59,12 @@ namespace Anorisoft.WinUI.Commands
             : this(execute) =>
             this.canExecute = canExecute ?? throw new ArgumentNullException(nameof(canExecute));
 
+        protected SyncCommandBase([NotNull] Action<T> execute, [NotNull] ICanExecute canExecute)
+            : this(execute)
+        {
+            this.canExecute = t => canExecute.CanExecute();
+        }
+
         /// <summary>
         /// Determines whether this instance can execute the specified parameter.
         /// </summary>
@@ -97,7 +101,5 @@ namespace Anorisoft.WinUI.Commands
         /// </summary>
         /// <param name="parameter">Command Parameter</param>
         protected sealed override void Execute(object parameter) => this.Execute((T)parameter);
-
-
     }
 }

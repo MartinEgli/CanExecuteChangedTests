@@ -65,7 +65,8 @@ namespace Anorisoft.PropertyObservers
             [NotNull] Expression<Func<TParameter1, TResult>> propertyExpression,
             [NotNull] TParameter1 parameter,
             [NotNull] Action action, TResult fallback)
-            where TResult : struct =>
+            where TResult : struct 
+            where TParameter1 : INotifyPropertyChanged =>
             new PropertyValueObserverWithGetterAndFallback<TParameter1, TResult>(propertyExpression, parameter, action, fallback);
 
         [NotNull]

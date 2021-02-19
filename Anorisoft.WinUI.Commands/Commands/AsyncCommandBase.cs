@@ -13,7 +13,7 @@ using Anorisoft.WinUI.Common;
 using CanExecuteChangedTests;
 using JetBrains.Annotations;
 
-namespace Anorisoft.WinUI.Commands
+namespace Anorisoft.WinUI.Commands.Commands
 {
     /// <summary>
     ///     AsyncCommandBase class.
@@ -138,7 +138,8 @@ namespace Anorisoft.WinUI.Commands
                 {
                     this.IsExecuting = true;
 
-                    await this.execute().ConfigureAwait(false);
+                    await this.execute();
+                   // await this.execute().ConfigureAwait(false);
                 }
                 finally
                 {

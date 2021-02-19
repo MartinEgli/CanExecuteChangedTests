@@ -4,13 +4,12 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
 using Anorisoft.WinUI.Commands.Interfaces;
-using Anorisoft.WinUI.Commands.Resources;
 using Anorisoft.WinUI.Common;
 using CanExecuteChangedTests;
 using JetBrains.Annotations;
+using System;
+using System.Collections.Generic;
 
 namespace Anorisoft.WinUI.Commands.Commands
 {
@@ -48,7 +47,7 @@ namespace Anorisoft.WinUI.Commands.Commands
                 throw new ArgumentNullException(nameof(observers));
             }
 
-            AddIfNotContains(observers);
+            this.observers.AddIfNotContains(observers);
             if (autoActivate)
             {
                 this.Activate();
@@ -71,7 +70,7 @@ namespace Anorisoft.WinUI.Commands.Commands
             bool autoActivate,
             [NotNull] ICanExecuteSubject canExecuteSubject,
             [NotNull][ItemNotNull] params ICanExecuteChangedSubject[] observers)
-            : base(execute)
+            : base(execute, canExecuteSubject)
         {
             if (canExecuteSubject == null)
             {
@@ -84,7 +83,7 @@ namespace Anorisoft.WinUI.Commands.Commands
             }
 
             this.observers.Add(canExecuteSubject);
-            AddIfNotContains(observers);
+            this.observers.AddIfNotContains(observers);
             if (autoActivate)
             {
                 this.Activate();
@@ -164,7 +163,7 @@ namespace Anorisoft.WinUI.Commands.Commands
                 throw new ArgumentNullException(nameof(observers));
             }
 
-            AddIfNotContains(observers);
+            this.observers.AddIfNotContains(observers);
 
             if (autoActivate)
             {
@@ -269,24 +268,5 @@ namespace Anorisoft.WinUI.Commands.Commands
         ///     Unsubscribes this instance.
         /// </summary>
         protected void Unsubscribe() => this.observers.ForEach(observer => observer.Remove(this));
-
-        /// <summary>
-        /// Adds if not contains.
-        /// </summary>
-        /// <param name="observers">The observers.</param>
-        /// <exception cref="ArgumentException">propertyObserver</exception>
-        private void AddIfNotContains(ICanExecuteChangedSubject[] observers)
-        {
-            foreach (var propertyObserver in observers)
-            {
-                if (this.observers.Contains(propertyObserver))
-                {
-                    throw new ArgumentException(string.Format(ExceptionStrings.ObserverIsAlreadyBeingObserved, propertyObserver),
-                        nameof(propertyObserver));
-                }
-
-                this.observers.Add(propertyObserver);
-            }
-        }
     }
 }

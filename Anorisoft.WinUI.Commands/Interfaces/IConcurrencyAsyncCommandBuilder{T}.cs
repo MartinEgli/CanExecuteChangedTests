@@ -7,6 +7,12 @@ namespace Anorisoft.WinUI.Commands.Interfaces
     public interface IConcurrencyAsyncCommandBuilder<T>
     {
         [NotNull]
+        IConcurrencyAsyncCommand<T> Build();
+
+        [NotNull]
+        IConcurrencyAsyncCommand<T> Build([NotNull] Action<IConcurrencyAsyncCommand<T>> setCommand);
+
+        [NotNull]
         IConcurrencyAsyncCanExecuteBuilder<T> CanExecute([NotNull] Predicate<T> canExecute);
 
         [NotNull]
@@ -14,5 +20,8 @@ namespace Anorisoft.WinUI.Commands.Interfaces
 
         [NotNull]
         IConcurrencyAsyncCanExecuteBuilder<T> ObservesCanExecute([NotNull] Expression<Func<bool>> canExecute, bool fallback);
+
+        [NotNull]
+        IActivatableConcurrencyAsyncCanExecuteBuilder<T> Activatable();
     }
 }

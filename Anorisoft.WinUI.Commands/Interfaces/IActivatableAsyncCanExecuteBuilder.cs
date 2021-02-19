@@ -1,6 +1,6 @@
-﻿using JetBrains.Annotations;
-using System;
+﻿using System;
 using System.Linq.Expressions;
+using JetBrains.Annotations;
 
 namespace Anorisoft.WinUI.Commands.Interfaces
 {
@@ -20,23 +20,5 @@ namespace Anorisoft.WinUI.Commands.Interfaces
 
         [NotNull]
         IActivatableAsyncCanExecuteBuilder AutoActivate();
-    }
-
-    public interface IActivatableAsyncCanExecuteBuilder<in T>
-    {
-        [NotNull]
-        IActivatableAsyncCommand<T> Build();
-
-        [NotNull]
-        IActivatableAsyncCommand<T> Build([NotNull] Action<IActivatableAsyncCommand<T>> setCommand);
-
-        [NotNull]
-        IActivatableAsyncCanExecuteBuilder<T> ObservesProperty<TType>([NotNull] Expression<Func<TType>> expression);
-
-        [NotNull]
-        IActivatableAsyncCanExecuteBuilder<T> ObservesCommandManager();
-
-        [NotNull]
-        IActivatableAsyncCanExecuteBuilder<T> AutoActivate();
     }
 }

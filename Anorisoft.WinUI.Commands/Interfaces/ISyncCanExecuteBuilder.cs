@@ -1,6 +1,6 @@
-﻿using JetBrains.Annotations;
-using System;
+﻿using System;
 using System.Linq.Expressions;
+using JetBrains.Annotations;
 
 namespace Anorisoft.WinUI.Commands.Interfaces
 {

@@ -39,7 +39,7 @@ namespace Anorisoft.WinUI.Commands.CanExecuteObservers
             this.Parameter = parameter;
              var observesAndGet = PropertyValueObserver.ObservesAndGet(canExecuteExpression, parameter,() => this.Update.Raise(), false);
             this.Observer = observesAndGet;
-            this.CanExecute = observesAndGet.GetValue;
+            this.CanExecute = () => observesAndGet.GetValue(parameter);
             //this.Observer = PropertyValueObserver.Observes<TParameter, bool>(parameter, canExecuteExpression, () => this.Update.Raise());
             //this.CanExecute = () => canExecuteExpression.Compile()(parameter);
         }

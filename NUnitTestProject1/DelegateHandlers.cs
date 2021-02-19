@@ -4,6 +4,8 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using System.Threading.Tasks;
+
 namespace Anorisoft.WinUI.Commands.Tests
 {
     using System;
@@ -19,6 +21,13 @@ namespace Anorisoft.WinUI.Commands.Tests
 
         public void Execute()
         {
+            ExecuteCount++;
         }
+        public async Task ExecuteAsync()
+        {
+            await Task.Yield();
+            ExecuteCount++;
+        }
+        public int ExecuteCount { get; private set; }
     }
 }

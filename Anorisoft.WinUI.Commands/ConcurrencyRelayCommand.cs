@@ -4,14 +4,14 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using System;
+using System.Threading;
+using System.Windows.Input;
+using Anorisoft.WinUI.Commands.Commands;
+using JetBrains.Annotations;
+
 namespace Anorisoft.WinUI.Commands
 {
-    using JetBrains.Annotations;
-
-    using System;
-    using System.Threading;
-    using System.Windows.Input;
-
     public class ConcurrencyRelayCommand : ConcurrencyCommandBase
     {
         /// <summary>

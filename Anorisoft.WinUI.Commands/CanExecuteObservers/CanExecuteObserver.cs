@@ -30,6 +30,12 @@ namespace Anorisoft.WinUI.Commands.CanExecuteObservers
             this.CanExecute = observesAndGet.GetValue;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CanExecuteObserver"/> class.
+        /// </summary>
+        /// <param name="canExecuteExpression">The can execute expression.</param>
+        /// <param name="fallback">if set to <c>true</c> [fallback].</param>
+        /// <exception cref="ArgumentNullException">canExecuteExpression</exception>
         public CanExecuteObserver([NotNull] Expression<Func<bool>> canExecuteExpression, bool fallback)
         {
             if (canExecuteExpression == null)
@@ -58,6 +64,12 @@ namespace Anorisoft.WinUI.Commands.CanExecuteObservers
             return instance;
         }
 
+        /// <summary>
+        /// Creates the specified can execute expression.
+        /// </summary>
+        /// <param name="canExecuteExpression">The can execute expression.</param>
+        /// <param name="fallback">if set to <c>true</c> [fallback].</param>
+        /// <returns></returns>
         public static CanExecuteObserver Create([NotNull] Expression<Func<bool>> canExecuteExpression, bool fallback)
         {
             var instance = new CanExecuteObserver(canExecuteExpression, fallback);

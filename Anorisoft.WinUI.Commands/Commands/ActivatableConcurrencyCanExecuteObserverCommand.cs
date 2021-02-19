@@ -50,7 +50,7 @@ namespace Anorisoft.WinUI.Commands.Commands
                 throw new ArgumentNullException(nameof(observers));
             }
 
-            AddIfNotContains(observers);
+            this.observers.AddIfNotContains(observers);
 
             if (autoActivate)
             {
@@ -87,7 +87,7 @@ namespace Anorisoft.WinUI.Commands.Commands
 
             this.observers.Add(canExecuteSubject);
 
-            AddIfNotContains(observers);
+            this.observers.AddIfNotContains(observers);
 
             if (autoActivate)
             {
@@ -169,7 +169,7 @@ namespace Anorisoft.WinUI.Commands.Commands
                 throw new ArgumentNullException(nameof(observers));
             }
 
-            AddIfNotContains(observers);
+            this.observers.AddIfNotContains(observers);
 
             if (autoActivate)
             {
@@ -273,21 +273,6 @@ namespace Anorisoft.WinUI.Commands.Commands
         /// </summary>
         /// <param name="observers">The observers.</param>
         /// <exception cref="ArgumentException">propertyObserver</exception>
-        private void AddIfNotContains(IEnumerable<ICanExecuteChangedSubject> observers)
-        {
-            foreach (var propertyObserver in observers)
-            {
-                if (this.observers.Contains(propertyObserver))
-                {
-                    throw new ArgumentException(string.Format(ExceptionStrings.ObserverIsAlreadyBeingObserved, propertyObserver),
-                        nameof(propertyObserver));
-                }
-
-                this.observers.Add(propertyObserver);
-            }
-        }
-
-
        
     }
 }

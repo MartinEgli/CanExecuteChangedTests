@@ -4,6 +4,8 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using Anorisoft.WinUI.Commands.Commands;
+
 namespace Anorisoft.WinUI.Commands
 {
     using JetBrains.Annotations;
