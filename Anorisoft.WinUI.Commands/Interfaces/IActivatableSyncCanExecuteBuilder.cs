@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
+using Anorisoft.WinUI.Commands.Commands;
 using JetBrains.Annotations;
 
 namespace Anorisoft.WinUI.Commands.Interfaces
@@ -7,10 +8,10 @@ namespace Anorisoft.WinUI.Commands.Interfaces
     public interface IActivatableSyncCanExecuteBuilder
     {
         [NotNull]
-        IActivatableSyncCommand Build();
+        ActivatableCanExecuteObserverCommand Build();
 
         [NotNull]
-        IActivatableSyncCommand Build([NotNull] Action<IActivatableSyncCommand> setCommand);
+        ActivatableCanExecuteObserverCommand Build([NotNull] Action<ActivatableCanExecuteObserverCommand> setCommand);
 
         [NotNull]
         IActivatableSyncCanExecuteBuilder ObservesProperty<TType>([NotNull] Expression<Func<TType>> expression);

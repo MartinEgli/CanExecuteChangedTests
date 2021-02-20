@@ -1,13 +1,14 @@
-﻿using Anorisoft.WinUI.Commands.CanExecuteObservers;
-using Anorisoft.WinUI.Commands.Commands;
-using Anorisoft.WinUI.Commands.Exeptions;
-using Anorisoft.WinUI.Commands.Interfaces;
-using JetBrains.Annotations;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Anorisoft.WinUI.Commands.CanExecuteObservers;
+using Anorisoft.WinUI.Commands.Commands;
+using Anorisoft.WinUI.Commands.Exeptions;
+using Anorisoft.WinUI.Commands.Interfaces;
+using Anorisoft.WinUI.Commands.Interfaces.Builders;
+using JetBrains.Annotations;
 
 namespace Anorisoft.WinUI.Commands.Builder
 {
@@ -25,7 +26,8 @@ namespace Anorisoft.WinUI.Commands.Builder
         /// <summary>
         /// The observes
         /// </summary>
-        [NotNull] [ItemNotNull] private readonly List<ICanExecuteChangedSubject> observes = new List<ICanExecuteChangedSubject>();
+        [NotNull] [ItemNotNull]
+        private readonly List<ICanExecuteChangedSubject> observes = new List<ICanExecuteChangedSubject>();
 
         /// <summary>
         /// The can execute expression
@@ -55,8 +57,8 @@ namespace Anorisoft.WinUI.Commands.Builder
         /// </summary>
         /// <param name="setCommand">The set command.</param>
         /// <returns></returns>
-        IActivatableAsyncCommand IActivatableAsyncCanExecuteBuilder.
-            Build(Action<IActivatableAsyncCommand> setCommand) => Build(setCommand);
+        ActivatableAsyncCanExecuteObserverCommand IActivatableAsyncCanExecuteBuilder.
+            Build(Action<ActivatableAsyncCanExecuteObserverCommand> setCommand) => Build(setCommand);
 
         /// <summary>
         /// Observeses the property.
@@ -80,14 +82,15 @@ namespace Anorisoft.WinUI.Commands.Builder
         /// Builds this instance.
         /// </summary>
         /// <returns></returns>
-        IActivatableAsyncCommand IActivatableAsyncCanExecuteBuilder.Build() => Build();
+        ActivatableAsyncCanExecuteObserverCommand IActivatableAsyncCanExecuteBuilder.Build() => Build();
 
         /// <summary>
         /// Builds the specified set command.
         /// </summary>
         /// <param name="setCommand">The set command.</param>
         /// <returns></returns>
-        IActivatableAsyncCommand IActivatableAsyncCommandBuilder.Build(Action<IActivatableAsyncCommand> setCommand) =>
+        ActivatableAsyncCanExecuteObserverCommand IActivatableAsyncCommandBuilder.Build(
+            Action<ActivatableAsyncCanExecuteObserverCommand> setCommand) =>
             Build(setCommand);
 
         /// <summary>
@@ -116,11 +119,22 @@ namespace Anorisoft.WinUI.Commands.Builder
             Expression<Func<bool>> canExecute, bool fallback) => ObservesCanExecute(canExecute, fallback);
 
         /// <summary>
+        /// Automatics the activate.
+        /// </summary>
+        /// <returns></returns>
+        IActivatableAsyncCanExecuteBuilder IActivatableAsyncCommandBuilder.AutoActivate() => AutoActivate();
+
+        /// <summary>
         /// Builds this instance.
         /// </summary>
         /// <returns></returns>
-        IActivatableAsyncCommand IActivatableAsyncCommandBuilder.Build() => Build();
+        ActivatableAsyncCanExecuteObserverCommand IActivatableAsyncCommandBuilder.Build() => Build();
 
+        /// <summary>
+        /// Builds the specified set command.
+        /// </summary>
+        /// <param name="setCommand">The set command.</param>
+        /// <returns></returns>
         IAsyncCommand IAsyncCanExecuteBuilder.Build(Action<IAsyncCommand> setCommand) => Build(setCommand);
 
         /// <summary>
@@ -185,6 +199,12 @@ namespace Anorisoft.WinUI.Commands.Builder
         IAsyncCommand IAsyncCommandBuilder.Build() => Build();
 
         /// <summary>
+        /// Activatables this instance.
+        /// </summary>
+        /// <returns></returns>
+        IActivatableAsyncCanExecuteBuilder IAsyncCommandBuilder.Activatable() => Activatable();
+
+        /// <summary>
         /// Observeses the can execute.
         /// </summary>
         /// <param name="canExecute">The can execute.</param>
@@ -235,12 +255,6 @@ namespace Anorisoft.WinUI.Commands.Builder
         }
 
         /// <summary>
-        /// Activatables this instance.
-        /// </summary>
-        /// <returns></returns>
-        IActivatableAsyncCanExecuteBuilder IAsyncCommandBuilder.Activatable() => Activatable();
-
-        /// <summary>
         /// Builds the specified set command.
         /// </summary>
         /// <param name="setCommand">The set command.</param>
@@ -266,7 +280,8 @@ namespace Anorisoft.WinUI.Commands.Builder
         /// <returns></returns>
         /// <exception cref="ArgumentNullException">setCommand</exception>
         [NotNull]
-        private IActivatableAsyncCommand Build([NotNull] Action<IActivatableAsyncCommand> setCommand)
+        private ActivatableAsyncCanExecuteObserverCommand Build(
+            [NotNull] Action<ActivatableAsyncCanExecuteObserverCommand> setCommand)
         {
             if (setCommand == null)
             {

@@ -54,7 +54,7 @@ namespace Anorisoft.WinUI.Commands.Builder
         /// </summary>
         /// <param name="setCommand">The set command.</param>
         /// <returns></returns>
-        IActivatableSyncCommand IActivatableSyncCanExecuteBuilder.Build(Action<IActivatableSyncCommand> setCommand)
+        ActivatableCanExecuteObserverCommand IActivatableSyncCanExecuteBuilder.Build(Action<ActivatableCanExecuteObserverCommand> setCommand)
             => Build(setCommand);
 
         /// <summary>
@@ -85,15 +85,15 @@ namespace Anorisoft.WinUI.Commands.Builder
         /// Builds this instance.
         /// </summary>
         /// <returns></returns>
-        IActivatableSyncCommand IActivatableSyncCanExecuteBuilder.Build()
-            => Build();
+        ActivatableCanExecuteObserverCommand IActivatableSyncCanExecuteBuilder.Build()
+            => BuildActivatable();
 
         /// <summary>
         /// Builds the specified set command.
         /// </summary>
         /// <param name="setCommand">The set command.</param>
         /// <returns></returns>
-        IActivatableSyncCommand IActivatableSyncCommandBuilder.Build(Action<IActivatableSyncCommand> setCommand)
+        ActivatableCanExecuteObserverCommand IActivatableSyncCommandBuilder.Build(Action<ActivatableCanExecuteObserverCommand> setCommand)
             => Build(setCommand);
 
         /// <summary>
@@ -127,8 +127,8 @@ namespace Anorisoft.WinUI.Commands.Builder
         /// Builds this instance.
         /// </summary>
         /// <returns></returns>
-        IActivatableSyncCommand IActivatableSyncCommandBuilder.Build()
-            => Build();
+        ActivatableCanExecuteObserverCommand IActivatableSyncCommandBuilder.Build()
+            => BuildActivatable();
 
         /// <summary>
         /// Observeses the command manager.
@@ -151,7 +151,7 @@ namespace Anorisoft.WinUI.Commands.Builder
         /// </summary>
         /// <param name="setCommand">The set command.</param>
         /// <returns></returns>
-        ISyncCommand ISyncCanExecuteBuilder.Build(Action<ISyncCommand> setCommand)
+        CanExecuteObserverCommand ISyncCanExecuteBuilder.Build(Action<CanExecuteObserverCommand> setCommand)
             => Build(setCommand);
 
         /// <summary>
@@ -165,7 +165,7 @@ namespace Anorisoft.WinUI.Commands.Builder
         /// Builds this instance.
         /// </summary>
         /// <returns></returns>
-        ISyncCommand ISyncCanExecuteBuilder.Build()
+        CanExecuteObserverCommand ISyncCanExecuteBuilder.Build()
             => Build();
 
         /// <summary>
@@ -198,7 +198,7 @@ namespace Anorisoft.WinUI.Commands.Builder
         /// </summary>
         /// <param name="setCommand">The set command.</param>
         /// <returns></returns>
-        ISyncCommand ISyncCommandBuilder.Build(Action<ISyncCommand> setCommand)
+        CanExecuteObserverCommand ISyncCommandBuilder.Build(Action<CanExecuteObserverCommand> setCommand)
             => Build(setCommand);
 
         /// <summary>
@@ -212,7 +212,7 @@ namespace Anorisoft.WinUI.Commands.Builder
         /// Builds this instance.
         /// </summary>
         /// <returns></returns>
-        ISyncCommand ISyncCommandBuilder.Build() 
+        CanExecuteObserverCommand ISyncCommandBuilder.Build() 
             => Build();
 
         /// <summary>
@@ -221,7 +221,7 @@ namespace Anorisoft.WinUI.Commands.Builder
         /// <returns></returns>
         /// <exception cref="NoCanExecuteException"></exception>
         [NotNull]
-        private ActivatableCanExecuteObserverCommand Build()
+        private ActivatableCanExecuteObserverCommand BuildActivatable()
         {
             if (observes.Any())
             {
@@ -253,12 +253,54 @@ namespace Anorisoft.WinUI.Commands.Builder
             return new ActivatableCanExecuteObserverCommand(execute, isAutoActivate);
         }
 
+
+        [NotNull]
+        private CanExecuteObserverCommand Build()
+        {
+            if (observes.Any())
+            {
+                if (canExecuteFunction != null)
+                {
+                    return new CanExecuteObserverCommand(execute, canExecuteFunction,
+                        observes.ToArray());
+                }
+
+                if (canExecuteExpression != null)
+                {
+                    return new CanExecuteObserverCommand(execute, canExecuteExpression,
+                        observes.ToArray());
+                }
+
+                throw new NoCanExecuteException();
+            }
+
+            if (canExecuteFunction != null)
+            {
+                return new CanExecuteObserverCommand(execute, canExecuteFunction);
+            }
+
+            if (canExecuteExpression != null)
+            {
+                return new CanExecuteObserverCommand(execute, canExecuteExpression);
+            }
+
+            return new CanExecuteObserverCommand(execute);
+        }
+
         /// <summary>
         /// Builds the specified set command.
         /// </summary>
         /// <param name="setCommand">The set command.</param>
         /// <returns></returns>
-        private IActivatableSyncCommand Build([NotNull] Action<IActivatableSyncCommand> setCommand)
+        private ActivatableCanExecuteObserverCommand Build([NotNull] Action<ActivatableCanExecuteObserverCommand> setCommand)
+        {
+            if (setCommand == null) throw new ArgumentNullException(nameof(setCommand));
+            var command = BuildActivatable();
+            setCommand(command);
+            return command;
+        }
+
+        private CanExecuteObserverCommand Build([NotNull] Action<CanExecuteObserverCommand> setCommand)
         {
             if (setCommand == null) throw new ArgumentNullException(nameof(setCommand));
             var command = Build();

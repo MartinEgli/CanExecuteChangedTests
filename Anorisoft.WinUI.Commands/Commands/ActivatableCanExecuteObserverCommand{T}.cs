@@ -254,10 +254,7 @@ namespace Anorisoft.WinUI.Commands.Commands
         ///     <c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only
         ///     unmanaged resources.
         /// </param>
-        protected virtual void Dispose(bool disposing)
-        {
-            this.Unsubscribe();
-        }
+        protected virtual void Dispose(bool disposing) => this.Unsubscribe();
 
         /// <summary>
         ///     Subscribes this instance.

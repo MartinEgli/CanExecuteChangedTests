@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Linq.Expressions;
+using Anorisoft.WinUI.Commands.Interfaces.Builders;
 using JetBrains.Annotations;
 
 namespace Anorisoft.WinUI.Commands.Interfaces
 {
-    public interface IAsyncCanExecuteBuilder<in T>
+    public interface IAsyncCanExecuteBuilder<T>
     {
         [NotNull]
         IAsyncCommand<T> Build();

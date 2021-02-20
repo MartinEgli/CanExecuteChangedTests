@@ -133,7 +133,7 @@ namespace Anorisoft.WinUI.Commands.Tests
             var actual = command.CanExecute();
             Assert.False(actual);
 
-            command.Execute(null);
+            ((ICommand) command).Execute(null);
             Assert.False(executed);
         }
 
@@ -152,7 +152,7 @@ namespace Anorisoft.WinUI.Commands.Tests
             var actual = command.CanExecute();
             Assert.False(actual);
 
-            command.Execute(null);
+            ((ICommand)command).Execute(null);
             Assert.False(executed);
         }
 
@@ -173,7 +173,7 @@ namespace Anorisoft.WinUI.Commands.Tests
             var actual = command.CanExecute();
             Assert.True(actual);
 
-            command.Execute(null);
+            ((ICommand)command).Execute(null);
             Assert.True(executed);
         }
 
@@ -192,7 +192,7 @@ namespace Anorisoft.WinUI.Commands.Tests
             var actual = command.CanExecute();
             Assert.True(actual);
 
-            command.Execute(null);
+            ((ICommand)command).Execute(null);
             Assert.AreEqual(1, handlers.ExecuteCount);
         }
 
@@ -230,7 +230,7 @@ namespace Anorisoft.WinUI.Commands.Tests
             var actual = command.CanExecute(0);
             Assert.True(actual);
 
-            command.Execute(1);
+            ((ICommand)command).Execute(1);
             Assert.AreEqual(1, handlers.ExecuteCount);
         }
 
@@ -306,7 +306,7 @@ namespace Anorisoft.WinUI.Commands.Tests
             var actual = command.CanExecute();
             Assert.True(actual);
 
-            command.Execute(null);
+            ((ICommand)command).Execute(null);
             waitHandle.WaitOne();
             waitHandle.Dispose();
             Assert.AreEqual(1, handlers.ExecuteCount);
@@ -353,7 +353,7 @@ namespace Anorisoft.WinUI.Commands.Tests
             var actual = command.CanExecute();
             Assert.True(actual);
 
-            command.Execute(null);
+            ((ICommand)command).Execute(null);
             Assert.True(executed);
         }
 
@@ -514,7 +514,7 @@ namespace Anorisoft.WinUI.Commands.Tests
             var actual = command.CanExecute();
             Assert.True(actual);
 
-            command.Execute(null);
+            ((ICommand)command).Execute(null);
             Assert.True(executed);
         }
 
@@ -575,7 +575,7 @@ namespace Anorisoft.WinUI.Commands.Tests
             handlers.CanExecuteReturnValue = true;
             var actual = command.CanExecute();
             Assert.False(actual);
-            command.Execute(null);
+            ((ICommand)command).Execute(null);
 
             Assert.False(executed);
         }

@@ -4,19 +4,18 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Anorisoft.WinUI.Commands.Interfaces;
-using Anorisoft.WinUI.Commands.Resources;
 using Anorisoft.WinUI.Common;
 using CanExecuteChangedTests;
 using JetBrains.Annotations;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Anorisoft.WinUI.Commands.Commands
 {
     public class ActivatableAsyncCanExecuteObserverCommand<T> :
-        AsyncCommandBase<T>, 
+        AsyncCommandBase<T>,
         IActivatableAsyncCommand<T>,
         ICanExecuteChangedObserver,
         IDisposable
@@ -43,7 +42,7 @@ namespace Anorisoft.WinUI.Commands.Commands
         public ActivatableAsyncCanExecuteObserverCommand(
             [NotNull] Func<T, Task> execute,
             bool autoActivate,
-            [NotNull] [ItemNotNull] params ICanExecuteChangedSubject[] observers)
+            [NotNull][ItemNotNull] params ICanExecuteChangedSubject[] observers)
             : base(execute)
         {
             if (observers == null)
@@ -103,7 +102,7 @@ namespace Anorisoft.WinUI.Commands.Commands
             [NotNull] Func<T, Task> execute,
             bool autoActivate,
             [NotNull] ICanExecuteSubject canExecuteSubject,
-            [NotNull] [ItemNotNull] params ICanExecuteChangedSubject[] observers)
+            [NotNull][ItemNotNull] params ICanExecuteChangedSubject[] observers)
             : base(execute, canExecuteSubject)
         {
             if (canExecuteSubject == null)
@@ -133,7 +132,7 @@ namespace Anorisoft.WinUI.Commands.Commands
         /// <param name="observers">The observers.</param>
         public ActivatableAsyncCanExecuteObserverCommand(
             [NotNull] Func<T, Task> execute,
-            [NotNull] [ItemNotNull] params ICanExecuteChangedSubject[] observers)
+            [NotNull][ItemNotNull] params ICanExecuteChangedSubject[] observers)
             : this(execute, false, observers)
         {
         }
@@ -147,7 +146,7 @@ namespace Anorisoft.WinUI.Commands.Commands
         public ActivatableAsyncCanExecuteObserverCommand(
             [NotNull] Func<T, Task> execute,
             [NotNull] ICanExecuteSubject canExecuteSubject,
-            [NotNull] [ItemNotNull] params ICanExecuteChangedSubject[] observers)
+            [NotNull][ItemNotNull] params ICanExecuteChangedSubject[] observers)
             : this(execute, false, canExecuteSubject, observers)
         {
         }
@@ -176,7 +175,7 @@ namespace Anorisoft.WinUI.Commands.Commands
         public ActivatableAsyncCanExecuteObserverCommand(
             [NotNull] Func<T, Task> execute,
             [NotNull] Predicate<T> canExecute,
-            [NotNull] [ItemNotNull] params ICanExecuteChangedSubject[] observers)
+            [NotNull][ItemNotNull] params ICanExecuteChangedSubject[] observers)
             : this(execute, false, canExecute, observers)
         {
         }
@@ -193,7 +192,7 @@ namespace Anorisoft.WinUI.Commands.Commands
             [NotNull] Func<T, Task> execute,
             bool autoActivate,
             [NotNull] Predicate<T> canExecute,
-            [NotNull] [ItemNotNull] params ICanExecuteChangedSubject[] observers)
+            [NotNull][ItemNotNull] params ICanExecuteChangedSubject[] observers)
             : base(execute, canExecute)
         {
             if (observers == null)
@@ -311,7 +310,5 @@ namespace Anorisoft.WinUI.Commands.Commands
         ///     Unsubscribes this instance.
         /// </summary>
         protected void Unsubscribe() => this.observers.ForEach(observer => observer.Remove(this));
-
-       
     }
 }

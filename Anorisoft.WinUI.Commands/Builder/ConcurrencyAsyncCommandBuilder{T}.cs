@@ -8,6 +8,7 @@ using Anorisoft.WinUI.Commands.CanExecuteObservers;
 using Anorisoft.WinUI.Commands.Commands;
 using Anorisoft.WinUI.Commands.Exeptions;
 using Anorisoft.WinUI.Commands.Interfaces;
+using Anorisoft.WinUI.Commands.Interfaces.Builders;
 using JetBrains.Annotations;
 
 namespace Anorisoft.WinUI.Commands.Builder
@@ -56,8 +57,8 @@ namespace Anorisoft.WinUI.Commands.Builder
         /// </summary>
         /// <param name="setCommand">The set command.</param>
         /// <returns></returns>
-        IActivatableConcurrencyAsyncCommand<T> IActivatableConcurrencyAsyncCanExecuteBuilder<T>.Build(
-            Action<IActivatableConcurrencyAsyncCommand<T>> setCommand) => Build(setCommand);
+        ActivatableConcurrencyAsyncCanExecuteObserverCommand<T> IActivatableConcurrencyAsyncCanExecuteBuilder<T>.Build(
+            Action<ActivatableConcurrencyAsyncCanExecuteObserverCommand<T>> setCommand) => Build(setCommand);
 
         /// <summary>
         /// Observeses the property.
@@ -86,21 +87,21 @@ namespace Anorisoft.WinUI.Commands.Builder
         /// Builds this instance.
         /// </summary>
         /// <returns></returns>
-        IActivatableConcurrencyAsyncCommand<T> IActivatableConcurrencyAsyncCanExecuteBuilder<T>.Build() => Build();
+        ActivatableConcurrencyAsyncCanExecuteObserverCommand<T> IActivatableConcurrencyAsyncCanExecuteBuilder<T>.Build() => Build();
 
         /// <summary>
         /// Builds this instance.
         /// </summary>
         /// <returns></returns>
-        IActivatableConcurrencyAsyncCommand<T> IActivatableConcurrencyAsyncCommandBuilder<T>.Build() => Build();
+        ActivatableConcurrencyAsyncCanExecuteObserverCommand<T> IActivatableConcurrencyAsyncCommandBuilder<T>.Build() => Build();
 
         /// <summary>
         /// Builds the specified set command.
         /// </summary>
         /// <param name="setCommand">The set command.</param>
         /// <returns></returns>
-        IActivatableConcurrencyAsyncCommand<T> IActivatableConcurrencyAsyncCommandBuilder<T>.Build(
-            Action<IActivatableConcurrencyAsyncCommand<T>> setCommand) => Build(setCommand);
+        ActivatableConcurrencyAsyncCanExecuteObserverCommand<T> IActivatableConcurrencyAsyncCommandBuilder<T>.Build(
+            Action<ActivatableConcurrencyAsyncCanExecuteObserverCommand<T>> setCommand) => Build(setCommand);
 
         /// <summary>
         /// Determines whether this instance can execute the specified can execute.
@@ -242,8 +243,8 @@ namespace Anorisoft.WinUI.Commands.Builder
         }
 
         [NotNull]
-        private IActivatableConcurrencyAsyncCommand<T> Build(
-            [NotNull] Action<IActivatableConcurrencyAsyncCommand<T>> setCommand)
+        private ActivatableConcurrencyAsyncCanExecuteObserverCommand<T> Build(
+            [NotNull] Action<ActivatableConcurrencyAsyncCanExecuteObserverCommand<T>> setCommand)
         {
             if (setCommand == null) throw new ArgumentNullException(nameof(setCommand));
             var command = Build();

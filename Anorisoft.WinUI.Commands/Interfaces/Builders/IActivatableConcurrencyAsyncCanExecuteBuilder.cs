@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Linq.Expressions;
+using Anorisoft.WinUI.Commands.Commands;
 using JetBrains.Annotations;
 
-namespace Anorisoft.WinUI.Commands.Interfaces
+namespace Anorisoft.WinUI.Commands.Interfaces.Builders
 {
     public interface IActivatableConcurrencyAsyncCanExecuteBuilder
     {
         [NotNull]
-        IActivatableConcurrencyAsyncCommand Build();
+        ActivatableConcurrencyAsyncCanExecuteObserverCommand Build();
 
         [NotNull]
-        IActivatableConcurrencyAsyncCommand Build([NotNull] Action<IActivatableConcurrencyAsyncCommand> setCommand);
+        ActivatableConcurrencyAsyncCanExecuteObserverCommand Build([NotNull] Action<ActivatableConcurrencyAsyncCanExecuteObserverCommand> setCommand);
 
         [NotNull]
         IActivatableConcurrencyAsyncCanExecuteBuilder ObservesProperty<TType>([NotNull] Expression<Func<TType>> expression);

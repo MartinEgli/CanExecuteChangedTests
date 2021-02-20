@@ -1,16 +1,17 @@
 ﻿using JetBrains.Annotations;
 using System;
 using System.Linq.Expressions;
+using Anorisoft.WinUI.Commands.Commands;
 
 namespace Anorisoft.WinUI.Commands.Interfaces
 {
     public interface ISyncCommandBuilder
     {
         [NotNull]
-        ISyncCommand Build();
+        CanExecuteObserverCommand Build();
 
         [NotNull]
-        ISyncCommand Build([NotNull] Action<ISyncCommand> setCommand);
+        CanExecuteObserverCommand Build([NotNull] Action<CanExecuteObserverCommand> setCommand);
 
         [NotNull]
         ISyncCanExecuteBuilder CanExecute([NotNull] Func<bool> canExecute);

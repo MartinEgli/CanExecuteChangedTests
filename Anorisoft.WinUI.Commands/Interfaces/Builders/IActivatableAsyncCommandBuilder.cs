@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Linq.Expressions;
+using Anorisoft.WinUI.Commands.Commands;
 using JetBrains.Annotations;
 
-namespace Anorisoft.WinUI.Commands.Interfaces
+namespace Anorisoft.WinUI.Commands.Interfaces.Builders
 {
     public interface IActivatableAsyncCommandBuilder
     {
         [NotNull]
-        IActivatableAsyncCommand Build();
+        ActivatableAsyncCanExecuteObserverCommand Build();
 
         [NotNull]
-        IActivatableAsyncCommand Build([NotNull] Action<IActivatableAsyncCommand> setCommand);
+        ActivatableAsyncCanExecuteObserverCommand Build([NotNull] Action<ActivatableAsyncCanExecuteObserverCommand> setCommand);
 
         [NotNull]
         IActivatableAsyncCanExecuteBuilder CanExecute([NotNull] Func<bool> canExecute);
@@ -20,6 +21,9 @@ namespace Anorisoft.WinUI.Commands.Interfaces
 
         [NotNull]
         IActivatableAsyncCanExecuteBuilder ObservesCanExecute([NotNull] Expression<Func<bool>> canExecute, bool fallback);
+
+        [NotNull]
+        IActivatableAsyncCanExecuteBuilder AutoActivate();
 
     }
 }
