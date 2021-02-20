@@ -142,7 +142,7 @@ namespace Anorisoft.PropertyObservers.Common
                             var root = new RootPropertyObserverNode(
                                 propertyElement.PropertyInfo,
                                 this.OnAction,
-                                (INotifyPropertyChanged)fieldElement.FieldInfo.GetValue(constantElement.Value));
+                                fieldElement.FieldInfo.GetValue(constantElement.Value));
 
                             Looptree(propertyElement, root);
                             RootNodes.Add(root);

@@ -4,13 +4,13 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
 using Anorisoft.WinUI.Commands.Interfaces;
+using Anorisoft.WinUI.Commands.Interfaces.Commands;
 using Anorisoft.WinUI.Common;
 using CanExecuteChangedTests;
 using JetBrains.Annotations;
-using System;
-using System.Collections.Generic;
-using Anorisoft.WinUI.Commands.Interfaces.Commands;
 
 namespace Anorisoft.WinUI.Commands.Commands
 {
@@ -40,7 +40,7 @@ namespace Anorisoft.WinUI.Commands.Commands
         public ActivatableCanExecuteObserverCommand(
             [NotNull] Action<T> execute,
             bool autoActivate,
-            [NotNull][ItemNotNull] params ICanExecuteChangedSubject[] observers)
+            [NotNull] [ItemNotNull] params ICanExecuteChangedSubject[] observers)
             : base(execute)
         {
             if (observers == null)
@@ -70,7 +70,7 @@ namespace Anorisoft.WinUI.Commands.Commands
             [NotNull] Action<T> execute,
             bool autoActivate,
             [NotNull] ICanExecuteSubject canExecuteSubject,
-            [NotNull][ItemNotNull] params ICanExecuteChangedSubject[] observers)
+            [NotNull] [ItemNotNull] params ICanExecuteChangedSubject[] observers)
             : base(execute, canExecuteSubject)
         {
             if (canExecuteSubject == null)
@@ -98,7 +98,7 @@ namespace Anorisoft.WinUI.Commands.Commands
         /// <param name="observers">The observers.</param>
         public ActivatableCanExecuteObserverCommand(
             [NotNull] Action<T> execute,
-            [NotNull][ItemNotNull] params ICanExecuteChangedSubject[] observers)
+            [NotNull] [ItemNotNull] params ICanExecuteChangedSubject[] observers)
             : this(execute, false, observers)
         {
         }
@@ -112,7 +112,7 @@ namespace Anorisoft.WinUI.Commands.Commands
         public ActivatableCanExecuteObserverCommand(
             [NotNull] Action<T> execute,
             [NotNull] ICanExecuteSubject canExecuteSubject,
-            [NotNull][ItemNotNull] params ICanExecuteChangedSubject[] observers)
+            [NotNull] [ItemNotNull] params ICanExecuteChangedSubject[] observers)
             : this(execute, false, canExecuteSubject, observers)
         {
         }
@@ -138,7 +138,7 @@ namespace Anorisoft.WinUI.Commands.Commands
         public ActivatableCanExecuteObserverCommand(
             [NotNull] Action<T> execute,
             [NotNull] Predicate<T> canExecute,
-            [NotNull][ItemNotNull] params ICanExecuteChangedSubject[] observers)
+            [NotNull] [ItemNotNull] params ICanExecuteChangedSubject[] observers)
             : this(execute, false, canExecute, observers)
         {
         }
@@ -156,7 +156,7 @@ namespace Anorisoft.WinUI.Commands.Commands
             [NotNull] Action<T> execute,
             bool autoActivate,
             [NotNull] Predicate<T> canExecute,
-            [NotNull][ItemNotNull] params ICanExecuteChangedSubject[] observers)
+            [NotNull] [ItemNotNull] params ICanExecuteChangedSubject[] observers)
             : base(execute, canExecute)
         {
             if (observers == null)
@@ -205,9 +205,40 @@ namespace Anorisoft.WinUI.Commands.Commands
         }
 
         /// <summary>
+        /// Activates this instance.
+        /// </summary>
+        /// <returns></returns>
+        IActivatableSyncCommand<T> IActivatable<IActivatableSyncCommand<T>>.Activate() => Activate();
+
+        /// <summary>
+        /// Deactivates this instance.
+        /// </summary>
+        /// <returns></returns>
+        IActivatableSyncCommand<T> IActivatable<IActivatableSyncCommand<T>>.Deactivate() => Deactivate();
+
+        /// <summary>
+        ///     Called when [can execute changed].
+        /// </summary>
+        public void RaisePropertyChanged() => this.CanExecuteChanged.RaiseEmpty(this);
+
+        /// <summary>
+        ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Finalizes an instance of the <see cref="ActivatableCanExecuteObserverCommand{T}"/> class.
+        /// </summary>
+        ~ActivatableCanExecuteObserverCommand() => Dispose(false);
+
+        /// <summary>
         ///     Activates this instance.
         /// </summary>
-        public IActivatableSyncCommand<T> Activate()
+        public ActivatableCanExecuteObserverCommand<T> Activate()
         {
             if (this.IsActive)
             {
@@ -222,7 +253,7 @@ namespace Anorisoft.WinUI.Commands.Commands
         /// <summary>
         ///     Deactivates this instance.
         /// </summary>
-        public IActivatableSyncCommand<T> Deactivate()
+        public ActivatableCanExecuteObserverCommand<T> Deactivate()
         {
             if (!this.IsActive)
             {
@@ -232,20 +263,6 @@ namespace Anorisoft.WinUI.Commands.Commands
             this.Unsubscribe();
             this.IsActive = false;
             return this;
-        }
-
-        /// <summary>
-        ///     Called when [can execute changed].
-        /// </summary>
-        public void RaisePropertyChanged() => this.CanExecuteChanged.RaiseEmpty(this);
-
-        /// <summary>
-        ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-        /// </summary>
-        public void Dispose()
-        {
-            this.Dispose(true);
-            GC.SuppressFinalize(this);
         }
 
         /// <summary>

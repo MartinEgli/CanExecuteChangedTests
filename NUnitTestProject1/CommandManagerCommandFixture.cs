@@ -20,7 +20,7 @@ namespace Anorisoft.WinUI.Commands.Tests
     ///     Summary description for ObservableCommandFixture
     /// </summary>
     [TestFixture]
-    public class CommandManagerCommandFixture
+    public class CommandBuilder_Fixture
     {
         [SetUp]
         public void Init()
@@ -369,13 +369,115 @@ namespace Anorisoft.WinUI.Commands.Tests
         }
 
         [Test]
+        public void CommandBuilder_SyncCommand_ObservesCanExecute_ObservesCommandManager_Return1()
+        {
+            var handlers = new DelegateHandlers();
+            var builder = new CommandBuilder();
+            var command = builder
+                .Command(() => handlers.Execute())
+                .ObservesCanExecute(() => handlers.CanExecute())
+                .ObservesCommandManager()
+                .Build();
+
+            handlers.CanExecuteReturnValue = true;
+            var actual = command.CanExecute();
+            Assert.True(actual);
+
+            ((ICommand)command).Execute(null);
+            Assert.AreEqual(1, handlers.ExecuteCount);
+        }
+
+        [Test]
+        public void CommandBuilder_SyncCommand_CanExecute_ObservesProperty_Extended_Return1()
+        {
+            var handlers = new DelegateHandlers();
+            var canExecuteChangedCount = 0;
+            handlers.ObservableBoolean = false;
+            var builder = new CommandBuilder();
+            var command = builder
+                .Command(() => handlers.Execute())
+                .CanExecute(() => handlers.CanExecute())
+                .ObservesProperty(() => handlers.ObservableBoolean)
+                .Build();
+
+            command.CanExecuteChanged += (sender, args) => command.CanExecute();
+            command.CanExecuteChanged += (sender, args) => canExecuteChangedCount++;
+            Assert.AreEqual(0, handlers.CanExecuteCount);
+            Assert.AreEqual(0, canExecuteChangedCount);
+
+            handlers.CanExecuteReturnValue = true;
+            var actual = command.CanExecute();
+            Assert.AreEqual(0, canExecuteChangedCount);
+            Assert.AreEqual(1, handlers.CanExecuteCount);
+            Assert.AreEqual(0, handlers.ExecuteCount);
+            Assert.True(actual);
+
+            ((ICommand)command).Execute(null);
+            Assert.AreEqual(0, canExecuteChangedCount);
+            Assert.AreEqual(2, handlers.CanExecuteCount);
+            Assert.AreEqual(1, handlers.ExecuteCount);
+
+            handlers.ObservableBoolean = true;
+            Assert.AreEqual(1, canExecuteChangedCount);
+            Assert.AreEqual(3, handlers.CanExecuteCount);
+
+            handlers.ObservableBoolean = false;
+            Assert.AreEqual(2, canExecuteChangedCount);
+            Assert.AreEqual(4, handlers.CanExecuteCount);
+        }
+
+        [Test]
+        public void CommandBuilder_SyncCommand_CanExecute_Observes_Extended_Return1()
+        {
+            var handlers = new DelegateHandlers();
+            var canExecuteChangedCount = 0;
+            var observerCount = 0;
+            handlers.ObservableBoolean = false;
+            var builder = new CommandBuilder();
+
+            var observer = PropertyObserver<bool>.Create(() => handlers.ObservableBoolean);
+            observer.Update += () => observerCount++;
+
+            var command = builder
+                .Command(() => handlers.Execute())
+                .CanExecute(() => handlers.CanExecute())
+                .Observes(observer)
+                .Build();
+
+            command.CanExecuteChanged += (sender, args) => command.CanExecute();
+            command.CanExecuteChanged += (sender, args) => canExecuteChangedCount++;
+            Assert.AreEqual(0, handlers.CanExecuteCount);
+            Assert.AreEqual(0, canExecuteChangedCount);
+
+            handlers.CanExecuteReturnValue = true;
+            var actual = command.CanExecute();
+            Assert.AreEqual(1, handlers.CanExecuteCount);
+            Assert.AreEqual(0, canExecuteChangedCount);
+            Assert.True(actual);
+
+            ((ICommand)command).Execute(null);
+            Assert.AreEqual(2, handlers.CanExecuteCount);
+
+            handlers.ObservableBoolean = true;
+            Assert.AreEqual(1, observerCount);
+            Assert.AreEqual(1, canExecuteChangedCount);
+            Assert.AreEqual(3, handlers.CanExecuteCount);
+
+            handlers.ObservableBoolean = false;
+            Assert.AreEqual(2, observerCount);
+            Assert.AreEqual(2, canExecuteChangedCount);
+            Assert.AreEqual(4, handlers.CanExecuteCount);
+            Assert.AreEqual(1, handlers.ExecuteCount);
+        }
+
+        [Test]
         public void CommandBuilder_SyncCommand_ObservesCanExecute_Return0()
         {
             var handlers = new DelegateHandlers();
             var builder = new CommandBuilder();
             var command = builder
                 .Command(() => handlers.Execute())
-                .ObservesCanExecute(() => false || 1 > handlers.ExecuteCount)
+                .ObservesCanExecute(() => 1 < handlers.ExecuteCount)
                 .Build();
 
             handlers.CanExecuteReturnValue = true;
@@ -456,7 +558,7 @@ namespace Anorisoft.WinUI.Commands.Tests
         public void CommandBuilder_ConurrencySyncCommandOfT_CanExecute_ReturnTrue()
         {
             var handlers = new DelegateHandlers();
-            var waitHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
+            using var waitHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
             var builder = new CommandBuilder();
             var command = builder
                 .Command((int i, CancellationToken token) =>
@@ -473,7 +575,6 @@ namespace Anorisoft.WinUI.Commands.Tests
 
             command.Execute(1);
             waitHandle.WaitOne();
-            waitHandle.Dispose();
             Assert.AreEqual(1, handlers.ExecuteCount);
         }
 
@@ -481,7 +582,7 @@ namespace Anorisoft.WinUI.Commands.Tests
         public void CommandBuilder_ConurrencyAsyncCommand_CanExecute_ReturnTrue()
         {
             var handlers = new DelegateHandlers();
-            var waitHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
+            using var waitHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
             var builder = new CommandBuilder();
             var command = builder
                 .Command(async (token) =>
@@ -498,7 +599,6 @@ namespace Anorisoft.WinUI.Commands.Tests
 
             ((ICommand)command).Execute(null);
             waitHandle.WaitOne();
-            waitHandle.Dispose();
             Assert.AreEqual(1, handlers.ExecuteCount);
         }
 
@@ -506,7 +606,7 @@ namespace Anorisoft.WinUI.Commands.Tests
         public void CommandBuilder_ConurrencyAsyncCommandOfT_CanExecute_ReturnTrue()
         {
             var handlers = new DelegateHandlers();
-            var waitHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
+            using var waitHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
             var builder = new CommandBuilder();
             var command = builder
                 .Command(async (int i, CancellationToken token) =>
@@ -523,7 +623,23 @@ namespace Anorisoft.WinUI.Commands.Tests
 
             command.Execute(1);
             waitHandle.WaitOne();
-            waitHandle.Dispose();
+            Assert.AreEqual(1, handlers.ExecuteCount);
+        }
+
+        [Test]
+        public void CommandBuilder_ICommand_SyncCommand_Return1()
+        {
+            var handlers = new DelegateHandlers();
+            var builder = new CommandBuilder();
+            ICommand command = builder
+                .Command(() => handlers.Execute())
+                .Build();
+
+            handlers.CanExecuteReturnValue = true;
+            var actual = command.CanExecute(null);
+            Assert.True(actual);
+
+            command.Execute(null);
             Assert.AreEqual(1, handlers.ExecuteCount);
         }
 
@@ -540,18 +656,303 @@ namespace Anorisoft.WinUI.Commands.Tests
             var actual = command.CanExecute();
             Assert.True(actual);
 
-            ((ICommand)command).Execute(null);
+            command.Execute();
+            Assert.AreEqual(1, handlers.ExecuteCount);
+        }
+
+        [Test]
+        public void CommandBuilder_ICommand_SyncCommandOfT_Return1()
+        {
+            var handlers = new DelegateHandlers();
+            var builder = new CommandBuilder();
+            ICommand command = builder
+                .Command((int i) => handlers.Execute())
+                .Build();
+
+            handlers.CanExecuteReturnValue = true;
+            var actual = command.CanExecute(0);
+            Assert.True(actual);
+
+            command.Execute(1);
+            Assert.AreEqual(1, handlers.ExecuteCount);
+        }
+
+        [Test]
+        public void CommandBuilder_SyncCommandOfT_Return1()
+        {
+            var handlers = new DelegateHandlers();
+            var builder = new CommandBuilder();
+            var command = builder
+                .Command((int i) => handlers.Execute())
+                .Build();
+
+            handlers.CanExecuteReturnValue = true;
+            var actual = command.CanExecute(0);
+            Assert.True(actual);
+
+            command.Execute(1);
+            Assert.AreEqual(1, handlers.ExecuteCount);
+        }
+
+        [Test]
+        public void CommandBuilder_ICommand_AsyncCommand_Return1()
+        {
+            var handlers = new DelegateHandlers();
+            var builder = new CommandBuilder();
+            ICommand command = builder
+                .Command(async () => await handlers.ExecuteAsync())
+                .Build();
+
+            handlers.CanExecuteReturnValue = true;
+            var actual = command.CanExecute(null);
+            Assert.True(actual);
+
+            command.Execute(null);
+            Assert.AreEqual(1, handlers.ExecuteCount);
+        }
+
+        [Test]
+        public void CommandBuilder_AsyncCommand_Return1()
+        {
+            var handlers = new DelegateHandlers();
+            var builder = new CommandBuilder();
+            var command = builder
+                .Command(async () => await handlers.ExecuteAsync())
+                .Build();
+
+            handlers.CanExecuteReturnValue = true;
+            var actual = command.CanExecute();
+            Assert.True(actual);
+
+            command.ExecuteAsync();
+            Assert.AreEqual(1, handlers.ExecuteCount);
+        }
+
+        [Test]
+        public void CommandBuilder_ICommand_AsyncCommandOfT_Return1()
+        {
+            var handlers = new DelegateHandlers();
+            var builder = new CommandBuilder();
+            ICommand command = builder
+                .Command(async (int i) => await handlers.ExecuteAsync())
+                .Build();
+
+            handlers.CanExecuteReturnValue = true;
+            var actual = command.CanExecute(0);
+            Assert.True(actual);
+
+            command.Execute(1);
+            Assert.AreEqual(1, handlers.ExecuteCount);
+        }
+
+        [Test]
+        public void CommandBuilder_AsyncCommandOfT_Return1()
+        {
+            var handlers = new DelegateHandlers();
+            var builder = new CommandBuilder();
+            var command = builder
+                .Command(async (int i) => await handlers.ExecuteAsync())
+                .Build();
+
+            handlers.CanExecuteReturnValue = true;
+            var actual = command.CanExecute(0);
+            Assert.True(actual);
+
+            command.ExecuteAsync(1);
+            Assert.AreEqual(1, handlers.ExecuteCount);
+        }
+
+        [Test]
+        public void CommandBuilder_ICommand_ConcurrencySyncCommand_Return1()
+        {
+            var handlers = new DelegateHandlers();
+            using var waitHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
+            var builder = new CommandBuilder();
+            ICommand command = builder
+                .Command((token) =>
+                {
+                    handlers.Execute();
+                    waitHandle.Set();
+                })
+                .Build();
+
+            handlers.CanExecuteReturnValue = true;
+            var actual = command.CanExecute(null);
+            Assert.True(actual);
+
+            command.Execute(null);
+            waitHandle.WaitOne();
+            Assert.AreEqual(1, handlers.ExecuteCount);
+        }
+
+        [Test]
+        public void CommandBuilder_ConcurrencySyncCommand_Return1()
+        {
+            var handlers = new DelegateHandlers();
+            using var waitHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
+            var builder = new CommandBuilder();
+            var command = builder
+                .Command((token) =>
+                {
+                    handlers.Execute();
+                    waitHandle.Set();
+                })
+                .Build();
+
+            handlers.CanExecuteReturnValue = true;
+            var actual = command.CanExecute();
+            Assert.True(actual);
+
+            command.Execute();
+            waitHandle.WaitOne();
+            Assert.AreEqual(1, handlers.ExecuteCount);
+        }
+
+        [Test]
+        public void CommandBuilder_ICommand_ConcurrencySyncCommandOfT_Return1()
+        {
+            var handlers = new DelegateHandlers();
+            using var waitHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
+            var builder = new CommandBuilder();
+            ICommand command = builder
+                .Command((int i, CancellationToken token) =>
+                {
+                    handlers.Execute();
+                    waitHandle.Set();
+                })
+                .Build();
+
+            handlers.CanExecuteReturnValue = true;
+            var actual = command.CanExecute(0);
+            Assert.True(actual);
+
+            command.Execute(1);
+            waitHandle.WaitOne();
+            Assert.AreEqual(1, handlers.ExecuteCount);
+        }
+
+        [Test]
+        public void CommandBuilder_ConcurrencySyncCommandOfT_Return1()
+        {
+            var handlers = new DelegateHandlers();
+            using var waitHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
+            var builder = new CommandBuilder();
+            var command = builder
+                .Command((int i, CancellationToken token) =>
+                {
+                    handlers.Execute();
+                    waitHandle.Set();
+                })
+                .Build();
+
+            handlers.CanExecuteReturnValue = true;
+            var actual = command.CanExecute(0);
+            Assert.True(actual);
+
+            command.Execute(1);
+            waitHandle.WaitOne();
+            Assert.AreEqual(1, handlers.ExecuteCount);
+        }
+
+        [Test]
+        public void CommandBuilder_ICommand_ConcurrencyAsyncCommand_Return1()
+        {
+            var handlers = new DelegateHandlers();
+            using var waitHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
+            var builder = new CommandBuilder();
+            ICommand command = builder
+                .Command(async (token) =>
+                {
+                    await handlers.ExecuteAsync();
+                    waitHandle.Set();
+                })
+                .Build();
+
+            handlers.CanExecuteReturnValue = true;
+            var actual = command.CanExecute(null);
+            Assert.True(actual);
+
+            command.Execute(null);
+            waitHandle.WaitOne();
+            Assert.AreEqual(1, handlers.ExecuteCount);
+        }
+
+        [Test]
+        public void CommandBuilder_ConcurrencyAsyncCommand_Return1()
+        {
+            var handlers = new DelegateHandlers();
+            using var waitHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
+            var builder = new CommandBuilder();
+            var command = builder
+                .Command(async (token) =>
+                {
+                    await handlers.ExecuteAsync();
+                    waitHandle.Set();
+                })
+                .Build();
+
+            handlers.CanExecuteReturnValue = true;
+            var actual = command.CanExecute();
+            Assert.True(actual);
+            using var tokenSource = new CancellationTokenSource();
+            command.ExecuteAsync(tokenSource.Token);
+            waitHandle.WaitOne();
+            Assert.AreEqual(1, handlers.ExecuteCount);
+        }
+
+        [Test]
+        public void CommandBuilder_ICommand_ConcurrencyAsyncCommandOfT_Return1()
+        {
+            var handlers = new DelegateHandlers();
+            using var waitHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
+            var builder = new CommandBuilder();
+            ICommand command = builder
+                .Command(async (int i, CancellationToken token) =>
+                {
+                    await handlers.ExecuteAsync();
+                    waitHandle.Set();
+                })
+                .Build();
+
+            handlers.CanExecuteReturnValue = true;
+            var actual = command.CanExecute(0);
+            Assert.True(actual);
+
+            command.Execute(1);
+            waitHandle.WaitOne();
+            Assert.AreEqual(1, handlers.ExecuteCount);
+        }
+
+        [Test]
+        public void CommandBuilder_ConcurrencyAsyncCommandOfT_Return1()
+        {
+            var handlers = new DelegateHandlers();
+            using var waitHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
+            var builder = new CommandBuilder();
+            var command = builder
+                .Command(async (int i, CancellationToken token) =>
+                {
+                    await handlers.ExecuteAsync();
+                    waitHandle.Set();
+                })
+                .Build();
+
+            handlers.CanExecuteReturnValue = true;
+            var actual = command.CanExecute(0);
+            Assert.True(actual);
+            using var tokenSource = new CancellationTokenSource();
+            command.ExecuteAsync(1, tokenSource.Token);
+            waitHandle.WaitOne();
             Assert.AreEqual(1, handlers.ExecuteCount);
         }
 
         [Test]
         public void CommandBuilder_SyncCommand_CanExecute_Activatable_Activate_RetuenTrue()
         {
-            var executed = false;
             var handlers = new DelegateHandlers();
             var builder = new CommandBuilder();
             var command = builder
-                .Command(() => executed = true)
+                .Command(() => handlers.Execute())
                 .CanExecute(handlers.CanExecute)
                 .Activatable()
                 .Build()
@@ -561,8 +962,28 @@ namespace Anorisoft.WinUI.Commands.Tests
             var actual = command.CanExecute();
             Assert.True(actual);
 
-            command.Execute(null);
-            Assert.True(executed);
+            ((ICommand)command).Execute(null);
+            Assert.AreEqual(1, handlers.ExecuteCount);
+        }
+
+        [Test]
+        public void CommandBuilder_SyncCommand_Activatable_CanExecute_Activate_RetuenTrue()
+        {
+            var handlers = new DelegateHandlers();
+            var builder = new CommandBuilder();
+            var command = builder
+                .Command(() => handlers.Execute())
+                .Activatable()
+                .CanExecute(handlers.CanExecute)
+                .Build()
+                .Activate();
+
+            handlers.CanExecuteReturnValue = true;
+            var actual = command.CanExecute();
+            Assert.True(actual);
+
+            ((ICommand)command).Execute(null);
+            Assert.AreEqual(1, handlers.ExecuteCount);
         }
 
         [Test]
@@ -581,18 +1002,17 @@ namespace Anorisoft.WinUI.Commands.Tests
             var actual = command.CanExecute();
             Assert.True(actual);
 
-            command.Execute(null);
+            ((ICommand)command).Execute(null);
             Assert.True(executed);
         }
 
         [Test]
         public void CommandBuilder_ExecuteCallsPassedInExecuteDelegateNoCanExecute()
         {
-            var executed = false;
             var handlers = new DelegateHandlers();
             var builder = new CommandBuilder();
             var command = builder
-                .Command(() => executed = true)
+                .Command(() => handlers.Execute())
                 .CanExecute(handlers.CanExecute)
                 .ObservesCommandManager()
                 .Activatable()
@@ -603,7 +1023,7 @@ namespace Anorisoft.WinUI.Commands.Tests
             Assert.False(actual);
             ((ICommand)command).Execute(null);
 
-            Assert.False(executed);
+            Assert.AreEqual(0, handlers.ExecuteCount);
         }
 
         [Test]

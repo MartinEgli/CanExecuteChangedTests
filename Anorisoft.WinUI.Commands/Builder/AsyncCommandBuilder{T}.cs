@@ -31,7 +31,7 @@ namespace Anorisoft.WinUI.Commands.Builder
         /// <summary>
         /// The can execute expression
         /// </summary>
-        private CanExecuteObserver canExecuteExpression;
+        private ICanExecuteSubject canExecuteSubject;
 
         /// <summary>
         /// The can execute function
@@ -69,6 +69,28 @@ namespace Anorisoft.WinUI.Commands.Builder
             Expression<Func<TType>> expression) => ObservesProperty(expression);
 
         /// <summary>
+        /// Observeses the specified observer.
+        /// </summary>
+        /// <param name="observer">The observer.</param>
+        /// <returns></returns>
+        IActivatableAsyncCanExecuteBuilder<T> IActivatableAsyncCanExecuteBuilder<T>.Observes(ICanExecuteChangedSubject observer)
+        {
+            observes.Add(observer);
+            return this;
+        }
+
+        /// <summary>
+        /// Observeses the specified observer.
+        /// </summary>
+        /// <param name="observer">The observer.</param>
+        /// <returns></returns>
+        IAsyncCanExecuteBuilder<T> IAsyncCanExecuteBuilder<T>.Observes(ICanExecuteChangedSubject observer)
+        {
+            observes.Add(observer);
+            return this;
+        }
+
+        /// <summary>
         /// Observeses the command manager.
         /// </summary>
         /// <returns></returns>
@@ -102,6 +124,28 @@ namespace Anorisoft.WinUI.Commands.Builder
         /// <returns></returns>
         IActivatableAsyncCanExecuteBuilder<T> IActivatableAsyncCommandBuilder<T>.CanExecute(Predicate<T> canExecute) =>
             CanExecute(canExecute);
+
+        /// <summary>
+        /// Determines whether this instance can execute the specified can execute.
+        /// </summary>
+        /// <param name="canExecute">The can execute.</param>
+        /// <returns></returns>
+        IActivatableAsyncCanExecuteBuilder<T> IActivatableAsyncCommandBuilder<T>.CanExecute(ICanExecuteSubject canExecute)
+        {
+            this.canExecuteSubject = canExecute;
+            return this;
+        }
+
+        /// <summary>
+        /// Determines whether this instance can execute the specified can execute.
+        /// </summary>
+        /// <param name="canExecute">The can execute.</param>
+        /// <returns></returns>
+        IAsyncCanExecuteBuilder<T> IAsyncCommandBuilder<T>.CanExecute(ICanExecuteSubject canExecute)
+        {
+            this.canExecuteSubject = canExecute;
+            return this;
+        }
 
         /// <summary>
         /// Observeses the can execute.
@@ -205,7 +249,7 @@ namespace Anorisoft.WinUI.Commands.Builder
         /// Activatables this instance.
         /// </summary>
         /// <returns></returns>
-        IActivatableAsyncCanExecuteBuilder<T> IAsyncCommandBuilder<T>.Activatable() => Activatable();
+        IActivatableAsyncCommandBuilder<T> IAsyncCommandBuilder<T>.Activatable() => Activatable();
 
         /// <summary>
         /// Determines whether this instance can execute the specified can execute.
@@ -222,7 +266,7 @@ namespace Anorisoft.WinUI.Commands.Builder
                 throw new CommandBuilderException(Resources.ExceptionStrings.CanExecuteFunctionAlreadyDefined);
             }
 
-            if (this.canExecuteExpression != null)
+            if (this.canExecuteSubject != null)
             {
                 throw new CommandBuilderException(Resources.ExceptionStrings.CanExecuteExpressionAlreadyDefined);
             }
@@ -246,10 +290,10 @@ namespace Anorisoft.WinUI.Commands.Builder
                         observes.ToArray());
                 }
 
-                if (canExecuteExpression != null)
+                if (canExecuteSubject != null)
                 {
                     return new ActivatableAsyncCanExecuteObserverCommand<T>(execute, isAutoActiate,
-                        canExecuteExpression,
+                        canExecuteSubject,
                         observes.ToArray());
                 }
 
@@ -261,9 +305,9 @@ namespace Anorisoft.WinUI.Commands.Builder
                 return new ActivatableAsyncCanExecuteObserverCommand<T>(execute, isAutoActiate, canExecuteFunction);
             }
 
-            if (canExecuteExpression != null)
+            if (canExecuteSubject != null)
             {
-                return new ActivatableAsyncCanExecuteObserverCommand<T>(execute, isAutoActiate, canExecuteExpression);
+                return new ActivatableAsyncCanExecuteObserverCommand<T>(execute, isAutoActiate, canExecuteSubject);
             }
 
             return new ActivatableAsyncCanExecuteObserverCommand<T>(execute, isAutoActiate);
@@ -284,10 +328,10 @@ namespace Anorisoft.WinUI.Commands.Builder
                         observes.ToArray());
                 }
 
-                if (canExecuteExpression != null)
+                if (canExecuteSubject != null)
                 {
                     return new AsyncCanExecuteObserverCommand<T>(execute, 
-                        canExecuteExpression,
+                        canExecuteSubject,
                         observes.ToArray());
                 }
 
@@ -299,9 +343,9 @@ namespace Anorisoft.WinUI.Commands.Builder
                 return new AsyncCanExecuteObserverCommand<T>(execute,  canExecuteFunction);
             }
 
-            if (canExecuteExpression != null)
+            if (canExecuteSubject != null)
             {
-                return new AsyncCanExecuteObserverCommand<T>(execute,  canExecuteExpression);
+                return new AsyncCanExecuteObserverCommand<T>(execute,  canExecuteSubject);
             }
 
             return new AsyncCanExecuteObserverCommand<T>(execute);
@@ -349,7 +393,7 @@ namespace Anorisoft.WinUI.Commands.Builder
         /// Activatables this instance.
         /// </summary>
         /// <returns></returns>
-        private IActivatableAsyncCanExecuteBuilder<T> Activatable() => this;
+        private AsyncCommandBuilder<T> Activatable() => this;
 
         /// <summary>
         /// Observeses the property.
@@ -376,7 +420,7 @@ namespace Anorisoft.WinUI.Commands.Builder
         private AsyncCommandBuilder<T> ObservesCanExecute([NotNull] Expression<Func<bool>> canExecute)
         {
             if (canExecute == null) throw new ArgumentNullException(nameof(canExecute));
-            if (this.canExecuteExpression != null)
+            if (this.canExecuteSubject != null)
             {
                 throw new CommandBuilderException(Resources.ExceptionStrings.CanExecuteExpressionAlreadyDefined);
             }
@@ -386,7 +430,7 @@ namespace Anorisoft.WinUI.Commands.Builder
                 throw new CommandBuilderException(Resources.ExceptionStrings.CanExecuteFunctionAlreadyDefined);
             }
 
-            this.canExecuteExpression = CanExecuteObserver.Create(canExecute);
+            this.canExecuteSubject = CanExecuteObserver.Create(canExecute);
             return this;
         }
 
@@ -402,7 +446,7 @@ namespace Anorisoft.WinUI.Commands.Builder
         private AsyncCommandBuilder<T> ObservesCanExecute([NotNull] Expression<Func<bool>> canExecute, bool fallback)
         {
             if (canExecute == null) throw new ArgumentNullException(nameof(canExecute));
-            if (this.canExecuteExpression != null)
+            if (this.canExecuteSubject != null)
             {
                 throw new CommandBuilderException(Resources.ExceptionStrings.CanExecuteExpressionAlreadyDefined);
             }
@@ -412,7 +456,7 @@ namespace Anorisoft.WinUI.Commands.Builder
                 throw new CommandBuilderException(Resources.ExceptionStrings.CanExecuteFunctionAlreadyDefined);
             }
 
-            this.canExecuteExpression = CanExecuteObserver.Create(canExecute, fallback);
+            this.canExecuteSubject = CanExecuteObserver.Create(canExecute, fallback);
             return this;
         }
 

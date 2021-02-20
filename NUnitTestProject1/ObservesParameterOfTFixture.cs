@@ -66,8 +66,8 @@ namespace Anorisoft.WinUI.Commands.Tests
             var expression =  notifyPropertyChangedTestObject.Value.IntPropertyExpression;
             using var observer1 = ParameterObserver.Observes(expression, () => { });
             using var observer2 = ParameterObserver.Observes(
-                notifyPropertyChangedTestObject,
-                o => o.Value.IntParameter,
+                notifyPropertyChangedTestObject.Value,
+                o => o.IntParameter,
                 () => { });
             Assert.True(observer1.Equals(observer2));
         }
@@ -171,7 +171,7 @@ namespace Anorisoft.WinUI.Commands.Tests
         public void
             ReactiveParameterObservers_ParameterObserver_OwnerExpression_ComplexProperty_Value_Integer_AutoActivate_True4()
         {
-            var value = 0;
+            var value = 1;
             var notifyPropertyChangedTestObject = new ParameterTestObject();
             notifyPropertyChangedTestObject.IntParameter.Value = 1;
             notifyPropertyChangedTestObject.ComplexProperty.Value = new ComplexParameterType();
@@ -246,24 +246,6 @@ namespace Anorisoft.WinUI.Commands.Tests
             Assert.AreEqual(null, value);
         }
 
-        //private Expression<Func<ParameterTestObject, bool?>> EvaluateRules<T>(string attributeName)
-        //{
-        //    ParameterExpression attributeParameter = Expression.Parameter(typeof(ParameterTestObject), "user");
-        //    MemberExpression attribute = Expression.Property(attributeParameter, attributeName);
-        //    BinaryExpression nullCheck = Expression.NotEqual(attribute, Expression.Constant(null, typeof(object)));
-        //    BinaryExpression condition = null;
-        //    object Value = "";
-        //    if (Value.GetType() != typeof(string))
-        //        condition = Expression.GreaterThanOrEqual(Expression.Call(parseMethod,
-        //                    Expression.Property(attributeParameter, attributeName)),
-        //                Expression.Constant(Value));
-
-        //    return Expression.Lambda<Func<ParameterTestObject, bool?>>(Expression.IfThenElse(nullCheck, Expression.Return(null), ), attributeParameter);
-        //}
-
-        /// <summary>
-        ///     Notifies the property changed owner expression complex property value integer automatic activate true3.
-        /// </summary>
         [Test]
         public void NotifyPropertyChanged_OwnerExpression_ComplexProperty_Value_Integer_AutoActivate_True3()
         {

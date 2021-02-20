@@ -19,7 +19,7 @@ namespace Anorisoft.WinUI.Commands.Tests
 
     public class DummyObserver : PropertyObserverBase<DummyObserver>, IPropertyObserver
     {
-        protected override event Action Update;
+        public override event Action Update;
     }
 
     /// <summary>
@@ -507,11 +507,8 @@ namespace Anorisoft.WinUI.Commands.Tests
         [Test]
         public void WhenConstructedWithGenericTypeIsNonNullableValueType_Throws()
         {
-            Assert.Throws<InvalidCastException>(
-                () =>
-                    {
-                        var command = new ActivatableCanExecuteObserverCommand<int>(param => { }, new DummyObserver());
-                    });
+            var command = new ActivatableCanExecuteObserverCommand<int>(param => { }, new DummyObserver());
+            command.Execute(1);
         }
 
         [Test]

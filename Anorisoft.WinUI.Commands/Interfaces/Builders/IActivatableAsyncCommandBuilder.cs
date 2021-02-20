@@ -17,6 +17,10 @@ namespace Anorisoft.WinUI.Commands.Interfaces.Builders
         IActivatableAsyncCanExecuteBuilder CanExecute([NotNull] Func<bool> canExecute);
 
         [NotNull]
+        IActivatableAsyncCanExecuteBuilder CanExecute([NotNull] ICanExecuteSubject canExecute);
+
+
+        [NotNull]
         IActivatableAsyncCanExecuteBuilder ObservesCanExecute([NotNull] Expression<Func<bool>> canExecute);
 
         [NotNull]

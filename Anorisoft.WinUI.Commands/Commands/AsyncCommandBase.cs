@@ -138,8 +138,8 @@ namespace Anorisoft.WinUI.Commands.Commands
                 {
                     this.IsExecuting = true;
 
-                    await this.execute();
-                   // await this.execute().ConfigureAwait(false);
+                    // await this.execute();
+                    await this.execute().ConfigureAwait(false);
                 }
                 finally
                 {

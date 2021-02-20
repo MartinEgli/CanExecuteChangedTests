@@ -27,6 +27,15 @@ namespace Anorisoft.WinUI.Commands.Interfaces.Builders
         IAsyncCanExecuteBuilder<T> CanExecute([NotNull] Predicate<T> canExecute);
 
         /// <summary>
+        /// Determines whether this instance can execute the specified can execute.
+        /// </summary>
+        /// <param name="canExecute">The can execute.</param>
+        /// <returns></returns>
+        [NotNull]
+        IAsyncCanExecuteBuilder<T> CanExecute([NotNull] ICanExecuteSubject canExecute);
+
+
+        /// <summary>
         /// Observeses the can execute.
         /// </summary>
         /// <param name="canExecute">The can execute.</param>
@@ -46,6 +55,6 @@ namespace Anorisoft.WinUI.Commands.Interfaces.Builders
         /// </summary>
         /// <returns></returns>
         [NotNull]
-        IActivatableAsyncCanExecuteBuilder<T> Activatable();
+        IActivatableAsyncCommandBuilder<T> Activatable();
     }
 }

@@ -238,7 +238,7 @@ namespace Anorisoft.WinUI.Commands.Commands
         /// <summary>
         /// Activates this instance.
         /// </summary>
-        public IActivatableAsyncCommand Activate()
+        public ActivatableAsyncCanExecuteObserverCommand Activate()
         {
             if (this.IsActive)
             {
@@ -253,7 +253,7 @@ namespace Anorisoft.WinUI.Commands.Commands
         /// <summary>
         /// Deactivates this instance.
         /// </summary>
-        public IActivatableAsyncCommand Deactivate()
+        public ActivatableAsyncCanExecuteObserverCommand Deactivate()
         {
             if (!this.IsActive)
             {
@@ -282,10 +282,7 @@ namespace Anorisoft.WinUI.Commands.Commands
         /// <summary>
         /// Finalizes an instance of the <see cref="ActivatableAsyncCanExecuteObserverCommand"/> class.
         /// </summary>
-        ~ActivatableAsyncCanExecuteObserverCommand()
-        {
-            Dispose(false);
-        }
+        ~ActivatableAsyncCanExecuteObserverCommand() => Dispose(false);
 
         /// <summary>
         /// Occurs when changes occur that affect whether or not the command should execute.
@@ -321,5 +318,17 @@ namespace Anorisoft.WinUI.Commands.Commands
         ///     Unsubscribes this instance.
         /// </summary>
         private void Unsubscribe() => this.observers.ForEach(observer => observer.Remove(this));
+
+        /// <summary>
+        /// Activates this instance.
+        /// </summary>
+        /// <returns></returns>
+        IActivatableAsyncCommand IActivatable<IActivatableAsyncCommand>.Activate() => Activate();
+
+        /// <summary>
+        /// Deactivates this instance.
+        /// </summary>
+        /// <returns></returns>
+        IActivatableAsyncCommand IActivatable<IActivatableAsyncCommand>.Deactivate() => Deactivate();
     }
 }

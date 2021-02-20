@@ -138,7 +138,10 @@ namespace Anorisoft.WinUI.Commands.Commands
         /// <summary>
         ///     Subscribes this instance.
         /// </summary>
-        private void Subscribe() => this.observers.ForEach(observer => observer.Add(this));
+        private void Subscribe() => this.observers.ForEach(observer =>
+        {
+            observer.Add(this);
+        });
 
         /// <summary>
         ///     Unsubscribes this instance.

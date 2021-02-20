@@ -23,7 +23,7 @@ namespace Anorisoft.WinUI.Commands.CanExecuteObservers
         ///     Occurs when [can execute changed].
         /// </summary>
         [CanBeNull]
-        protected abstract event Action Update;
+        public abstract event Action Update;
 
         /// <summary>
         ///     Gets or sets the property expression.

@@ -51,7 +51,7 @@ namespace Anorisoft.WinUI.Commands.CanExecuteObservers
         /// <summary>
         ///     Occurs when [can execute changed].
         /// </summary>
-        protected override event Action Update;
+        public override event Action Update;
 
         /// <summary>
         /// Gets the parameter.

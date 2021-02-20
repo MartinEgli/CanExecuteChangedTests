@@ -130,6 +130,9 @@ namespace Anorisoft.WinUI.Commands.Commands
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>
+        /// Finalizes an instance of the <see cref="AsyncCanExecuteObserverCommand"/> class.
+        /// </summary>
         ~AsyncCanExecuteObserverCommand() => Dispose(false);
 
         /// <summary>

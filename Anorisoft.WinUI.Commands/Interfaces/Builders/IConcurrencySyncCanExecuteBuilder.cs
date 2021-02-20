@@ -17,6 +17,9 @@ namespace Anorisoft.WinUI.Commands.Interfaces.Builders
         IConcurrencySyncCanExecuteBuilder ObservesProperty<TType>([NotNull] Expression<Func<TType>> expression);
 
         [NotNull]
+        IConcurrencySyncCanExecuteBuilder Observes([NotNull] ICanExecuteChangedSubject observer);
+
+        [NotNull]
         IConcurrencySyncCanExecuteBuilder ObservesCommandManager();
         
         [NotNull]

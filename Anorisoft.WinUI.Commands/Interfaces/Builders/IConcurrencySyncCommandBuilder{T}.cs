@@ -17,6 +17,10 @@ namespace Anorisoft.WinUI.Commands.Interfaces.Builders
         IConcurrencySyncCanExecuteBuilder<T> CanExecute([NotNull] Predicate<T> canExecute);
 
         [NotNull]
+        IConcurrencySyncCanExecuteBuilder<T> CanExecute([NotNull] ICanExecuteSubject canExecute);
+
+
+        [NotNull]
         IConcurrencySyncCanExecuteBuilder<T> ObservesCanExecute([NotNull] Expression<Func<bool>> canExecute);
 
         [NotNull]
@@ -24,6 +28,6 @@ namespace Anorisoft.WinUI.Commands.Interfaces.Builders
             bool fallback);
 
         [NotNull]
-        IActivatableConcurrencySyncCanExecuteBuilder<T> Activatable();
+        IActivatableConcurrencySyncCommandBuilder<T> Activatable();
     }
 }

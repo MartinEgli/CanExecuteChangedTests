@@ -28,14 +28,14 @@ namespace Anorisoft.WinUI.Commands.Builder
         private readonly List<ICanExecuteChangedSubject> observes = new List<ICanExecuteChangedSubject>();
 
         /// <summary>
-        /// The can execute expression
-        /// </summary>
-        private CanExecuteObserver canExecuteExpression;
-
-        /// <summary>
         /// The can execute function
         /// </summary>
         private Func<bool> canExecuteFunction;
+
+        /// <summary>
+        /// The can execute expression
+        /// </summary>
+        private ICanExecuteSubject canExecuteSubject;
 
         /// <summary>
         /// The is automatic actiate
@@ -55,7 +55,8 @@ namespace Anorisoft.WinUI.Commands.Builder
         /// </summary>
         /// <param name="setCommand">The set command.</param>
         /// <returns></returns>
-        ActivatableCanExecuteObserverCommand IActivatableSyncCanExecuteBuilder.Build(Action<ActivatableCanExecuteObserverCommand> setCommand)
+        ActivatableCanExecuteObserverCommand IActivatableSyncCanExecuteBuilder.Build(
+            Action<ActivatableCanExecuteObserverCommand> setCommand)
             => Build(setCommand);
 
         /// <summary>
@@ -67,6 +68,12 @@ namespace Anorisoft.WinUI.Commands.Builder
         IActivatableSyncCanExecuteBuilder IActivatableSyncCanExecuteBuilder.ObservesProperty<TType>(
             Expression<Func<TType>> expression)
             => ObservesProperty(expression);
+
+        IActivatableSyncCanExecuteBuilder IActivatableSyncCanExecuteBuilder.Observes(ICanExecuteChangedSubject observer)
+        {
+            observes.Add(observer);
+            return this;
+        }
 
         /// <summary>
         /// Observeses the command manager.
@@ -94,7 +101,8 @@ namespace Anorisoft.WinUI.Commands.Builder
         /// </summary>
         /// <param name="setCommand">The set command.</param>
         /// <returns></returns>
-        ActivatableCanExecuteObserverCommand IActivatableSyncCommandBuilder.Build(Action<ActivatableCanExecuteObserverCommand> setCommand)
+        ActivatableCanExecuteObserverCommand IActivatableSyncCommandBuilder.Build(
+            Action<ActivatableCanExecuteObserverCommand> setCommand)
             => Build(setCommand);
 
         /// <summary>
@@ -104,6 +112,17 @@ namespace Anorisoft.WinUI.Commands.Builder
         /// <returns></returns>
         IActivatableSyncCanExecuteBuilder IActivatableSyncCommandBuilder.CanExecute(Func<bool> canExecute)
             => CanExecute(canExecute);
+
+        /// <summary>
+        /// Determines whether this instance can execute the specified can execute.
+        /// </summary>
+        /// <param name="canExecute">The can execute.</param>
+        /// <returns></returns>
+        IActivatableSyncCanExecuteBuilder IActivatableSyncCommandBuilder.CanExecute(ICanExecuteSubject canExecute)
+        {
+            this.canExecuteSubject = canExecute;
+            return this;
+        }
 
         /// <summary>
         /// Observeses the can execute.
@@ -124,6 +143,10 @@ namespace Anorisoft.WinUI.Commands.Builder
             Expression<Func<bool>> canExecute, bool fallback)
             => ObservesCanExecute(canExecute, fallback);
 
+        /// <summary>
+        /// Automatics the activate.
+        /// </summary>
+        /// <returns></returns>
         IActivatableSyncCanExecuteBuilder IActivatableSyncCommandBuilder.AutoActivate() => AutoActivate();
 
         /// <summary>
@@ -132,6 +155,17 @@ namespace Anorisoft.WinUI.Commands.Builder
         /// <returns></returns>
         ActivatableCanExecuteObserverCommand IActivatableSyncCommandBuilder.Build()
             => BuildActivatable();
+
+        /// <summary>
+        /// Observeses the specified observer.
+        /// </summary>
+        /// <param name="observer">The observer.</param>
+        /// <returns></returns>
+        public ISyncCanExecuteBuilder Observes(ICanExecuteChangedSubject observer)
+        {
+            observes.Add(observer);
+            return this;
+        }
 
         /// <summary>
         /// Observeses the command manager.
@@ -176,6 +210,17 @@ namespace Anorisoft.WinUI.Commands.Builder
         /// </summary>
         /// <param name="canExecute">The can execute.</param>
         /// <returns></returns>
+        ISyncCanExecuteBuilder ISyncCommandBuilder.CanExecute(ICanExecuteSubject canExecute)
+        {
+            canExecuteSubject = canExecute;
+            return this;
+        }
+
+        /// <summary>
+        /// Determines whether this instance can execute the specified can execute.
+        /// </summary>
+        /// <param name="canExecute">The can execute.</param>
+        /// <returns></returns>
         ISyncCanExecuteBuilder ISyncCommandBuilder.CanExecute(Func<bool> canExecute)
             => CanExecute(canExecute);
 
@@ -208,134 +253,15 @@ namespace Anorisoft.WinUI.Commands.Builder
         /// Activatables this instance.
         /// </summary>
         /// <returns></returns>
-        IActivatableSyncCanExecuteBuilder ISyncCommandBuilder.Activatable()
+        IActivatableSyncCommandBuilder ISyncCommandBuilder.Activatable()
             => Activatable();
 
         /// <summary>
         /// Builds this instance.
         /// </summary>
         /// <returns></returns>
-        CanExecuteObserverCommand ISyncCommandBuilder.Build() 
+        CanExecuteObserverCommand ISyncCommandBuilder.Build()
             => Build();
-
-        /// <summary>
-        /// Builds this instance.
-        /// </summary>
-        /// <returns></returns>
-        /// <exception cref="NoCanExecuteException"></exception>
-        [NotNull]
-        private ActivatableCanExecuteObserverCommand BuildActivatable()
-        {
-            if (observes.Any())
-            {
-                if (canExecuteFunction != null)
-                {
-                    return new ActivatableCanExecuteObserverCommand(execute, isAutoActivate, canExecuteFunction,
-                        observes.ToArray());
-                }
-
-                if (canExecuteExpression != null)
-                {
-                    return new ActivatableCanExecuteObserverCommand(execute, isAutoActivate, canExecuteExpression,
-                        observes.ToArray());
-                }
-
-                throw new NoCanExecuteException();
-            }
-
-            if (canExecuteFunction != null)
-            {
-                return new ActivatableCanExecuteObserverCommand(execute, isAutoActivate, canExecuteFunction);
-            }
-
-            if (canExecuteExpression != null)
-            {
-                return new ActivatableCanExecuteObserverCommand(execute, isAutoActivate, canExecuteExpression);
-            }
-
-            return new ActivatableCanExecuteObserverCommand(execute, isAutoActivate);
-        }
-
-
-        [NotNull]
-        private CanExecuteObserverCommand Build()
-        {
-            if (observes.Any())
-            {
-                if (canExecuteFunction != null)
-                {
-                    return new CanExecuteObserverCommand(execute, canExecuteFunction,
-                        observes.ToArray());
-                }
-
-                if (canExecuteExpression != null)
-                {
-                    return new CanExecuteObserverCommand(execute, canExecuteExpression,
-                        observes.ToArray());
-                }
-
-                throw new NoCanExecuteException();
-            }
-
-            if (canExecuteFunction != null)
-            {
-                return new CanExecuteObserverCommand(execute, canExecuteFunction);
-            }
-
-            if (canExecuteExpression != null)
-            {
-                return new CanExecuteObserverCommand(execute, canExecuteExpression);
-            }
-
-            return new CanExecuteObserverCommand(execute);
-        }
-
-        /// <summary>
-        /// Builds the specified set command.
-        /// </summary>
-        /// <param name="setCommand">The set command.</param>
-        /// <returns></returns>
-        private ActivatableCanExecuteObserverCommand Build([NotNull] Action<ActivatableCanExecuteObserverCommand> setCommand)
-        {
-            if (setCommand == null) throw new ArgumentNullException(nameof(setCommand));
-            var command = BuildActivatable();
-            setCommand(command);
-            return command;
-        }
-
-        private CanExecuteObserverCommand Build([NotNull] Action<CanExecuteObserverCommand> setCommand)
-        {
-            if (setCommand == null) throw new ArgumentNullException(nameof(setCommand));
-            var command = Build();
-            setCommand(command);
-            return command;
-        }
-
-        /// <summary>
-        /// Builds the specified set command.
-        /// </summary>
-        /// <param name="setCommand">The set command.</param>
-        /// <returns></returns>
-        private ISyncCommand Build(Action<ISyncCommand> setCommand)
-        {
-            var command = Build();
-            setCommand(command);
-            return command;
-        }
-
-        /// <summary>
-        /// Observeses the property.
-        /// </summary>
-        /// <typeparam name="TType">The type of the type.</typeparam>
-        /// <param name="expression">The expression.</param>
-        /// <returns></returns>
-        [NotNull]
-        private SyncCommandBuilder ObservesProperty<TType>([NotNull] Expression<Func<TType>> expression)
-        {
-            if (expression == null) throw new ArgumentNullException(nameof(expression));
-            this.observes.Add(new PropertyObserverFactory().ObservesProperty(expression));
-            return this;
-        }
 
         /// <summary>
         /// Determines whether this instance can execute the specified can execute.
@@ -353,12 +279,132 @@ namespace Anorisoft.WinUI.Commands.Builder
                 throw new CommandBuilderException(Resources.ExceptionStrings.CanExecuteFunctionAlreadyDefined);
             }
 
-            if (this.canExecuteExpression != null)
+            if (this.canExecuteSubject != null)
             {
                 throw new CommandBuilderException(Resources.ExceptionStrings.CanExecuteExpressionAlreadyDefined);
             }
 
             this.canExecuteFunction = canExecute ?? throw new ArgumentNullException(nameof(canExecute));
+            return this;
+        }
+
+        /// <summary>
+        /// Builds this instance.
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="NoCanExecuteException"></exception>
+        [NotNull]
+        private ActivatableCanExecuteObserverCommand BuildActivatable()
+        {
+            if (observes.Any())
+            {
+                if (canExecuteFunction != null)
+                {
+                    return new ActivatableCanExecuteObserverCommand(execute, isAutoActivate, canExecuteFunction,
+                        observes.ToArray());
+                }
+
+                if (canExecuteSubject != null)
+                {
+                    return new ActivatableCanExecuteObserverCommand(execute, isAutoActivate, canExecuteSubject,
+                        observes.ToArray());
+                }
+
+                throw new NoCanExecuteException();
+            }
+
+            if (canExecuteFunction != null)
+            {
+                return new ActivatableCanExecuteObserverCommand(execute, isAutoActivate, canExecuteFunction);
+            }
+
+            if (canExecuteSubject != null)
+            {
+                return new ActivatableCanExecuteObserverCommand(execute, isAutoActivate, canExecuteSubject);
+            }
+
+            return new ActivatableCanExecuteObserverCommand(execute, isAutoActivate);
+        }
+
+        /// <summary>
+        /// Builds this instance.
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="NoCanExecuteException"></exception>
+        [NotNull]
+        private CanExecuteObserverCommand Build()
+        {
+            if (observes.Any())
+            {
+                if (canExecuteFunction != null)
+                {
+                    return new CanExecuteObserverCommand(execute, canExecuteFunction,
+                        observes.ToArray());
+                }
+
+                if (canExecuteSubject != null)
+                {
+                    return new CanExecuteObserverCommand(execute, canExecuteSubject,
+                        observes.ToArray());
+                }
+
+                throw new NoCanExecuteException();
+            }
+
+            if (canExecuteFunction != null)
+            {
+                return new CanExecuteObserverCommand(execute, canExecuteFunction);
+            }
+
+            if (canExecuteSubject != null)
+            {
+                return new CanExecuteObserverCommand(execute, canExecuteSubject);
+            }
+
+            return new CanExecuteObserverCommand(execute);
+        }
+
+        /// <summary>
+        /// Builds the specified set command.
+        /// </summary>
+        /// <param name="setCommand">The set command.</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException">setCommand</exception>
+        private ActivatableCanExecuteObserverCommand Build(
+            [NotNull] Action<ActivatableCanExecuteObserverCommand> setCommand)
+        {
+            if (setCommand == null) throw new ArgumentNullException(nameof(setCommand));
+            var command = BuildActivatable();
+            setCommand(command);
+            return command;
+        }
+
+        /// <summary>
+        /// Builds the specified set command.
+        /// </summary>
+        /// <param name="setCommand">The set command.</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException">setCommand</exception>
+        private CanExecuteObserverCommand Build([NotNull] Action<CanExecuteObserverCommand> setCommand)
+        {
+            if (setCommand == null) throw new ArgumentNullException(nameof(setCommand));
+            var command = Build();
+            setCommand(command);
+            return command;
+        }
+
+        /// <summary>
+        /// Observeses the property.
+        /// </summary>
+        /// <typeparam name="TType">The type of the type.</typeparam>
+        /// <param name="expression">The expression.</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException">expression</exception>
+        [NotNull]
+        private SyncCommandBuilder ObservesProperty<TType>([NotNull] Expression<Func<TType>> expression)
+        {
+            if (expression == null) throw new ArgumentNullException(nameof(expression));
+            this.observes.Add(new PropertyObserverFactory().ObservesProperty(expression));
             return this;
         }
 
@@ -374,7 +420,7 @@ namespace Anorisoft.WinUI.Commands.Builder
         private SyncCommandBuilder ObservesCanExecute([NotNull] Expression<Func<bool>> canExecute)
         {
             if (canExecute == null) throw new ArgumentNullException(nameof(canExecute));
-            if (this.canExecuteExpression != null)
+            if (this.canExecuteSubject != null)
             {
                 throw new CommandBuilderException(Resources.ExceptionStrings.CanExecuteExpressionAlreadyDefined);
             }
@@ -384,7 +430,7 @@ namespace Anorisoft.WinUI.Commands.Builder
                 throw new CommandBuilderException(Resources.ExceptionStrings.CanExecuteFunctionAlreadyDefined);
             }
 
-            this.canExecuteExpression = CanExecuteObserver.Create(canExecute);
+            this.canExecuteSubject = CanExecuteObserver.Create(canExecute);
             return this;
         }
 
@@ -401,7 +447,7 @@ namespace Anorisoft.WinUI.Commands.Builder
         private SyncCommandBuilder ObservesCanExecute([NotNull] Expression<Func<bool>> canExecute, bool fallback)
         {
             if (canExecute == null) throw new ArgumentNullException(nameof(canExecute));
-            if (this.canExecuteExpression != null)
+            if (this.canExecuteSubject != null)
             {
                 throw new CommandBuilderException(Resources.ExceptionStrings.CanExecuteExpressionAlreadyDefined);
             }
@@ -411,7 +457,7 @@ namespace Anorisoft.WinUI.Commands.Builder
                 throw new CommandBuilderException(Resources.ExceptionStrings.CanExecuteFunctionAlreadyDefined);
             }
 
-            this.canExecuteExpression = CanExecuteObserver.Create(canExecute, fallback);
+            this.canExecuteSubject = CanExecuteObserver.Create(canExecute, fallback);
             return this;
         }
 

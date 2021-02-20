@@ -18,7 +18,7 @@ namespace Anorisoft.WinUI.Commands.Commands
     /// </summary>
     /// <typeparam name="T">Parameter type</typeparam>
     /// <seealso cref="T:System.Windows.Input.ICommand" />
-    public abstract class SyncCommandBase<T> : CommandBase, Interfaces.ISyncCommand<T>, IDispatchableContext
+    public abstract class SyncCommandBase<T> : CommandBase, Interfaces.ISyncCommand<T>
     {
         /// <summary>
         /// Gets or sets a value indicating whether this instance has can execute.
@@ -72,7 +72,7 @@ namespace Anorisoft.WinUI.Commands.Commands
         /// <returns>
         ///   <c>true</c> if this instance can execute the specified parameter; otherwise, <c>false</c>.
         /// </returns>
-        public bool CanExecute([CanBeNull] T parameter)
+        public bool CanExecute( T parameter)
         {
             return this.canExecute == null || this.canExecute(parameter);
         }
@@ -81,7 +81,7 @@ namespace Anorisoft.WinUI.Commands.Commands
         /// Executes the specified parameter.
         /// </summary>
         /// <param name="parameter">The parameter.</param>
-        public void Execute([CanBeNull] T parameter)
+        public void Execute( T parameter)
         {
             if (this.CanExecute(parameter))
             {

@@ -2,7 +2,7 @@
 
 namespace Anorisoft.WinUI.Commands.Interfaces.Commands
 {
-    public interface IActivatableConcurrencyAsyncCommand<in T> : IConcurrencyAsyncCommand<T>, IActivatable
+    public interface IActivatableConcurrencyAsyncCommand<in T> : IConcurrencyAsyncCommand<T>, IActivatable<IActivatableConcurrencyAsyncCommand<T>>
     {
     }
 }

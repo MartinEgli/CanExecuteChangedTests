@@ -4,14 +4,14 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-using Anorisoft.WinUI.Commands.Interfaces;
-using Anorisoft.WinUI.Common;
-using CanExecuteChangedTests;
-using JetBrains.Annotations;
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using Anorisoft.WinUI.Commands.Interfaces;
 using Anorisoft.WinUI.Commands.Interfaces.Commands;
+using Anorisoft.WinUI.Common;
+using CanExecuteChangedTests;
+using JetBrains.Annotations;
 
 namespace Anorisoft.WinUI.Commands.Commands
 {
@@ -42,7 +42,7 @@ namespace Anorisoft.WinUI.Commands.Commands
         public ActivatableConcurrencyCanExecuteObserverCommand(
             [NotNull] Action<T, CancellationToken> execute,
             bool autoActivate,
-            [NotNull][ItemNotNull] params ICanExecuteChangedSubject[] observers)
+            [NotNull] [ItemNotNull] params ICanExecuteChangedSubject[] observers)
             : base(execute)
         {
             if (observers == null)
@@ -72,7 +72,7 @@ namespace Anorisoft.WinUI.Commands.Commands
             [NotNull] Action<T, CancellationToken> execute,
             bool autoActivate,
             [NotNull] ICanExecuteSubject canExecuteSubject,
-            [NotNull][ItemNotNull] params ICanExecuteChangedSubject[] observers)
+            [NotNull] [ItemNotNull] params ICanExecuteChangedSubject[] observers)
             : base(execute, canExecuteSubject)
         {
             if (canExecuteSubject == null)
@@ -114,7 +114,7 @@ namespace Anorisoft.WinUI.Commands.Commands
         public ActivatableConcurrencyCanExecuteObserverCommand(
             [NotNull] Action<T, CancellationToken> execute,
             [NotNull] ICanExecuteSubject canExecuteSubject,
-            [NotNull][ItemNotNull] params ICanExecuteChangedSubject[] observers)
+            [NotNull] [ItemNotNull] params ICanExecuteChangedSubject[] observers)
             : this(execute, false, canExecuteSubject, observers)
         {
         }
@@ -143,7 +143,7 @@ namespace Anorisoft.WinUI.Commands.Commands
         public ActivatableConcurrencyCanExecuteObserverCommand(
             [NotNull] Action<T, CancellationToken> execute,
             [NotNull] Predicate<T> canExecute,
-            [NotNull][ItemNotNull] params ICanExecuteChangedSubject[] observers)
+            [NotNull] [ItemNotNull] params ICanExecuteChangedSubject[] observers)
             : this(execute, false, canExecute, observers)
         {
         }
@@ -160,7 +160,7 @@ namespace Anorisoft.WinUI.Commands.Commands
             [NotNull] Action<T, CancellationToken> execute,
             bool autoActivate,
             [NotNull] Predicate<T> canExecute,
-            [NotNull][ItemNotNull] params ICanExecuteChangedSubject[] observers)
+            [NotNull] [ItemNotNull] params ICanExecuteChangedSubject[] observers)
             : base(execute, canExecute)
         {
             if (observers == null)
@@ -209,6 +209,20 @@ namespace Anorisoft.WinUI.Commands.Commands
         }
 
         /// <summary>
+        /// Activates this instance.
+        /// </summary>
+        /// <returns></returns>
+        IActivatableConcurrencySyncCommand<T> IActivatable<IActivatableConcurrencySyncCommand<T>>.Activate() =>
+            Activate();
+
+        /// <summary>
+        /// Deactivates this instance.
+        /// </summary>
+        /// <returns></returns>
+        IActivatableConcurrencySyncCommand<T> IActivatable<IActivatableConcurrencySyncCommand<T>>.Deactivate() =>
+            Deactivate();
+
+        /// <summary>
         /// Called when [can execute changed].
         /// </summary>
         public void RaisePropertyChanged() => this.CanExecuteChanged.RaiseEmpty(this);
@@ -216,7 +230,7 @@ namespace Anorisoft.WinUI.Commands.Commands
         /// <summary>
         /// Activates this instance.
         /// </summary>
-        public IActivatableConcurrencySyncCommand<T> Activate()
+        public ActivatableConcurrencyCanExecuteObserverCommand<T> Activate()
         {
             if (this.IsActive)
             {
@@ -231,7 +245,7 @@ namespace Anorisoft.WinUI.Commands.Commands
         /// <summary>
         /// Deactivates this instance.
         /// </summary>
-        public IActivatableConcurrencySyncCommand<T> Deactivate()
+        public ActivatableConcurrencyCanExecuteObserverCommand<T> Deactivate()
         {
             if (!this.IsActive)
             {

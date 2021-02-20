@@ -17,12 +17,16 @@ namespace Anorisoft.WinUI.Commands.Interfaces.Builders
         IConcurrencySyncCanExecuteBuilder CanExecute([NotNull] Func<bool> canExecute);
 
         [NotNull]
+        IConcurrencySyncCanExecuteBuilder CanExecute([NotNull] ICanExecuteSubject canExecute);
+
+
+        [NotNull]
         IConcurrencySyncCanExecuteBuilder ObservesCanExecute([NotNull] Expression<Func<bool>> canExecute);
 
         [NotNull]
         IConcurrencySyncCanExecuteBuilder ObservesCanExecute([NotNull] Expression<Func<bool>> canExecute, bool fallback);
 
         [NotNull]
-        IActivatableConcurrencySyncCanExecuteBuilder Activatable();
+        IActivatableConcurrencySyncCommandBuilder Activatable();
     }
 }

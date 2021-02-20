@@ -17,12 +17,15 @@ namespace Anorisoft.WinUI.Commands.Interfaces.Builders
         ISyncCanExecuteBuilder<T> CanExecute([NotNull] Predicate<T> canExecute);
 
         [NotNull]
+        ISyncCanExecuteBuilder<T> CanExecute([NotNull] ICanExecuteSubject canExecute);
+
+        [NotNull]
         ISyncCanExecuteBuilder<T> ObservesCanExecute([NotNull] Expression<Func<bool>> canExecute);
 
         [NotNull]
         ISyncCanExecuteBuilder<T> ObservesCanExecute([NotNull] Expression<Func<bool>> canExecute, bool fallback);
 
         [NotNull]
-        IActivatableSyncCanExecuteBuilder<T> Activatable();
+        IActivatableSyncCommandBuilder<T> Activatable();
     }
 }

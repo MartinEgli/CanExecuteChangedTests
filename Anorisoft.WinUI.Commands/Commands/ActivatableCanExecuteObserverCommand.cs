@@ -179,20 +179,6 @@ namespace Anorisoft.WinUI.Commands.Commands
         }
 
         /// <summary>
-        /// Called when [can execute changed].
-        /// </summary>
-        public void RaisePropertyChanged() => this.CanExecuteChanged.RaiseEmpty(this);
-
-        /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-        /// </summary>
-        public void Dispose()
-        {
-            this.Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <summary>
         /// Notifies that the value for <see cref="P:Anorisoft.WinUI.Common.IActivated.IsActive" /> property has changed.
         /// </summary>
         public event EventHandler<EventArgs<bool>> IsActiveChanged;
@@ -225,9 +211,56 @@ namespace Anorisoft.WinUI.Commands.Commands
         }
 
         /// <summary>
+        /// Determines whether this instance can execute.
+        /// </summary>
+        /// <returns>
+        ///   <c>true</c> if this instance can execute; otherwise, <c>false</c>.
+        /// </returns>
+        public override bool CanExecute()
+        {
+            if (!IsActive)
+            {
+                return false;
+            }
+
+            return base.CanExecute();
+        }
+
+        /// <summary>
         /// Activates this instance.
         /// </summary>
-        public IActivatableSyncCommand Activate()
+        /// <returns></returns>
+        IActivatableSyncCommand IActivatable<IActivatableSyncCommand>.Activate() => Activate();
+
+        /// <summary>
+        /// Deactivates this instance.
+        /// </summary>
+        /// <returns></returns>
+        IActivatableSyncCommand IActivatable<IActivatableSyncCommand>.Deactivate() => Deactivate();
+
+        /// <summary>
+        /// Called when [can execute changed].
+        /// </summary>
+        public void RaisePropertyChanged() => this.CanExecuteChanged.RaiseEmpty(this);
+
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Finalizes an instance of the <see cref="ActivatableCanExecuteObserverCommand"/> class.
+        /// </summary>
+        ~ActivatableCanExecuteObserverCommand() => Dispose(false);
+
+        /// <summary>
+        /// Activates this instance.
+        /// </summary>
+        public ActivatableCanExecuteObserverCommand Activate()
         {
             if (this.IsActive)
             {
@@ -242,7 +275,7 @@ namespace Anorisoft.WinUI.Commands.Commands
         /// <summary>
         /// Deactivates this instance.
         /// </summary>
-        public IActivatableSyncCommand Deactivate()
+        public ActivatableCanExecuteObserverCommand Deactivate()
         {
             if (!this.IsActive)
             {
@@ -278,14 +311,5 @@ namespace Anorisoft.WinUI.Commands.Commands
         ///     Unsubscribes this instance.
         /// </summary>
         private void Unsubscribe() => this.observers.ForEach(observer => observer.Remove(this));
-
-        public override bool CanExecute()
-        {
-            if (!IsActive)
-            {
-                return false;
-            }
-            return base.CanExecute();
-        }
     }
 }

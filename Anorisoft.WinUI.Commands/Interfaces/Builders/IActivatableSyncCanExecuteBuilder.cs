@@ -17,6 +17,9 @@ namespace Anorisoft.WinUI.Commands.Interfaces.Builders
         IActivatableSyncCanExecuteBuilder ObservesProperty<TType>([NotNull] Expression<Func<TType>> expression);
 
         [NotNull]
+        IActivatableSyncCanExecuteBuilder Observes([NotNull] ICanExecuteChangedSubject observer);
+
+        [NotNull]
         IActivatableSyncCanExecuteBuilder ObservesCommandManager();
 
         [NotNull]

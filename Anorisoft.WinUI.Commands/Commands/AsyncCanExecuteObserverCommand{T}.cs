@@ -4,12 +4,12 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-using Anorisoft.WinUI.Commands.Interfaces;
-using Anorisoft.WinUI.Common;
-using JetBrains.Annotations;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Anorisoft.WinUI.Commands.Interfaces;
+using Anorisoft.WinUI.Common;
+using JetBrains.Annotations;
 
 namespace Anorisoft.WinUI.Commands.Commands
 {
@@ -34,7 +34,7 @@ namespace Anorisoft.WinUI.Commands.Commands
         /// observer</exception>
         public AsyncCanExecuteObserverCommand(
             [NotNull] Func<T, Task> execute,
-            [NotNull][ItemNotNull] params ICanExecuteChangedSubject[] observers)
+            [NotNull] [ItemNotNull] params ICanExecuteChangedSubject[] observers)
             : base(execute)
         {
             if (observers == null)
@@ -55,10 +55,8 @@ namespace Anorisoft.WinUI.Commands.Commands
         public AsyncCanExecuteObserverCommand(
             [NotNull] Func<T, Task> execute,
             [NotNull] Action<Exception> error)
-            : base(execute, error)
-        {
+            : base(execute, error) =>
             Subscribe();
-        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ActivatableCanExecuteObserverCommand" /> class.
@@ -73,7 +71,7 @@ namespace Anorisoft.WinUI.Commands.Commands
         public AsyncCanExecuteObserverCommand(
             [NotNull] Func<T, Task> execute,
             [NotNull] ICanExecuteSubject canExecuteSubject,
-            [NotNull][ItemNotNull] params ICanExecuteChangedSubject[] observers)
+            [NotNull] [ItemNotNull] params ICanExecuteChangedSubject[] observers)
             : base(execute, canExecuteSubject)
         {
             if (canExecuteSubject == null)
@@ -102,7 +100,7 @@ namespace Anorisoft.WinUI.Commands.Commands
         public AsyncCanExecuteObserverCommand(
             [NotNull] Func<T, Task> execute,
             [NotNull] Predicate<T> canExecute,
-            [NotNull][ItemNotNull] params ICanExecuteChangedSubject[] observers)
+            [NotNull] [ItemNotNull] params ICanExecuteChangedSubject[] observers)
             : base(execute, canExecute)
         {
             if (observers == null)
@@ -113,11 +111,6 @@ namespace Anorisoft.WinUI.Commands.Commands
             this.observers.AddIfNotContains(observers);
             Subscribe();
         }
-
-        /// <summary>
-        /// Occurs when changes occur that affect whether or not the command should execute.
-        /// </summary>
-        public override event EventHandler CanExecuteChanged;
 
         /// <summary>
         /// Called when [can execute changed].
@@ -132,6 +125,17 @@ namespace Anorisoft.WinUI.Commands.Commands
             this.Dispose(true);
             GC.SuppressFinalize(this);
         }
+
+        /// <summary>
+        /// Occurs when changes occur that affect whether or not the command should execute.
+        /// </summary>
+        public override event EventHandler CanExecuteChanged;
+
+        /// <summary>
+        /// Finalizes an instance of the <see cref="AsyncCanExecuteObserverCommand{T}"/> class.
+        /// </summary>
+        ~AsyncCanExecuteObserverCommand() => Dispose(false);
+
         /// <summary>
         /// Raises the can execute changed.
         /// </summary>
@@ -147,7 +151,9 @@ namespace Anorisoft.WinUI.Commands.Commands
         private void Dispose(bool disposing)
         {
             if (disposing)
-            { this.Unsubscribe(); }
+            {
+                this.Unsubscribe();
+            }
         }
 
         /// <summary>

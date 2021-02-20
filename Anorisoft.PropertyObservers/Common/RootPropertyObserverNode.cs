@@ -18,7 +18,7 @@ namespace Anorisoft.PropertyObservers.Common
         /// <param name="propertyInfo">The property information.</param>
         /// <param name="action">The action.</param>
         /// <param name="parameter">The parameter.</param>
-        public RootPropertyObserverNode(PropertyInfo propertyInfo, Action action, INotifyPropertyChanged parameter)
+        public RootPropertyObserverNode(PropertyInfo propertyInfo, Action action, object parameter)
             : base(propertyInfo, action) =>
             this.Parameter = parameter;
 
@@ -28,13 +28,26 @@ namespace Anorisoft.PropertyObservers.Common
         /// <value>
         /// The parameter.
         /// </value>
-        public INotifyPropertyChanged Parameter { get; }
+        public object Parameter { get; }
 
         /// <summary>
         /// Subscribes the listener for parameter.
         /// </summary>
-        public void SubscribeListenerForOwner() => this.SubscribeListenerFor(this.Parameter);
+        public void SubscribeListenerForOwner()
+        {
+            if (this.Parameter is INotifyPropertyChanged notifyPropertyChanged)
+            {
+                this.SubscribeListenerFor(notifyPropertyChanged);
+            }
+        }
 
+        /// <summary>
+        /// Indicates whether the current object is equal to another object of the same type.
+        /// </summary>
+        /// <param name="other">An object to compare with this object.</param>
+        /// <returns>
+        /// true if the current object is equal to the <paramref name="other">other</paramref> parameter; otherwise, false.
+        /// </returns>
         public bool Equals(RootPropertyObserverNode other)
         {
             if (ReferenceEquals(null, other)) return false;
@@ -42,6 +55,13 @@ namespace Anorisoft.PropertyObservers.Common
             return Equals(Parameter, other.Parameter);
         }
 
+        /// <summary>
+        /// Determines whether the specified <see cref="System.Object" />, is equal to this instance.
+        /// </summary>
+        /// <param name="obj">The <see cref="System.Object" /> to compare with this instance.</param>
+        /// <returns>
+        ///   <c>true</c> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <c>false</c>.
+        /// </returns>
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
@@ -85,6 +105,6 @@ namespace Anorisoft.PropertyObservers.Common
         /// <summary>
         /// Subscribes the listener for parameter.
         /// </summary>
-        public void SubscribeListenerForOwner() => this.SubscribeListenerFor(this.Parameter1);
+   //     public void SubscribeListenerForOwner() => this.SubscribeListenerFor(this.Parameter1);
     }
 }

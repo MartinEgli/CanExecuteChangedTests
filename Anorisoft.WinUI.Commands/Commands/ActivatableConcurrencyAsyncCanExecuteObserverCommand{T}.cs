@@ -10,7 +10,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Anorisoft.WinUI.Commands.Interfaces;
 using Anorisoft.WinUI.Commands.Interfaces.Commands;
-using Anorisoft.WinUI.Commands.Resources;
 using Anorisoft.WinUI.Common;
 using CanExecuteChangedTests;
 using JetBrains.Annotations;
@@ -18,7 +17,7 @@ using JetBrains.Annotations;
 namespace Anorisoft.WinUI.Commands.Commands
 {
     public sealed class ActivatableConcurrencyAsyncCanExecuteObserverCommand<T> :
-        ConcurrencyAsyncCommandBase<T>, 
+        ConcurrencyAsyncCommandBase<T>,
         IActivatableConcurrencyAsyncCommand<T>,
         ICanExecuteChangedObserver
     {
@@ -71,7 +70,7 @@ namespace Anorisoft.WinUI.Commands.Commands
         /// or
         /// observers</exception>
         public ActivatableConcurrencyAsyncCanExecuteObserverCommand(
-            [NotNull] Func<T, CancellationToken , Task> execute,
+            [NotNull] Func<T, CancellationToken, Task> execute,
             bool autoActivate,
             [NotNull] ICanExecuteSubject canExecuteSubject,
             [NotNull] [ItemNotNull] params ICanExecuteChangedSubject[] observers)
@@ -180,11 +179,6 @@ namespace Anorisoft.WinUI.Commands.Commands
         }
 
         /// <summary>
-        /// Called when [can execute changed].
-        /// </summary>
-        public void RaisePropertyChanged() => this.CanExecuteChanged.RaiseEmpty(this);
-
-        /// <summary>
         /// Notifies that the value for <see cref="P:Anorisoft.WinUI.Common.IActivated.IsActive" /> property has changed.
         /// </summary>
         public event EventHandler<EventArgs<bool>> IsActiveChanged;
@@ -219,29 +213,50 @@ namespace Anorisoft.WinUI.Commands.Commands
         /// <summary>
         /// Activates this instance.
         /// </summary>
-        public void Activate()
+        /// <returns></returns>
+        IActivatableConcurrencyAsyncCommand<T> IActivatable<IActivatableConcurrencyAsyncCommand<T>>.Activate() =>
+            Activate();
+
+        /// <summary>
+        /// Deactivates this instance.
+        /// </summary>
+        /// <returns></returns>
+        IActivatableConcurrencyAsyncCommand<T> IActivatable<IActivatableConcurrencyAsyncCommand<T>>.Deactivate() =>
+            Deactivate();
+
+        /// <summary>
+        /// Called when [can execute changed].
+        /// </summary>
+        public void RaisePropertyChanged() => this.CanExecuteChanged.RaiseEmpty(this);
+
+        /// <summary>
+        /// Activates this instance.
+        /// </summary>
+        public ActivatableConcurrencyAsyncCanExecuteObserverCommand<T> Activate()
         {
             if (this.IsActive)
             {
-                return;
+                return this;
             }
 
             this.Subscribe();
             this.IsActive = true;
+            return this;
         }
 
         /// <summary>
         /// Deactivates this instance.
         /// </summary>
-        public void Deactivate()
+        public ActivatableConcurrencyAsyncCanExecuteObserverCommand<T> Deactivate()
         {
             if (!this.IsActive)
             {
-                return;
+                return this;
             }
 
             this.Unsubscribe();
             this.IsActive = false;
+            return this;
         }
 
         /// <summary>
@@ -274,7 +289,5 @@ namespace Anorisoft.WinUI.Commands.Commands
         ///     Unsubscribes this instance.
         /// </summary>
         private void Unsubscribe() => this.observers.ForEach(observer => observer.Remove(this));
-
-       
     }
 }
