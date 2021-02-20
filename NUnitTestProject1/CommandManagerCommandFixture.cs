@@ -4,15 +4,15 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-using System;
-using System.Threading;
-using System.Windows.Input;
-using System.Windows.Threading;
 using Anorisoft.WinUI.Commands.Builder;
 using Anorisoft.WinUI.Commands.CanExecuteObservers;
 using Anorisoft.WinUI.Commands.Commands;
 using Anorisoft.WinUI.Commands.Interfaces;
 using NUnit.Framework;
+using System;
+using System.Threading;
+using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace Anorisoft.WinUI.Commands.Tests
 {
@@ -133,18 +133,17 @@ namespace Anorisoft.WinUI.Commands.Tests
             var actual = command.CanExecute();
             Assert.False(actual);
 
-            ((ICommand) command).Execute(null);
+            ((ICommand)command).Execute(null);
             Assert.False(executed);
         }
 
         [Test]
-        public void CommandBuilder_SyncCommand_Activatable_NotActive_RetuenFalse()
+        public void CommandBuilder_SyncCommand_Activatable_NotActive_Return0()
         {
-            var executed = false;
             var handlers = new DelegateHandlers();
             var builder = new CommandBuilder();
             var command = builder
-                .Command(() => executed = true)
+                .Command(() => handlers.Execute())
                 .Activatable()
                 .Build();
 
@@ -153,17 +152,16 @@ namespace Anorisoft.WinUI.Commands.Tests
             Assert.False(actual);
 
             ((ICommand)command).Execute(null);
-            Assert.False(executed);
+            Assert.AreEqual(0, handlers.ExecuteCount);
         }
 
         [Test]
-        public void CommandBuilder_SyncCommand_CanExecute_Activatable_AutoActivate_RetuenTrue()
+        public void CommandBuilder_SyncCommand_CanExecute_Activatable_AutoActivate_Return1()
         {
-            var executed = false;
             var handlers = new DelegateHandlers();
             var builder = new CommandBuilder();
             var command = builder
-                .Command(() => executed = true)
+                .Command(() => handlers.Execute())
                 .CanExecute(handlers.CanExecute)
                 .Activatable()
                 .AutoActivate()
@@ -174,11 +172,11 @@ namespace Anorisoft.WinUI.Commands.Tests
             Assert.True(actual);
 
             ((ICommand)command).Execute(null);
-            Assert.True(executed);
+            Assert.AreEqual(1, handlers.ExecuteCount);
         }
 
         [Test]
-        public void CommandBuilder_SyncCommand_Activatable_AutoActivate_ReturnTrue()
+        public void CommandBuilder_SyncCommand_Activatable_AutoActivate_Return1()
         {
             var handlers = new DelegateHandlers();
             var builder = new CommandBuilder();
@@ -197,7 +195,7 @@ namespace Anorisoft.WinUI.Commands.Tests
         }
 
         [Test]
-        public void CommandBuilder_SyncCommandOfT_Activatable_AutoActivate_ReturnTrue()
+        public void CommandBuilder_SyncCommandOfT_Activatable_AutoActivate_Return1()
         {
             var handlers = new DelegateHandlers();
             var builder = new CommandBuilder();
@@ -216,7 +214,7 @@ namespace Anorisoft.WinUI.Commands.Tests
         }
 
         [Test]
-        public void CommandBuilder_AsyncCommandOfT_Activatable_AutoActivate_ReturnTrue()
+        public void CommandBuilder_AsyncCommandOfT_Activatable_AutoActivate_Return1()
         {
             var handlers = new DelegateHandlers();
             var builder = new CommandBuilder();
@@ -235,10 +233,10 @@ namespace Anorisoft.WinUI.Commands.Tests
         }
 
         [Test]
-        public void CommandBuilder_ConcurrencySyncCommand_Activatable_AutoActivate_ReturnTrue()
+        public void CommandBuilder_ConcurrencySyncCommand_Activatable_AutoActivate_Return1()
         {
             var handlers = new DelegateHandlers();
-            var waitHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
+            using var waitHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
             var builder = new CommandBuilder();
             var command = builder
                 .Command((tocken) =>
@@ -254,17 +252,16 @@ namespace Anorisoft.WinUI.Commands.Tests
             var actual = command.CanExecute();
             Assert.True(actual);
 
-            command.Execute(null);
+            ((ICommand)command).Execute(null);
             waitHandle.WaitOne();
-            waitHandle.Dispose();
             Assert.AreEqual(1, handlers.ExecuteCount);
         }
 
         [Test]
-        public void CommandBuilder_ConcurrencySyncCommandOfT_Activatable_AutoActivate_ReturnTrue()
+        public void CommandBuilder_ConcurrencySyncCommandOfT_Activatable_AutoActivate_Return1()
         {
             var handlers = new DelegateHandlers();
-            var waitHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
+            using var waitHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
             var builder = new CommandBuilder();
             var command = builder
                 .Command((int i, CancellationToken tocken) =>
@@ -282,15 +279,14 @@ namespace Anorisoft.WinUI.Commands.Tests
 
             command.Execute(1);
             waitHandle.WaitOne();
-            waitHandle.Dispose();
             Assert.AreEqual(1, handlers.ExecuteCount);
         }
 
         [Test]
-        public void CommandBuilder_ConcurrencyAsyncCommand_Activatable_AutoActivate_ReturnTrue()
+        public void CommandBuilder_ConcurrencyAsyncCommand_Activatable_AutoActivate_Return1()
         {
             var handlers = new DelegateHandlers();
-            var waitHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
+            using var waitHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
             var builder = new CommandBuilder();
             var command = builder
                 .Command(async (tocken) =>
@@ -308,15 +304,14 @@ namespace Anorisoft.WinUI.Commands.Tests
 
             ((ICommand)command).Execute(null);
             waitHandle.WaitOne();
-            waitHandle.Dispose();
             Assert.AreEqual(1, handlers.ExecuteCount);
         }
 
         [Test]
-        public void CommandBuilder_ConcurrencyAsyncCommandOfT_Activatable_AutoActivate_ReturnTrue()
+        public void CommandBuilder_ConcurrencyAsyncCommandOfT_Activatable_AutoActivate_Return1()
         {
             var handlers = new DelegateHandlers();
-            var waitHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
+            using var waitHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
             var builder = new CommandBuilder();
             var command = builder
                 .Command(async (int i, CancellationToken tocken) =>
@@ -334,18 +329,16 @@ namespace Anorisoft.WinUI.Commands.Tests
 
             command.Execute(1);
             waitHandle.WaitOne();
-            waitHandle.Dispose();
             Assert.AreEqual(1, handlers.ExecuteCount);
         }
 
         [Test]
-        public void CommandBuilder_SyncCommand_CanExecute_ReturnTrue()
+        public void CommandBuilder_SyncCommand_CanExecute_Return1()
         {
-            var executed = false;
             var handlers = new DelegateHandlers();
             var builder = new CommandBuilder();
             var command = builder
-                .Command(() => executed = true)
+                .Command(() => handlers.Execute())
                 .CanExecute(handlers.CanExecute)
                 .Build();
 
@@ -354,17 +347,53 @@ namespace Anorisoft.WinUI.Commands.Tests
             Assert.True(actual);
 
             ((ICommand)command).Execute(null);
-            Assert.True(executed);
+            Assert.AreEqual(1, handlers.ExecuteCount);
         }
 
         [Test]
-        public void CommandBuilder_SyncCommandOfT_CanExecute_ReturnTrue()
+        public void CommandBuilder_SyncCommand_ObservesCanExecute_Return1()
+        {
+            var handlers = new DelegateHandlers();
+            var builder = new CommandBuilder();
+            var command = builder
+                .Command(() => handlers.Execute())
+                .ObservesCanExecute(() => handlers.CanExecute())
+                .Build();
+
+            handlers.CanExecuteReturnValue = true;
+            var actual = command.CanExecute();
+            Assert.True(actual);
+
+            ((ICommand)command).Execute(null);
+            Assert.AreEqual(1, handlers.ExecuteCount);
+        }
+
+        [Test]
+        public void CommandBuilder_SyncCommand_ObservesCanExecute_Return0()
+        {
+            var handlers = new DelegateHandlers();
+            var builder = new CommandBuilder();
+            var command = builder
+                .Command(() => handlers.Execute())
+                .ObservesCanExecute(() => false || 1 > handlers.ExecuteCount)
+                .Build();
+
+            handlers.CanExecuteReturnValue = true;
+            var actual = command.CanExecute();
+            Assert.False(actual);
+
+            ((ICommand)command).Execute(null);
+            Assert.AreEqual(0, handlers.ExecuteCount);
+        }
+
+        [Test]
+        public void CommandBuilder_SyncCommandOfT_CanExecute_Return1()
         {
             var handlers = new DelegateHandlers();
             var builder = new CommandBuilder();
             var command = builder
                 .Command((int i) => handlers.Execute())
-                .CanExecute(i =>handlers.CanExecute())
+                .CanExecute(i => handlers.CanExecute())
                 .Build();
 
             handlers.CanExecuteReturnValue = true;
@@ -376,10 +405,10 @@ namespace Anorisoft.WinUI.Commands.Tests
         }
 
         [Test]
-        public void CommandBuilder_AsyncCommand_CanExecute_ReturnTrue()
+        public void CommandBuilder_AsyncCommand_CanExecute_Return1()
         {
             var handlers = new DelegateHandlers();
-            var waitHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
+            using var waitHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
             var builder = new CommandBuilder();
             var command = builder
                 .Command(async () =>
@@ -394,17 +423,16 @@ namespace Anorisoft.WinUI.Commands.Tests
             var actual = command.CanExecute();
             Assert.True(actual);
 
-            command.Execute(null);
+            ((ICommand)command).Execute(null);
             waitHandle.WaitOne();
-            waitHandle.Dispose();
-            Assert.AreEqual(1,handlers.ExecuteCount);
+            Assert.AreEqual(1, handlers.ExecuteCount);
         }
 
         [Test]
         public void CommandBuilder_ConurrencySyncCommand_CanExecute_ReturnTrue()
         {
             var handlers = new DelegateHandlers();
-            var waitHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
+            using var waitHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
             var builder = new CommandBuilder();
             var command = builder
                 .Command((token) =>
@@ -419,9 +447,8 @@ namespace Anorisoft.WinUI.Commands.Tests
             var actual = command.CanExecute();
             Assert.True(actual);
 
-            command.Execute(null);
+            ((ICommand)command).Execute(null);
             waitHandle.WaitOne();
-            waitHandle.Dispose();
             Assert.AreEqual(1, handlers.ExecuteCount);
         }
 
@@ -432,7 +459,7 @@ namespace Anorisoft.WinUI.Commands.Tests
             var waitHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
             var builder = new CommandBuilder();
             var command = builder
-                .Command((int i , CancellationToken token) =>
+                .Command((int i, CancellationToken token) =>
                 {
                     handlers.Execute();
                     waitHandle.Set();
@@ -469,7 +496,7 @@ namespace Anorisoft.WinUI.Commands.Tests
             var actual = command.CanExecute();
             Assert.True(actual);
 
-            command.Execute(null);
+            ((ICommand)command).Execute(null);
             waitHandle.WaitOne();
             waitHandle.Dispose();
             Assert.AreEqual(1, handlers.ExecuteCount);
@@ -482,7 +509,7 @@ namespace Anorisoft.WinUI.Commands.Tests
             var waitHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
             var builder = new CommandBuilder();
             var command = builder
-                .Command(async (int i , CancellationToken token) =>
+                .Command(async (int i, CancellationToken token) =>
                 {
                     await handlers.ExecuteAsync();
                     waitHandle.Set();
@@ -501,13 +528,12 @@ namespace Anorisoft.WinUI.Commands.Tests
         }
 
         [Test]
-        public void CommandBuilder_SyncCommand_RetuenTrue()
+        public void CommandBuilder_SyncCommand_Return1()
         {
-            var executed = false;
             var handlers = new DelegateHandlers();
             var builder = new CommandBuilder();
             var command = builder
-                .Command(() => executed = true)
+                .Command(() => handlers.Execute())
                 .Build();
 
             handlers.CanExecuteReturnValue = true;
@@ -515,7 +541,7 @@ namespace Anorisoft.WinUI.Commands.Tests
             Assert.True(actual);
 
             ((ICommand)command).Execute(null);
-            Assert.True(executed);
+            Assert.AreEqual(1, handlers.ExecuteCount);
         }
 
         [Test]
@@ -763,7 +789,7 @@ namespace Anorisoft.WinUI.Commands.Tests
             Assert.Throws<ArgumentNullException>(
                 () =>
                 {
-                    var command = new ActivatableCanExecuteObserverCommand(null, (ICanExecuteSubject) null);
+                    var command = new ActivatableCanExecuteObserverCommand(null, (ICanExecuteSubject)null);
                 });
         }
 
@@ -773,7 +799,7 @@ namespace Anorisoft.WinUI.Commands.Tests
             Assert.Throws<ArgumentNullException>(
                 () =>
                 {
-                    var command = new ActivatableCanExecuteObserverCommand(() => { }, (ICanExecuteSubject) null);
+                    var command = new ActivatableCanExecuteObserverCommand(() => { }, (ICanExecuteSubject)null);
                 });
         }
 

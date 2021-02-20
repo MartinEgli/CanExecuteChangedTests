@@ -11,10 +11,11 @@ using JetBrains.Annotations;
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using Anorisoft.WinUI.Commands.Interfaces.Commands;
 
 namespace Anorisoft.WinUI.Commands.Commands
 {
-    public class ActivatableConcurrencyCanExecuteObserverCommand<T> :
+    public sealed class ActivatableConcurrencyCanExecuteObserverCommand<T> :
         ConcurrencyCommandBase<T>,
         IActivatableConcurrencySyncCommand<T>,
         ICanExecuteChangedObserver
@@ -256,6 +257,7 @@ namespace Anorisoft.WinUI.Commands.Commands
         /// </param>
         protected override void Dispose(bool disposing)
         {
+            base.Dispose(disposing);
             if (disposing)
             {
                 this.Unsubscribe();
@@ -265,11 +267,11 @@ namespace Anorisoft.WinUI.Commands.Commands
         /// <summary>
         ///     Subscribes this instance.
         /// </summary>
-        protected void Subscribe() => this.observers.ForEach(observer => observer.Add(this));
+        private void Subscribe() => this.observers.ForEach(observer => observer.Add(this));
 
         /// <summary>
         ///     Unsubscribes this instance.
         /// </summary>
-        protected void Unsubscribe() => this.observers.ForEach(observer => observer.Remove(this));
+        private void Unsubscribe() => this.observers.ForEach(observer => observer.Remove(this));
     }
 }

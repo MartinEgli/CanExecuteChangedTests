@@ -11,6 +11,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Windows.Input;
 using Anorisoft.WinUI.Commands.Interfaces;
+using Anorisoft.WinUI.Commands.Interfaces.Commands;
 using Anorisoft.WinUI.Common;
 using JetBrains.Annotations;
 

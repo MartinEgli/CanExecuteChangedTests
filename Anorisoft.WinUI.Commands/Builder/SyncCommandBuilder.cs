@@ -4,13 +4,14 @@ using System.Linq;
 using System.Linq.Expressions;
 using Anorisoft.WinUI.Commands.CanExecuteObservers;
 using Anorisoft.WinUI.Commands.Commands;
-using Anorisoft.WinUI.Commands.Exeptions;
+using Anorisoft.WinUI.Commands.Exceptions;
 using Anorisoft.WinUI.Commands.Interfaces;
+using Anorisoft.WinUI.Commands.Interfaces.Builders;
 using JetBrains.Annotations;
 
 namespace Anorisoft.WinUI.Commands.Builder
 {
-    public class SyncCommandBuilder :
+    public sealed class SyncCommandBuilder :
         ISyncCommandBuilder,
         ISyncCanExecuteBuilder,
         IActivatableSyncCommandBuilder,
@@ -122,6 +123,8 @@ namespace Anorisoft.WinUI.Commands.Builder
         IActivatableSyncCanExecuteBuilder IActivatableSyncCommandBuilder.ObservesCanExecute(
             Expression<Func<bool>> canExecute, bool fallback)
             => ObservesCanExecute(canExecute, fallback);
+
+        IActivatableSyncCanExecuteBuilder IActivatableSyncCommandBuilder.AutoActivate() => AutoActivate();
 
         /// <summary>
         /// Builds this instance.

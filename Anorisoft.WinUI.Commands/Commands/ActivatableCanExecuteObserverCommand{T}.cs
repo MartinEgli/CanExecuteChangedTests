@@ -10,10 +10,11 @@ using CanExecuteChangedTests;
 using JetBrains.Annotations;
 using System;
 using System.Collections.Generic;
+using Anorisoft.WinUI.Commands.Interfaces.Commands;
 
 namespace Anorisoft.WinUI.Commands.Commands
 {
-    public class ActivatableCanExecuteObserverCommand<T> :
+    public sealed class ActivatableCanExecuteObserverCommand<T> :
         SyncCommandBase<T>,
         IActivatableSyncCommand<T>,
         ICanExecuteChangedObserver,
@@ -254,16 +255,22 @@ namespace Anorisoft.WinUI.Commands.Commands
         ///     <c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only
         ///     unmanaged resources.
         /// </param>
-        protected virtual void Dispose(bool disposing) => this.Unsubscribe();
+        private void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                this.Unsubscribe();
+            }
+        }
 
         /// <summary>
         ///     Subscribes this instance.
         /// </summary>
-        protected void Subscribe() => this.observers.ForEach(observer => observer.Add(this));
+        private void Subscribe() => this.observers.ForEach(observer => observer.Add(this));
 
         /// <summary>
         ///     Unsubscribes this instance.
         /// </summary>
-        protected void Unsubscribe() => this.observers.ForEach(observer => observer.Remove(this));
+        private void Unsubscribe() => this.observers.ForEach(observer => observer.Remove(this));
     }
 }

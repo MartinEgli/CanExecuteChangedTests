@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Anorisoft.WinUI.Commands.Commands
 {
-    public class ActivatableAsyncCanExecuteObserverCommand :
+    public sealed class ActivatableAsyncCanExecuteObserverCommand :
         AsyncCommandBase,
         IActivatableAsyncCommand,
         ICanExecuteChangedObserver,
@@ -280,6 +280,14 @@ namespace Anorisoft.WinUI.Commands.Commands
         }
 
         /// <summary>
+        /// Finalizes an instance of the <see cref="ActivatableAsyncCanExecuteObserverCommand"/> class.
+        /// </summary>
+        ~ActivatableAsyncCanExecuteObserverCommand()
+        {
+            Dispose(false);
+        }
+
+        /// <summary>
         /// Occurs when changes occur that affect whether or not the command should execute.
         /// </summary>
         public override event EventHandler CanExecuteChanged;
@@ -296,19 +304,22 @@ namespace Anorisoft.WinUI.Commands.Commands
         ///     <c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only
         ///     unmanaged resources.
         /// </param>
-        protected virtual void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
-            this.Unsubscribe();
+            if (disposing)
+            {
+                this.Unsubscribe();
+            }
         }
 
         /// <summary>
         ///     Subscribes this instance.
         /// </summary>
-        protected void Subscribe() => this.observers.ForEach(observer => observer.Add(this));
+        private void Subscribe() => this.observers.ForEach(observer => observer.Add(this));
 
         /// <summary>
         ///     Unsubscribes this instance.
         /// </summary>
-        protected void Unsubscribe() => this.observers.ForEach(observer => observer.Remove(this));
+        private void Unsubscribe() => this.observers.ForEach(observer => observer.Remove(this));
     }
 }

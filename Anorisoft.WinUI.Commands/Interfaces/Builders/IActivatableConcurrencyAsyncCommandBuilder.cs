@@ -23,7 +23,7 @@ namespace Anorisoft.WinUI.Commands.Interfaces.Builders
         IActivatableConcurrencyAsyncCanExecuteBuilder ObservesCanExecute([NotNull] Expression<Func<bool>> canExecute, bool fallback);
 
         [NotNull]
-        IActivatableConcurrencyAsyncCanExecuteBuilder Activatable();
+        IActivatableConcurrencyAsyncCanExecuteBuilder AutoActivate();
 
     }
 }

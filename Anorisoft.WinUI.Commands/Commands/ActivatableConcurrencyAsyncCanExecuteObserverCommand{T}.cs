@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Anorisoft.WinUI.Commands.Interfaces;
+using Anorisoft.WinUI.Commands.Interfaces.Commands;
 using Anorisoft.WinUI.Commands.Resources;
 using Anorisoft.WinUI.Common;
 using CanExecuteChangedTests;
@@ -16,11 +17,10 @@ using JetBrains.Annotations;
 
 namespace Anorisoft.WinUI.Commands.Commands
 {
-    public class ActivatableConcurrencyAsyncCanExecuteObserverCommand<T> :
+    public sealed class ActivatableConcurrencyAsyncCanExecuteObserverCommand<T> :
         ConcurrencyAsyncCommandBase<T>, 
         IActivatableConcurrencyAsyncCommand<T>,
-        ICanExecuteChangedObserver,
-        IDisposable
+        ICanExecuteChangedObserver
     {
         /// <summary>
         ///     The observers
@@ -258,6 +258,7 @@ namespace Anorisoft.WinUI.Commands.Commands
         /// </param>
         protected override void Dispose(bool disposing)
         {
+            base.Dispose(disposing);
             if (disposing)
             {
                 this.Unsubscribe();
@@ -267,12 +268,12 @@ namespace Anorisoft.WinUI.Commands.Commands
         /// <summary>
         ///     Subscribes this instance.
         /// </summary>
-        protected void Subscribe() => this.observers.ForEach(observer => observer.Add(this));
+        private void Subscribe() => this.observers.ForEach(observer => observer.Add(this));
 
         /// <summary>
         ///     Unsubscribes this instance.
         /// </summary>
-        protected void Unsubscribe() => this.observers.ForEach(observer => observer.Remove(this));
+        private void Unsubscribe() => this.observers.ForEach(observer => observer.Remove(this));
 
        
     }

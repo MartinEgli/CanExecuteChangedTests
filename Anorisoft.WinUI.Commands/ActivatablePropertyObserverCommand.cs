@@ -10,6 +10,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Windows.Input;
 using Anorisoft.WinUI.Commands.Interfaces;
+using Anorisoft.WinUI.Commands.Interfaces.Commands;
 using JetBrains.Annotations;
 
 namespace Anorisoft.WinUI.Commands

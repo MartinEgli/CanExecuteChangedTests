@@ -1,0 +1,25 @@
+﻿using System;
+using System.Linq.Expressions;
+using Anorisoft.WinUI.Commands.Commands;
+using JetBrains.Annotations;
+
+namespace Anorisoft.WinUI.Commands.Interfaces.Builders
+{
+    public interface IConcurrencySyncCanExecuteBuilder<T>
+    {
+        [NotNull]
+        ConcurrencyCanExecuteObserverCommand<T> Build();
+
+        [NotNull]
+        ConcurrencyCanExecuteObserverCommand<T> Build([NotNull] Action<ConcurrencyCanExecuteObserverCommand<T>> setCommand);
+
+        [NotNull]
+        IConcurrencySyncCanExecuteBuilder<T> ObservesProperty<TType>([NotNull] Expression<Func<TType>> expression);
+
+        [NotNull]
+        IConcurrencySyncCanExecuteBuilder<T> ObservesCommandManager();
+
+        [NotNull]
+        IActivatableConcurrencySyncCanExecuteBuilder<T> Activatable();
+    }
+}

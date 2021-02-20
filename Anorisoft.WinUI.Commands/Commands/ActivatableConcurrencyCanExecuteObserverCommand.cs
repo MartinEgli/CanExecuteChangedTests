@@ -4,20 +4,20 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-using System.Threading;
 using Anorisoft.WinUI.Commands.Interfaces;
-using Anorisoft.WinUI.Commands.Resources;
+using Anorisoft.WinUI.Commands.Interfaces.Commands;
 using Anorisoft.WinUI.Common;
 using CanExecuteChangedTests;
 using JetBrains.Annotations;
+using System;
+using System.Collections.Generic;
+using System.Threading;
 
 namespace Anorisoft.WinUI.Commands.Commands
 {
-    public class ActivatableConcurrencyCanExecuteObserverCommand :
+    public sealed class ActivatableConcurrencyCanExecuteObserverCommand :
         ConcurrencyCommandBase,
-        IActivatableConcurrencySyncCommand, 
+        IActivatableConcurrencySyncCommand,
         ICanExecuteChangedObserver
     {
         /// <summary>
@@ -42,7 +42,7 @@ namespace Anorisoft.WinUI.Commands.Commands
         public ActivatableConcurrencyCanExecuteObserverCommand(
             [NotNull] Action<CancellationToken> execute,
             bool autoActivate,
-            [NotNull] [ItemNotNull] params ICanExecuteChangedSubject[] observers)
+            [NotNull][ItemNotNull] params ICanExecuteChangedSubject[] observers)
             : base(execute)
         {
             if (observers == null)
@@ -72,7 +72,7 @@ namespace Anorisoft.WinUI.Commands.Commands
             [NotNull] Action<CancellationToken> execute,
             bool autoActivate,
             [NotNull] ICanExecuteSubject canExecuteSubject,
-            [NotNull] [ItemNotNull] params ICanExecuteChangedSubject[] observers)
+            [NotNull][ItemNotNull] params ICanExecuteChangedSubject[] observers)
             : base(execute, canExecuteSubject)
         {
             if (canExecuteSubject == null)
@@ -115,7 +115,7 @@ namespace Anorisoft.WinUI.Commands.Commands
         public ActivatableConcurrencyCanExecuteObserverCommand(
             [NotNull] Action<CancellationToken> execute,
             [NotNull] ICanExecuteSubject canExecuteSubject,
-            [NotNull] [ItemNotNull] params ICanExecuteChangedSubject[] observers)
+            [NotNull][ItemNotNull] params ICanExecuteChangedSubject[] observers)
             : this(execute, false, canExecuteSubject, observers)
         {
         }
@@ -144,7 +144,7 @@ namespace Anorisoft.WinUI.Commands.Commands
         public ActivatableConcurrencyCanExecuteObserverCommand(
             [NotNull] Action<CancellationToken> execute,
             [NotNull] Func<bool> canExecute,
-            [NotNull] [ItemNotNull] params ICanExecuteChangedSubject[] observers)
+            [NotNull][ItemNotNull] params ICanExecuteChangedSubject[] observers)
             : this(execute, false, canExecute, observers)
         {
         }
@@ -161,7 +161,7 @@ namespace Anorisoft.WinUI.Commands.Commands
             [NotNull] Action<CancellationToken> execute,
             bool autoActivate,
             [NotNull] Func<bool> canExecute,
-            [NotNull] [ItemNotNull] params ICanExecuteChangedSubject[] observers)
+            [NotNull][ItemNotNull] params ICanExecuteChangedSubject[] observers)
             : base(execute, canExecute)
         {
             if (observers == null)
@@ -256,23 +256,29 @@ namespace Anorisoft.WinUI.Commands.Commands
         ///     <c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only
         ///     unmanaged resources.
         /// </param>
-        protected override void Dispose(bool disposing) => this.Unsubscribe();
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+            if (disposing)
+            {
+                this.Unsubscribe();
+            }
+        }
 
         /// <summary>
         ///     Subscribes this instance.
         /// </summary>
-        protected void Subscribe() => this.observers.ForEach(observer => observer.Add(this));
+        private void Subscribe() => this.observers.ForEach(observer => observer.Add(this));
 
         /// <summary>
         ///     Unsubscribes this instance.
         /// </summary>
-        protected void Unsubscribe() => this.observers.ForEach(observer => observer.Remove(this));
+        private void Unsubscribe() => this.observers.ForEach(observer => observer.Remove(this));
 
         /// <summary>
         /// Adds if not contains.
         /// </summary>
         /// <param name="observers">The observers.</param>
         /// <exception cref="ArgumentException">propertyObserver</exception>
-       
     }
 }
