@@ -26,7 +26,8 @@ namespace Anorisoft.WinUI.Commands.Commands
         CommandBase,
         ISyncCommand,
         IDisposable,
-        INotifyPropertyChanged
+        INotifyPropertyChanged, 
+        IDispatchableContext
     {
         /// <summary>
         ///     The cancel
@@ -134,7 +135,6 @@ namespace Anorisoft.WinUI.Commands.Commands
             this.completed = completed;
             this.error = error;
             this.cancel = cancel;
-            this.Dispatcher = Dispatcher.CurrentDispatcher;
             this.cancelCommand = new DirectCommand(this.Cancel, () => this.IsExecuting);
         }
 
@@ -155,7 +155,6 @@ namespace Anorisoft.WinUI.Commands.Commands
             this.completed = completed;
             this.error = error;
             this.cancel = cancel;
-            this.Dispatcher = Dispatcher.CurrentDispatcher;
             this.cancelCommand = new DirectCommand(this.Cancel, () => this.IsExecuting);
         }
 
@@ -185,7 +184,6 @@ namespace Anorisoft.WinUI.Commands.Commands
             this.completed = completed;
             this.error = error;
             this.cancel = cancel;
-            this.Dispatcher = Dispatcher.CurrentDispatcher;
             this.cancelCommand = new DirectCommand(this.Cancel, () => this.IsExecuting);
         }
 
@@ -197,11 +195,6 @@ namespace Anorisoft.WinUI.Commands.Commands
         /// </value>
         public ISyncCommand CancelCommand => this.cancelCommand;
 
-        /// <summary>
-        ///     The dispatcher
-        /// </summary>
-        [NotNull]
-        public Dispatcher Dispatcher { get; }
 
         /// <summary>
         ///     Gets the exception.
@@ -319,8 +312,8 @@ namespace Anorisoft.WinUI.Commands.Commands
                         token,
                         TaskCreationOptions.DenyChildAttach,
                         this.taskScheduler)
-                    .ContinueWith(this.OnPostAction, this.postTaskScheduler)
-                    .ContinueWith(t => this.OnFinally(), this.finallyTaskScheduler);
+                    .ContinueWith(this.OnPostAction, this.postTaskScheduler);
+                task.ContinueWith(t => this.OnFinally(), this.finallyTaskScheduler);
             }
             catch (TaskCanceledException ex)
             {

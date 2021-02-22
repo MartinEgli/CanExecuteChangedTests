@@ -18,8 +18,7 @@ namespace Anorisoft.WinUI.Commands.Interfaces.Builders
 
         [NotNull]
         IConcurrencyAsyncCanExecuteBuilder CanExecute([NotNull] ICanExecuteSubject canExecute);
-
-
+        
         [NotNull]
         IConcurrencyAsyncCanExecuteBuilder ObservesCanExecute([NotNull] Expression<Func<bool>> canExecute);
 
@@ -28,5 +27,11 @@ namespace Anorisoft.WinUI.Commands.Interfaces.Builders
 
         [NotNull]
         IActivatableConcurrencyAsyncCommandBuilder Activatable();
+        
+        [NotNull] IConcurrencyAsyncCanExecuteBuilder OnError([NotNull] Action<Exception> error);
+
+        [NotNull] IConcurrencyAsyncCanExecuteBuilder OnCompleted([NotNull] Action completed);
+
+        [NotNull] IConcurrencyAsyncCanExecuteBuilder OnCancel([NotNull] Action cancel);
     }
 }

@@ -15,7 +15,7 @@
             <local:InverseBooleanConverter x:Key="InverseBooleanConverter" />
         </StackPanel.Resources>
         <Button Command="{Binding DirectCommand}">Direct Command</Button>
-
         <Button Command="{Binding PropertyObservableNullReferenceCommand}">Property Observable Null Reference Test</Button>
+        <Button Command="{Binding ConcurrencyTestCommand}">Concurrency Test Command</Button>
 </StackPanel>
 </Window>

@@ -29,5 +29,12 @@ namespace Anorisoft.WinUI.Commands.Interfaces.Builders
 
         [NotNull]
         IActivatableConcurrencySyncCommandBuilder<T> Activatable();
+
+        
+        [NotNull] IConcurrencySyncCanExecuteBuilder<T> OnError([NotNull] Action<Exception> error);
+
+        [NotNull] IConcurrencySyncCanExecuteBuilder<T> OnCompleted([NotNull] Action completed);
+
+        [NotNull] IConcurrencySyncCanExecuteBuilder<T> OnCancel([NotNull] Action cancel);
     }
 }

@@ -96,6 +96,48 @@ namespace Anorisoft.WinUI.Commands.Builder
             AutoActivate();
 
         /// <summary>
+        /// Called when [error].
+        /// </summary>
+        /// <param name="error">The error.</param>
+        /// <returns></returns>
+        IActivatableConcurrencyAsyncCanExecuteBuilder IActivatableConcurrencyAsyncCanExecuteBuilder.OnError(Action<Exception> error) => OnError(error);
+
+        /// <summary>
+        /// Called when [completed].
+        /// </summary>
+        /// <param name="completed">The completed.</param>
+        /// <returns></returns>
+        IActivatableConcurrencyAsyncCanExecuteBuilder IActivatableConcurrencyAsyncCanExecuteBuilder.OnCompleted(Action completed) => OnCompleted(completed);
+
+        /// <summary>
+        /// Called when [cancel].
+        /// </summary>
+        /// <param name="cancel">The cancel.</param>
+        /// <returns></returns>
+        IActivatableConcurrencyAsyncCanExecuteBuilder IActivatableConcurrencyAsyncCanExecuteBuilder.OnCancel(Action cancel) => OnCancel(cancel);
+
+        /// <summary>
+        /// Called when [error].
+        /// </summary>
+        /// <param name="error">The error.</param>
+        /// <returns></returns>
+        IActivatableConcurrencyAsyncCanExecuteBuilder IActivatableConcurrencyAsyncCommandBuilder.OnError(Action<Exception> error) => OnError(error);
+
+        /// <summary>
+        /// Called when [completed].
+        /// </summary>
+        /// <param name="completed">The completed.</param>
+        /// <returns></returns>
+        IActivatableConcurrencyAsyncCanExecuteBuilder IActivatableConcurrencyAsyncCommandBuilder.OnCompleted(Action completed) => OnCompleted(completed);
+
+        /// <summary>
+        /// Called when [cancel].
+        /// </summary>
+        /// <param name="cancel">The cancel.</param>
+        /// <returns></returns>
+        IActivatableConcurrencyAsyncCanExecuteBuilder IActivatableConcurrencyAsyncCommandBuilder.OnCancel(Action cancel) => OnCancel(cancel);
+
+        /// <summary>
         /// Builds this instance.
         /// </summary>
         /// <returns></returns>
@@ -214,6 +256,48 @@ namespace Anorisoft.WinUI.Commands.Builder
         IActivatableConcurrencyAsyncCanExecuteBuilder IConcurrencyAsyncCanExecuteBuilder.Activatable() => Activatable();
 
         /// <summary>
+        /// Called when [error].
+        /// </summary>
+        /// <param name="error">The error.</param>
+        /// <returns></returns>
+        IConcurrencyAsyncCanExecuteBuilder IConcurrencyAsyncCanExecuteBuilder.OnError(Action<Exception> error) => OnError(error);
+
+        /// <summary>
+        /// Called when [completed].
+        /// </summary>
+        /// <param name="completed">The completed.</param>
+        /// <returns></returns>
+        IConcurrencyAsyncCanExecuteBuilder IConcurrencyAsyncCanExecuteBuilder.OnCompleted(Action completed) => OnCompleted(completed);
+
+        /// <summary>
+        /// Called when [cancel].
+        /// </summary>
+        /// <param name="cancel">The cancel.</param>
+        /// <returns></returns>
+        IConcurrencyAsyncCanExecuteBuilder IConcurrencyAsyncCanExecuteBuilder.OnCancel(Action cancel) => OnCancel(cancel);
+
+        /// <summary>
+        /// Called when [error].
+        /// </summary>
+        /// <param name="error">The error.</param>
+        /// <returns></returns>
+        IConcurrencyAsyncCanExecuteBuilder IConcurrencyAsyncCommandBuilder.OnError(Action<Exception> error) => OnError(error);
+
+        /// <summary>
+        /// Called when [completed].
+        /// </summary>
+        /// <param name="completed">The completed.</param>
+        /// <returns></returns>
+        IConcurrencyAsyncCanExecuteBuilder IConcurrencyAsyncCommandBuilder.OnCompleted(Action completed) => OnCompleted(completed);
+
+        /// <summary>
+        /// Called when [cancel].
+        /// </summary>
+        /// <param name="cancel">The cancel.</param>
+        /// <returns></returns>
+        IConcurrencyAsyncCanExecuteBuilder IConcurrencyAsyncCommandBuilder.OnCancel(Action cancel) => OnCancel(cancel);
+
+        /// <summary>
         /// Builds this instance.
         /// </summary>
         /// <returns></returns>
@@ -309,14 +393,14 @@ namespace Anorisoft.WinUI.Commands.Builder
                 if (canExecuteFunction != null)
                 {
                     return new ActivatableConcurrencyAsyncCanExecuteObserverCommand(execute, isAutoActiate,
-                        canExecuteFunction,
+                        canExecuteFunction, completedAction, errorAction, cancelAction,
                         observes.ToArray());
                 }
 
                 if (canExecuteSubject != null)
                 {
                     return new ActivatableConcurrencyAsyncCanExecuteObserverCommand(execute, isAutoActiate,
-                        canExecuteSubject,
+                        canExecuteSubject, completedAction, errorAction, cancelAction,
                         observes.ToArray());
                 }
 
@@ -326,16 +410,16 @@ namespace Anorisoft.WinUI.Commands.Builder
             if (canExecuteFunction != null)
             {
                 return new ActivatableConcurrencyAsyncCanExecuteObserverCommand(execute, isAutoActiate,
-                    canExecuteFunction);
+                    canExecuteFunction, completedAction, errorAction, cancelAction);
             }
 
             if (canExecuteSubject != null)
             {
                 return new ActivatableConcurrencyAsyncCanExecuteObserverCommand(execute, isAutoActiate,
-                    canExecuteSubject);
+                    canExecuteSubject, completedAction, errorAction, cancelAction);
             }
 
-            return new ActivatableConcurrencyAsyncCanExecuteObserverCommand(execute, isAutoActiate);
+            return new ActivatableConcurrencyAsyncCanExecuteObserverCommand(execute, isAutoActiate, completedAction, errorAction, cancelAction);
         }
 
         /// <summary>
@@ -350,14 +434,13 @@ namespace Anorisoft.WinUI.Commands.Builder
                 if (canExecuteFunction != null)
                 {
                     return new ConcurrencyAsyncCanExecuteObserverCommand(execute,
-                        canExecuteFunction,
-                        observes.ToArray());
+                        canExecuteFunction, completedAction, errorAction, cancelAction, observes.ToArray());
                 }
 
                 if (canExecuteSubject != null)
                 {
                     return new ConcurrencyAsyncCanExecuteObserverCommand(execute,
-                        canExecuteSubject,
+                        canExecuteSubject, completedAction, errorAction, cancelAction,
                         observes.ToArray());
                 }
 
@@ -367,16 +450,16 @@ namespace Anorisoft.WinUI.Commands.Builder
             if (canExecuteFunction != null)
             {
                 return new ConcurrencyAsyncCanExecuteObserverCommand(execute,
-                    canExecuteFunction);
+                    canExecuteFunction, completedAction, errorAction, cancelAction);
             }
 
             if (canExecuteSubject != null)
             {
                 return new ConcurrencyAsyncCanExecuteObserverCommand(execute,
-                    canExecuteSubject);
+                    canExecuteSubject, completedAction, errorAction, cancelAction);
             }
 
-            return new ConcurrencyAsyncCanExecuteObserverCommand(execute);
+            return new ConcurrencyAsyncCanExecuteObserverCommand(execute, completedAction, errorAction, cancelAction);
         }
 
         /// <summary>
@@ -502,5 +585,53 @@ namespace Anorisoft.WinUI.Commands.Builder
             isAutoActiate = true;
             return this;
         }
+
+        /// <summary>
+        /// Called when [error].
+        /// </summary>
+        /// <param name="error">The error.</param>
+        /// <returns></returns>
+        private ConcurrencyAsyncCommandBuilder OnError(Action<Exception> error)
+        {
+            errorAction = error;
+            return this;
+        }
+
+        /// <summary>
+        /// Called when [completed].
+        /// </summary>
+        /// <param name="completed">The completed.</param>
+        /// <returns></returns>
+        private ConcurrencyAsyncCommandBuilder OnCompleted(Action completed)
+        {
+            completedAction = completed;
+            return this;
+        }
+
+        /// <summary>
+        /// Called when [cancel].
+        /// </summary>
+        /// <param name="cancel">The cancel.</param>
+        /// <returns></returns>
+        private ConcurrencyAsyncCommandBuilder OnCancel(Action cancel)
+        {
+            cancelAction = cancel;
+            return this;
+        }
+
+        /// <summary>
+        /// The error action
+        /// </summary>
+        private Action<Exception> errorAction;
+
+        /// <summary>
+        /// The completed action
+        /// </summary>
+        private Action completedAction;
+        
+        /// <summary>
+        /// The cancel action
+        /// </summary>
+        private Action cancelAction;
     }
 }

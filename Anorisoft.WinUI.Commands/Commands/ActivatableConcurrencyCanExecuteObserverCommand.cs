@@ -59,6 +59,38 @@ namespace Anorisoft.WinUI.Commands.Commands
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="ActivatableConcurrencyCanExecuteObserverCommand"/> class.
+        /// </summary>
+        /// <param name="execute">The execute.</param>
+        /// <param name="autoActivate">if set to <c>true</c> [automatic activate].</param>
+        /// <param name="completed">The completed.</param>
+        /// <param name="error">The error.</param>
+        /// <param name="cancel">The cancel.</param>
+        /// <param name="observers">The observers.</param>
+        /// <exception cref="ArgumentNullException">observers</exception>
+        public ActivatableConcurrencyCanExecuteObserverCommand(
+            [NotNull] Action<CancellationToken> execute,
+            bool autoActivate,
+            [CanBeNull] Action completed,
+            [CanBeNull] Action<Exception> error,
+            [CanBeNull] Action cancel,
+            [NotNull][ItemNotNull] params ICanExecuteChangedSubject[] observers)
+            : base(execute, completed, error, cancel)
+        {
+            if (observers == null)
+            {
+                throw new ArgumentNullException(nameof(observers));
+            }
+
+            this.observers.AddIfNotContains(observers);
+
+            if (autoActivate)
+            {
+                this.Activate();
+            }
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="ActivatableCanExecuteObserverCommand" /> class.
         /// </summary>
         /// <param name="execute">The execute.</param>
@@ -96,6 +128,51 @@ namespace Anorisoft.WinUI.Commands.Commands
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="ActivatableConcurrencyCanExecuteObserverCommand"/> class.
+        /// </summary>
+        /// <param name="execute">The execute.</param>
+        /// <param name="autoActivate">if set to <c>true</c> [automatic activate].</param>
+        /// <param name="canExecuteSubject">The can execute subject.</param>
+        /// <param name="completed">The completed.</param>
+        /// <param name="error">The error.</param>
+        /// <param name="cancel">The cancel.</param>
+        /// <param name="observers">The observers.</param>
+        /// <exception cref="ArgumentNullException">
+        /// canExecuteSubject
+        /// or
+        /// observers
+        /// </exception>
+        public ActivatableConcurrencyCanExecuteObserverCommand(
+            [NotNull] Action<CancellationToken> execute,
+            bool autoActivate,
+            [NotNull] ICanExecuteSubject canExecuteSubject,
+            [CanBeNull] Action completed,
+            [CanBeNull] Action<Exception> error,
+            [CanBeNull] Action cancel,
+            [NotNull][ItemNotNull] params ICanExecuteChangedSubject[] observers)
+            : base(execute, canExecuteSubject, completed, error, cancel)
+        {
+            if (canExecuteSubject == null)
+            {
+                throw new ArgumentNullException(nameof(canExecuteSubject));
+            }
+
+            if (observers == null)
+            {
+                throw new ArgumentNullException(nameof(observers));
+            }
+
+            this.observers.Add(canExecuteSubject);
+
+            this.observers.AddIfNotContains(observers);
+
+            if (autoActivate)
+            {
+                this.Activate();
+            }
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="ActivatableCanExecuteObserverCommand" /> class.
         /// </summary>
         /// <param name="execute">The execute.</param>
@@ -103,6 +180,22 @@ namespace Anorisoft.WinUI.Commands.Commands
         public ActivatableConcurrencyCanExecuteObserverCommand(
             [NotNull] Action<CancellationToken> execute)
             : this(execute, false)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ActivatableConcurrencyCanExecuteObserverCommand"/> class.
+        /// </summary>
+        /// <param name="execute">The execute.</param>
+        /// <param name="completed">The completed.</param>
+        /// <param name="error">The error.</param>
+        /// <param name="cancel">The cancel.</param>
+        public ActivatableConcurrencyCanExecuteObserverCommand(
+            [NotNull] Action<CancellationToken> execute,
+        [CanBeNull] Action completed,
+        [CanBeNull] Action<Exception> error,
+        [CanBeNull] Action cancel)
+            : this(execute, false, completed, error, cancel)
         {
         }
 
@@ -121,6 +214,26 @@ namespace Anorisoft.WinUI.Commands.Commands
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="ActivatableConcurrencyCanExecuteObserverCommand"/> class.
+        /// </summary>
+        /// <param name="execute">The execute.</param>
+        /// <param name="canExecuteSubject">The can execute subject.</param>
+        /// <param name="completed">The completed.</param>
+        /// <param name="error">The error.</param>
+        /// <param name="cancel">The cancel.</param>
+        /// <param name="observers">The observers.</param>
+        public ActivatableConcurrencyCanExecuteObserverCommand(
+            [NotNull] Action<CancellationToken> execute,
+            [NotNull] ICanExecuteSubject canExecuteSubject, 
+            [CanBeNull] Action completed,
+            [CanBeNull] Action<Exception> error,
+            [CanBeNull] Action cancel,
+            [NotNull][ItemNotNull] params ICanExecuteChangedSubject[] observers)
+            : this(execute, false, canExecuteSubject, completed, error, cancel, observers)
+        {
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="ActivatableCanExecuteObserverCommand" /> class.
         /// </summary>
         /// <param name="execute">The execute.</param>
@@ -129,6 +242,24 @@ namespace Anorisoft.WinUI.Commands.Commands
             [NotNull] Action<CancellationToken> execute,
             [NotNull] ICanExecuteSubject canExecuteSubject)
             : this(execute, false, canExecuteSubject)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ActivatableConcurrencyCanExecuteObserverCommand"/> class.
+        /// </summary>
+        /// <param name="execute">The execute.</param>
+        /// <param name="canExecuteSubject">The can execute subject.</param>
+        /// <param name="completed">The completed.</param>
+        /// <param name="error">The error.</param>
+        /// <param name="cancel">The cancel.</param>
+        public ActivatableConcurrencyCanExecuteObserverCommand(
+            [NotNull] Action<CancellationToken> execute,
+            [NotNull] ICanExecuteSubject canExecuteSubject,
+            [CanBeNull] Action completed,
+        [CanBeNull] Action<Exception> error,
+        [CanBeNull] Action cancel)
+            : this(execute, false, canExecuteSubject, completed, error, cancel)
         {
         }
 
@@ -144,8 +275,11 @@ namespace Anorisoft.WinUI.Commands.Commands
         public ActivatableConcurrencyCanExecuteObserverCommand(
             [NotNull] Action<CancellationToken> execute,
             [NotNull] Func<bool> canExecute,
+            [CanBeNull] Action completed,
+            [CanBeNull] Action<Exception> error,
+            [CanBeNull] Action cancel,
             [NotNull] [ItemNotNull] params ICanExecuteChangedSubject[] observers)
-            : this(execute, false, canExecute, observers)
+            : this(execute, false, canExecute, completed, error, cancel, observers)
         {
         }
 
@@ -163,6 +297,40 @@ namespace Anorisoft.WinUI.Commands.Commands
             [NotNull] Func<bool> canExecute,
             [NotNull] [ItemNotNull] params ICanExecuteChangedSubject[] observers)
             : base(execute, canExecute)
+        {
+            if (observers == null)
+            {
+                throw new ArgumentNullException(nameof(observers));
+            }
+
+            this.observers.AddIfNotContains(observers);
+
+            if (autoActivate)
+            {
+                this.Activate();
+            }
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ActivatableConcurrencyCanExecuteObserverCommand"/> class.
+        /// </summary>
+        /// <param name="execute">The execute.</param>
+        /// <param name="autoActivate">if set to <c>true</c> [automatic activate].</param>
+        /// <param name="canExecute">The can execute.</param>
+        /// <param name="completed">The completed.</param>
+        /// <param name="error">The error.</param>
+        /// <param name="cancel">The cancel.</param>
+        /// <param name="observers">The observers.</param>
+        /// <exception cref="ArgumentNullException">observers</exception>
+        public ActivatableConcurrencyCanExecuteObserverCommand(
+            [NotNull] Action<CancellationToken> execute,
+            bool autoActivate,
+            [NotNull] Func<bool> canExecute,
+            [CanBeNull] Action completed,
+            [CanBeNull] Action<Exception> error,
+            [CanBeNull] Action cancel,
+            [NotNull][ItemNotNull] params ICanExecuteChangedSubject[] observers)
+            : base(execute, canExecute, completed, error, cancel)
         {
             if (observers == null)
             {

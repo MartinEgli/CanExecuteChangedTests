@@ -14,6 +14,9 @@ namespace Anorisoft.WinUI.Commands.Interfaces.Builders
         ConcurrencyCanExecuteObserverCommand Build([NotNull] Action<ConcurrencyCanExecuteObserverCommand> setCommand);
 
         [NotNull]
+        IActivatableConcurrencySyncCanExecuteBuilder Activatable();
+
+        [NotNull]
         IConcurrencySyncCanExecuteBuilder ObservesProperty<TType>([NotNull] Expression<Func<TType>> expression);
 
         [NotNull]
@@ -21,8 +24,11 @@ namespace Anorisoft.WinUI.Commands.Interfaces.Builders
 
         [NotNull]
         IConcurrencySyncCanExecuteBuilder ObservesCommandManager();
+
+        [NotNull] IConcurrencySyncCanExecuteBuilder OnError([NotNull] Action<Exception> error);
         
-        [NotNull]
-        IActivatableConcurrencySyncCanExecuteBuilder Activatable();
+        [NotNull] IConcurrencySyncCanExecuteBuilder OnCompleted([NotNull] Action completed);
+        
+        [NotNull] IConcurrencySyncCanExecuteBuilder OnCancel([NotNull] Action cancel);
     }
 }

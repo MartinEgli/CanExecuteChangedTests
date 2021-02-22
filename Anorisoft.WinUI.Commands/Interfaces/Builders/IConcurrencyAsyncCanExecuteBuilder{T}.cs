@@ -19,11 +19,16 @@ namespace Anorisoft.WinUI.Commands.Interfaces.Builders
         [NotNull]
         IConcurrencyAsyncCanExecuteBuilder<T> Observes([NotNull] ICanExecuteChangedSubject observer);
 
-
         [NotNull]
         IConcurrencyAsyncCanExecuteBuilder<T> ObservesCommandManager();
 
         [NotNull]
         IConcurrencyAsyncCanExecuteBuilder<T> AutoActivate();
+
+        [NotNull] IConcurrencyAsyncCanExecuteBuilder<T> OnError([NotNull] Action<Exception> error);
+
+        [NotNull] IConcurrencyAsyncCanExecuteBuilder<T> OnCompleted([NotNull] Action completed);
+
+        [NotNull] IConcurrencyAsyncCanExecuteBuilder<T> OnCancel([NotNull] Action cancel);
     }
 }

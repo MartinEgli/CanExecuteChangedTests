@@ -135,7 +135,6 @@ namespace Anorisoft.WinUI.Commands.Commands
             this.completed = completed;
             this.error = error;
             this.cancel = cancel;
-            this.Dispatcher = Dispatcher.CurrentDispatcher;
             this.cancelCommand = new DirectCommand(this.Cancel, () => this.IsExecuting);
         }
 
@@ -156,7 +155,6 @@ namespace Anorisoft.WinUI.Commands.Commands
             this.completed = completed;
             this.error = error;
             this.cancel = cancel;
-            this.Dispatcher = Dispatcher.CurrentDispatcher;
             this.cancelCommand = new DirectCommand(this.Cancel, () => this.IsExecuting);
         }
 
@@ -186,7 +184,6 @@ namespace Anorisoft.WinUI.Commands.Commands
             this.completed = completed;
             this.error = error;
             this.cancel = cancel;
-            this.Dispatcher = Dispatcher.CurrentDispatcher;
             this.cancelCommand = new DirectCommand(this.Cancel, () => this.IsExecuting);
         }
 
@@ -203,11 +200,7 @@ namespace Anorisoft.WinUI.Commands.Commands
         /// </value>
         public ISyncCommand CancelCommand => this.cancelCommand;
 
-        /// <summary>
-        ///     The dispatcher
-        /// </summary>
-        [NotNull]
-        public Dispatcher Dispatcher { get; }
+      
 
         /// <summary>
         ///     Gets the exception.

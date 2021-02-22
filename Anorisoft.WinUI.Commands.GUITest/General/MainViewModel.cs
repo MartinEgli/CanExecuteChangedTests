@@ -6,9 +6,12 @@
 
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Anorisoft.WinUI.Commands.Builder;
+using Anorisoft.WinUI.Commands.Commands;
 using Anorisoft.WinUI.Commands.GUITest.Thiriet;
 using JetBrains.Annotations;
 
@@ -38,7 +41,13 @@ namespace Anorisoft.WinUI.Commands.GUITest.General
                 async () => await this.ExecuteAsync().ConfigureAwait(false),
                 this.CanExecute);
 
-            this.ConcurrencyRelayCommand = new ConcurrencyRelayCommand(this.ExecuteWithToken, this.CanExecute);
+            this.ConcurrencyCommand = CommandBuilder.Builder.Command(this.ExecuteWithToken, this.CanExecute).Build();
+            ConcurrencyCommand.CanExecuteChanged += ConcurrencyCommandOnCanExecuteChanged;
+        }
+
+        private void ConcurrencyCommandOnCanExecuteChanged(object sender, EventArgs e)
+        {
+
         }
 
         public ThirietViewModel ThirietViewModel
@@ -60,7 +69,7 @@ namespace Anorisoft.WinUI.Commands.GUITest.General
 
         public AsyncCommand AsyncCommand { get; }
 
-        public ConcurrencyRelayCommand ConcurrencyRelayCommand { get; }
+        public ConcurrencyCanExecuteObserverCommand ConcurrencyCommand { get; }
 
         public DirectCommand DirectCommand { get; }
 
@@ -129,7 +138,7 @@ namespace Anorisoft.WinUI.Commands.GUITest.General
         private bool CanExecute()
         {
             //this.Toggle = !this.Toggle;
-            //Debug.WriteLine("CanExecute");
+            Debug.WriteLine("CanExecute");
             //return this.Toggle;
             return true;
         }

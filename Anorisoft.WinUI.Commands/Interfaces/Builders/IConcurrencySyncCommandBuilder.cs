@@ -5,7 +5,7 @@ using JetBrains.Annotations;
 
 namespace Anorisoft.WinUI.Commands.Interfaces.Builders
 {
-    public interface IConcurrencySyncCommandBuilder 
+    public interface IConcurrencySyncCommandBuilder
     {
         [NotNull]
         ConcurrencyCanExecuteObserverCommand Build();
@@ -28,5 +28,12 @@ namespace Anorisoft.WinUI.Commands.Interfaces.Builders
 
         [NotNull]
         IActivatableConcurrencySyncCommandBuilder Activatable();
+
+
+        [NotNull] IConcurrencySyncCanExecuteBuilder OnError([NotNull] Action<Exception> error);
+
+        [NotNull] IConcurrencySyncCanExecuteBuilder OnCompleted([NotNull] Action completed);
+
+        [NotNull] IConcurrencySyncCanExecuteBuilder OnCancel([NotNull] Action cancel);
     }
 }

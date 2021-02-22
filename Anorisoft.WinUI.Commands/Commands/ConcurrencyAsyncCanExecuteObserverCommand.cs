@@ -34,6 +34,30 @@ namespace Anorisoft.WinUI.Commands.Commands
         /// observer</exception>
         public ConcurrencyAsyncCanExecuteObserverCommand(
             [NotNull] Func<CancellationToken, Task> execute,
+            [CanBeNull] Action completed,
+            [CanBeNull] Action<Exception> error,
+            [CanBeNull] Action cancel,
+            [NotNull][ItemNotNull] params ICanExecuteChangedSubject[] observers)
+            : base(execute, completed, error, cancel)
+        {
+            if (observers == null)
+            {
+                throw new ArgumentNullException(nameof(observers));
+            }
+
+            this.observers.AddIfNotContains(observers);
+
+            Subscribe();
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ConcurrencyAsyncCanExecuteObserverCommand"/> class.
+        /// </summary>
+        /// <param name="execute">The execute.</param>
+        /// <param name="observers">The observers.</param>
+        /// <exception cref="ArgumentNullException">observers</exception>
+        public ConcurrencyAsyncCanExecuteObserverCommand(
+            [NotNull] Func<CancellationToken, Task> execute,
             [NotNull][ItemNotNull] params ICanExecuteChangedSubject[] observers)
             : base(execute)
         {
@@ -81,6 +105,46 @@ namespace Anorisoft.WinUI.Commands.Commands
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="ConcurrencyAsyncCanExecuteObserverCommand"/> class.
+        /// </summary>
+        /// <param name="execute">The execute.</param>
+        /// <param name="canExecuteSubject">The can execute subject.</param>
+        /// <param name="completed">The completed.</param>
+        /// <param name="error">The error.</param>
+        /// <param name="cancel">The cancel.</param>
+        /// <param name="observers">The observers.</param>
+        /// <exception cref="ArgumentNullException">
+        /// canExecuteSubject
+        /// or
+        /// observers
+        /// </exception>
+        public ConcurrencyAsyncCanExecuteObserverCommand(
+            [NotNull] Func<CancellationToken, Task> execute,
+            [NotNull] ICanExecuteSubject canExecuteSubject,
+            [CanBeNull] Action completed,
+            [CanBeNull] Action<Exception> error,
+            [CanBeNull] Action cancel,
+            [NotNull][ItemNotNull] params ICanExecuteChangedSubject[] observers)
+            : base(execute, canExecuteSubject, completed, error, cancel)
+        {
+            if (canExecuteSubject == null)
+            {
+                throw new ArgumentNullException(nameof(canExecuteSubject));
+            }
+
+            if (observers == null)
+            {
+                throw new ArgumentNullException(nameof(observers));
+            }
+
+            this.observers.Add(canExecuteSubject);
+
+            this.observers.AddIfNotContains(observers);
+
+            Subscribe();
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="ActivatableCanExecuteObserverCommand" /> class.
         /// </summary>
         /// <param name="execute">The execute.</param>
@@ -104,14 +168,42 @@ namespace Anorisoft.WinUI.Commands.Commands
         }
 
         /// <summary>
-        /// Called when [can execute changed].
+        /// Initializes a new instance of the <see cref="ConcurrencyAsyncCanExecuteObserverCommand"/> class.
         /// </summary>
-        public void RaisePropertyChanged() => this.CanExecuteChanged.RaiseEmpty(this);
+        /// <param name="execute">The execute.</param>
+        /// <param name="canExecute">The can execute.</param>
+        /// <param name="completed">The completed.</param>
+        /// <param name="error">The error.</param>
+        /// <param name="cancel">The cancel.</param>
+        /// <param name="observers">The observers.</param>
+        /// <exception cref="ArgumentNullException">observers</exception>
+        public ConcurrencyAsyncCanExecuteObserverCommand(
+            [NotNull] Func<CancellationToken, Task> execute,
+            [NotNull] Func<bool> canExecute,
+            [CanBeNull] Action completed,
+            [CanBeNull] Action<Exception> error,
+            [CanBeNull] Action cancel,
+            [NotNull][ItemNotNull] params ICanExecuteChangedSubject[] observers)
+            : base(execute, canExecute, completed, error, cancel)
+        {
+            if (observers == null)
+            {
+                throw new ArgumentNullException(nameof(observers));
+            }
+
+            this.observers.AddIfNotContains(observers);
+            Subscribe();
+        }
 
         /// <summary>
         /// Occurs when changes occur that affect whether or not the command should execute.
         /// </summary>
         public override event EventHandler CanExecuteChanged;
+
+        /// <summary>
+        /// Called when [can execute changed].
+        /// </summary>
+        public void RaisePropertyChanged() => this.CanExecuteChanged.RaiseEmpty(this);
 
         /// <summary>
         /// Raises the can execute command.

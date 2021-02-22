@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading;
-using Anorisoft.WinUI.Commands.CanExecuteObservers;
+﻿using Anorisoft.WinUI.Commands.CanExecuteObservers;
 using Anorisoft.WinUI.Commands.Commands;
 using Anorisoft.WinUI.Commands.Exceptions;
 using Anorisoft.WinUI.Commands.Interfaces;
 using Anorisoft.WinUI.Commands.Interfaces.Builders;
 using JetBrains.Annotations;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Threading;
 
 namespace Anorisoft.WinUI.Commands.Builder
 {
@@ -42,6 +42,21 @@ namespace Anorisoft.WinUI.Commands.Builder
         /// The is automatic actiate
         /// </summary>
         private bool isAutoActivate = true;
+
+        /// <summary>
+        /// The error action
+        /// </summary>
+        private Action<Exception> errorAction;
+
+        /// <summary>
+        /// The completed action
+        /// </summary>
+        private Action completedAction;
+
+        /// <summary>
+        /// The cancel action
+        /// </summary>
+        private Action cancelAction;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SyncCommandBuilder"/> class.
@@ -86,6 +101,83 @@ namespace Anorisoft.WinUI.Commands.Builder
         /// <returns></returns>
         IActivatableConcurrencySyncCanExecuteBuilder IActivatableConcurrencySyncCanExecuteBuilder.
             ObservesCommandManager() => ObservesCommandManager();
+
+        /// <summary>
+        /// Called when [error].
+        /// </summary>
+        /// <param name="error">The error.</param>
+        /// <returns></returns>
+        IConcurrencySyncCanExecuteBuilder IConcurrencySyncCanExecuteBuilder.OnError(Action<Exception> error) => OnError(error);
+
+        /// <summary>
+        /// Called when [completed].
+        /// </summary>
+        /// <param name="completed">The completed.</param>
+        /// <returns></returns>
+        IActivatableConcurrencySyncCanExecuteBuilder IActivatableConcurrencySyncCanExecuteBuilder.OnCompleted(Action completed) => OnCompleted(completed);
+
+        /// <summary>
+        /// Called when [cancel].
+        /// </summary>
+        /// <param name="cancel">The cancel.</param>
+        /// <returns></returns>
+        IActivatableConcurrencySyncCanExecuteBuilder IActivatableConcurrencySyncCanExecuteBuilder.OnCancel(Action cancel) => OnCancel(cancel);
+
+        /// <summary>
+        /// Called when [error].
+        /// </summary>
+        /// <param name="error">The error.</param>
+        /// <returns></returns>
+        IActivatableConcurrencySyncCanExecuteBuilder IActivatableConcurrencySyncCanExecuteBuilder.OnError(Action<Exception> error) => OnError(error);
+
+        /// <summary>
+        /// Called when [completed].
+        /// </summary>
+        /// <param name="completed">The completed.</param>
+        /// <returns></returns>
+        IActivatableConcurrencySyncCanExecuteBuilder IActivatableConcurrencySyncCommandBuilder.OnCompleted(Action completed) => OnCompleted(completed);
+
+        /// <summary>
+        /// Called when [cancel].
+        /// </summary>
+        /// <param name="cancel">The cancel.</param>
+        /// <returns></returns>
+        IActivatableConcurrencySyncCanExecuteBuilder IActivatableConcurrencySyncCommandBuilder.OnCancel(Action cancel) => OnCancel(cancel);
+
+        /// <summary>
+        /// Called when [error].
+        /// </summary>
+        /// <param name="error">The error.</param>
+        /// <returns></returns>
+        IActivatableConcurrencySyncCanExecuteBuilder IActivatableConcurrencySyncCommandBuilder.OnError(Action<Exception> error) => OnError(error);
+
+        /// <summary>
+        /// Called when [completed].
+        /// </summary>
+        /// <param name="completed">The completed.</param>
+        /// <returns></returns>
+        IConcurrencySyncCanExecuteBuilder IConcurrencySyncCanExecuteBuilder.OnCompleted(Action completed) => OnCompleted(completed);
+
+        /// <summary>
+        /// Called when [cancel].
+        /// </summary>
+        /// <param name="cancel">The cancel.</param>
+        /// <returns></returns>
+        IConcurrencySyncCanExecuteBuilder IConcurrencySyncCanExecuteBuilder.OnCancel(Action cancel) => OnCancel(cancel);
+
+        /// <summary>
+        /// Called when [completed].
+        /// </summary>
+        /// <param name="completed">The completed.</param>
+        /// <returns></returns>
+        IConcurrencySyncCanExecuteBuilder IConcurrencySyncCommandBuilder.OnCompleted(Action completed) => OnCompleted(completed);
+
+        /// <summary>
+        /// Called when [cancel].
+        /// </summary>
+        /// <param name="cancel">The cancel.</param>
+        /// <returns></returns>
+        IConcurrencySyncCanExecuteBuilder IConcurrencySyncCommandBuilder.OnCancel(Action cancel) => OnCancel(cancel);
 
         /// <summary>
         /// Automatics the activate.
@@ -265,6 +357,45 @@ namespace Anorisoft.WinUI.Commands.Builder
         ConcurrencyCanExecuteObserverCommand IConcurrencySyncCommandBuilder.Build() => Build();
 
         /// <summary>
+        /// Called when [error].
+        /// </summary>
+        /// <param name="error">The error.</param>
+        /// <returns></returns>
+        IConcurrencySyncCanExecuteBuilder IConcurrencySyncCommandBuilder.OnError(Action<Exception> error) => OnError(error);
+
+        /// <summary>
+        /// Called when [error].
+        /// </summary>
+        /// <param name="error">The error.</param>
+        /// <returns></returns>
+        private ConcurrencySyncCommandBuilder OnError(Action<Exception> error)
+        {
+            errorAction = error;
+            return this;
+        }
+        /// <summary>
+        /// Called when [completed].
+        /// </summary>
+        /// <param name="completed">The completed.</param>
+        /// <returns></returns>
+        private ConcurrencySyncCommandBuilder OnCompleted(Action completed)
+        {
+            completedAction = completed;
+            return this;
+        }
+
+        /// <summary>
+        /// Called when [cancel].
+        /// </summary>
+        /// <param name="cancel">The cancel.</param>
+        /// <returns></returns>
+        private ConcurrencySyncCommandBuilder OnCancel(Action cancel)
+        {
+            cancelAction = cancel;
+            return this;
+        }
+ 
+        /// <summary>
         /// Determines whether this instance can execute the specified can execute.
         /// </summary>
         /// <param name="canExecute">The can execute.</param>
@@ -272,7 +403,7 @@ namespace Anorisoft.WinUI.Commands.Builder
         /// <exception cref="CommandBuilderException">
         /// </exception>
         [NotNull]
-        public ConcurrencySyncCommandBuilder CanExecute([NotNull] Func<bool> canExecute)
+        private ConcurrencySyncCommandBuilder CanExecute([NotNull] Func<bool> canExecute)
         {
             if (this.canExecuteFunction != null)
             {
@@ -300,14 +431,14 @@ namespace Anorisoft.WinUI.Commands.Builder
                 if (canExecuteFunction != null)
                 {
                     return new ActivatableConcurrencyCanExecuteObserverCommand(execute, isAutoActivate,
-                        canExecuteFunction,
+                        canExecuteFunction, completedAction, errorAction, cancelAction,
                         observes.ToArray());
                 }
 
                 if (canExecuteSubject != null)
                 {
                     return new ActivatableConcurrencyCanExecuteObserverCommand(execute, isAutoActivate,
-                        canExecuteSubject,
+                        canExecuteSubject, completedAction, errorAction, cancelAction,
                         observes.ToArray());
                 }
 
@@ -316,16 +447,16 @@ namespace Anorisoft.WinUI.Commands.Builder
 
             if (canExecuteFunction != null)
             {
-                return new ActivatableConcurrencyCanExecuteObserverCommand(execute, isAutoActivate, canExecuteFunction);
+                return new ActivatableConcurrencyCanExecuteObserverCommand(execute, isAutoActivate, canExecuteFunction, completedAction, errorAction, cancelAction);
             }
 
             if (canExecuteSubject != null)
             {
                 return new ActivatableConcurrencyCanExecuteObserverCommand(execute, isAutoActivate,
-                    canExecuteSubject);
+                    canExecuteSubject, completedAction, errorAction, cancelAction);
             }
 
-            return new ActivatableConcurrencyCanExecuteObserverCommand(execute, isAutoActivate);
+            return new ActivatableConcurrencyCanExecuteObserverCommand(execute, isAutoActivate, completedAction, errorAction, cancelAction);
         }
 
         /// <summary>
@@ -340,14 +471,14 @@ namespace Anorisoft.WinUI.Commands.Builder
                 if (canExecuteFunction != null)
                 {
                     return new ConcurrencyCanExecuteObserverCommand(execute,
-                        canExecuteFunction,
+                        canExecuteFunction, completedAction, errorAction, cancelAction,
                         observes.ToArray());
                 }
 
                 if (canExecuteSubject != null)
                 {
                     return new ConcurrencyCanExecuteObserverCommand(execute,
-                        canExecuteSubject,
+                        canExecuteSubject, completedAction, errorAction, cancelAction,
                         observes.ToArray());
                 }
 
@@ -356,16 +487,16 @@ namespace Anorisoft.WinUI.Commands.Builder
 
             if (canExecuteFunction != null)
             {
-                return new ConcurrencyCanExecuteObserverCommand(execute, canExecuteFunction);
+                return new ConcurrencyCanExecuteObserverCommand(execute, canExecuteFunction, completedAction, errorAction, cancelAction);
             }
 
             if (canExecuteSubject != null)
             {
                 return new ConcurrencyCanExecuteObserverCommand(execute,
-                    canExecuteSubject);
+                    canExecuteSubject, completedAction, errorAction, cancelAction);
             }
 
-            return new ConcurrencyCanExecuteObserverCommand(execute);
+            return new ConcurrencyCanExecuteObserverCommand(execute, completedAction, errorAction, cancelAction);
         }
 
         /// <summary>

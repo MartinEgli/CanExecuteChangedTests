@@ -8,6 +8,7 @@ using System;
 using System.Threading;
 using System.Windows.Input;
 using Anorisoft.WinUI.Commands.Commands;
+using Anorisoft.WinUI.Common;
 using JetBrains.Annotations;
 
 namespace Anorisoft.WinUI.Commands
@@ -62,14 +63,7 @@ namespace Anorisoft.WinUI.Commands
         /// </summary>
         public override void RaiseCanExecuteCommand()
         {
-            if (this.Dispatcher.CheckAccess())
-            {
-                CommandManager.InvalidateRequerySuggested();
-            }
-            else
-            {
-                this.Dispatcher.Invoke(CommandManager.InvalidateRequerySuggested);
-            }
+            this.SynchronizationContext.Dispatch(CommandManager.InvalidateRequerySuggested);
         }
 
         /// <summary>

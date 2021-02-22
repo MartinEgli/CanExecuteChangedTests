@@ -29,14 +29,29 @@ namespace Anorisoft.WinUI.Commands.Builder
         private readonly List<ICanExecuteChangedSubject> observes = new List<ICanExecuteChangedSubject>();
 
         /// <summary>
-        /// The can execute expression
+        /// The cancel action
         /// </summary>
-        private ICanExecuteSubject canExecuteSubject;
+        private Action cancelAction;
 
         /// <summary>
         /// The can execute function
         /// </summary>
         private Predicate<T> canExecuteFunction;
+
+        /// <summary>
+        /// The can execute expression
+        /// </summary>
+        private ICanExecuteSubject canExecuteSubject;
+
+        /// <summary>
+        /// The completed action
+        /// </summary>
+        private Action completedAction;
+
+        /// <summary>
+        /// The error action
+        /// </summary>
+        private Action<Exception> errorAction;
 
         /// <summary>
         /// The is automatic actiate
@@ -95,11 +110,62 @@ namespace Anorisoft.WinUI.Commands.Builder
             AutoActivate() => AutoActivate();
 
         /// <summary>
+        /// Called when [error].
+        /// </summary>
+        /// <param name="error">The error.</param>
+        /// <returns></returns>
+        IActivatableConcurrencySyncCanExecuteBuilder<T> IActivatableConcurrencySyncCanExecuteBuilder<T>.OnError(
+            Action<Exception> error) =>
+            OnError(error);
+
+        IActivatableConcurrencySyncCanExecuteBuilder<T> IActivatableConcurrencySyncCanExecuteBuilder<T>.OnCompleted(
+            Action completed)
+        {
+            return OnCompleted(completed);
+        }
+
+        /// <summary>
+        /// Called when [cancel].
+        /// </summary>
+        /// <param name="cancel">The cancel.</param>
+        /// <returns></returns>
+        IActivatableConcurrencySyncCanExecuteBuilder<T> IActivatableConcurrencySyncCanExecuteBuilder<T>.OnCancel(
+            Action cancel) =>
+            OnCancel(cancel);
+
+        /// <summary>
         /// Builds this instance.
         /// </summary>
         /// <returns></returns>
         ActivatableConcurrencyCanExecuteObserverCommand<T> IActivatableConcurrencySyncCanExecuteBuilder<T>.Build() =>
             BuildActivatable();
+
+        /// <summary>
+        /// Called when [error].
+        /// </summary>
+        /// <param name="error">The error.</param>
+        /// <returns></returns>
+        IActivatableConcurrencySyncCanExecuteBuilder<T> IActivatableConcurrencySyncCommandBuilder<T>.OnError(
+            Action<Exception> error) =>
+            OnError(error);
+
+        /// <summary>
+        /// Called when [completed].
+        /// </summary>
+        /// <param name="completed">The completed.</param>
+        /// <returns></returns>
+        IActivatableConcurrencySyncCanExecuteBuilder<T> IActivatableConcurrencySyncCommandBuilder<T>.OnCompleted(
+            Action completed) =>
+            OnCompleted(completed);
+
+        /// <summary>
+        /// Called when [cancel].
+        /// </summary>
+        /// <param name="cancel">The cancel.</param>
+        /// <returns></returns>
+        IActivatableConcurrencySyncCanExecuteBuilder<T> IActivatableConcurrencySyncCommandBuilder<T>.OnCancel(
+            Action cancel) =>
+            OnCancel(cancel);
 
         /// <summary>
         /// Builds the specified set command.
@@ -116,18 +182,6 @@ namespace Anorisoft.WinUI.Commands.Builder
         /// <returns></returns>
         IActivatableConcurrencySyncCanExecuteBuilder<T> IActivatableConcurrencySyncCommandBuilder<T>.
             CanExecute(Predicate<T> canExecute) => CanExecute(canExecute);
-
-        IActivatableConcurrencySyncCanExecuteBuilder<T> IActivatableConcurrencySyncCommandBuilder<T>.CanExecute(ICanExecuteSubject canExecute)
-        {
-            this.canExecuteSubject = canExecute;
-            return this;
-        }
-
-        IConcurrencySyncCanExecuteBuilder<T> IConcurrencySyncCommandBuilder<T>.CanExecute(ICanExecuteSubject canExecute)
-        {
-            this.canExecuteSubject = canExecute;
-            return this;
-        }
 
         /// <summary>
         /// Observeses the can execute.
@@ -159,6 +213,38 @@ namespace Anorisoft.WinUI.Commands.Builder
         /// <returns></returns>
         ActivatableConcurrencyCanExecuteObserverCommand<T> IActivatableConcurrencySyncCommandBuilder<T>.Build() =>
             BuildActivatable();
+
+        /// <summary>
+        /// Determines whether this instance can execute the specified can execute.
+        /// </summary>
+        /// <param name="canExecute">The can execute.</param>
+        /// <returns></returns>
+        IActivatableConcurrencySyncCanExecuteBuilder<T> IActivatableConcurrencySyncCommandBuilder<T>.
+            CanExecute(ICanExecuteSubject canExecute) => ActivatableCanExecute(canExecute);
+
+        /// <summary>
+        /// Called when [completed].
+        /// </summary>
+        /// <param name="completed">The completed.</param>
+        /// <returns></returns>
+        IConcurrencySyncCanExecuteBuilder<T> IConcurrencySyncCanExecuteBuilder<T>.OnCompleted(Action completed) =>
+            OnCompleted(completed);
+
+        /// <summary>
+        /// Called when [cancel].
+        /// </summary>
+        /// <param name="cancel">The cancel.</param>
+        /// <returns></returns>
+        IConcurrencySyncCanExecuteBuilder<T> IConcurrencySyncCanExecuteBuilder<T>.OnCancel(Action cancel) =>
+            OnCancel(cancel);
+
+        /// <summary>
+        /// Called when [error].
+        /// </summary>
+        /// <param name="error">The error.</param>
+        /// <returns></returns>
+        IConcurrencySyncCanExecuteBuilder<T> IConcurrencySyncCanExecuteBuilder<T>.OnError(Action<Exception> error) =>
+            OnError(error);
 
         /// <summary>
         /// Observeses the specified observer.
@@ -208,6 +294,30 @@ namespace Anorisoft.WinUI.Commands.Builder
         /// </summary>
         /// <returns></returns>
         ConcurrencyCanExecuteObserverCommand<T> IConcurrencySyncCanExecuteBuilder<T>.Build() => Build();
+
+        /// <summary>
+        /// Called when [completed].
+        /// </summary>
+        /// <param name="completed">The completed.</param>
+        /// <returns></returns>
+        IConcurrencySyncCanExecuteBuilder<T> IConcurrencySyncCommandBuilder<T>.OnCompleted(Action completed) =>
+            OnCompleted(completed);
+
+        /// <summary>
+        /// Called when [cancel].
+        /// </summary>
+        /// <param name="cancel">The cancel.</param>
+        /// <returns></returns>
+        IConcurrencySyncCanExecuteBuilder<T> IConcurrencySyncCommandBuilder<T>.OnCancel(Action cancel) =>
+            OnCancel(cancel);
+
+        /// <summary>
+        /// Called when [error].
+        /// </summary>
+        /// <param name="error">The error.</param>
+        /// <returns></returns>
+        IConcurrencySyncCanExecuteBuilder<T> IConcurrencySyncCommandBuilder<T>.OnError(Action<Exception> error) =>
+            OnError(error);
 
         /// <summary>
         /// Builds the specified set command.
@@ -260,10 +370,68 @@ namespace Anorisoft.WinUI.Commands.Builder
         /// </summary>
         /// <param name="canExecute">The can execute.</param>
         /// <returns></returns>
+        IConcurrencySyncCanExecuteBuilder<T> IConcurrencySyncCommandBuilder<T>.
+            CanExecute(ICanExecuteSubject canExecute) => CanExecute(canExecute);
+
+        private IActivatableConcurrencySyncCanExecuteBuilder<T> ActivatableCanExecute(ICanExecuteSubject canExecute)
+        {
+            this.canExecuteSubject = canExecute;
+            return this;
+        }
+
+        /// <summary>
+        /// Determines whether this instance can execute the specified can execute.
+        /// </summary>
+        /// <param name="canExecute">The can execute.</param>
+        /// <returns></returns>
+        private IConcurrencySyncCanExecuteBuilder<T> CanExecute(ICanExecuteSubject canExecute)
+        {
+            this.canExecuteSubject = canExecute;
+            return this;
+        }
+
+        /// <summary>
+        /// Called when [error].
+        /// </summary>
+        /// <param name="error">The error.</param>
+        /// <returns></returns>
+        private ConcurrencySyncCommandBuilder<T> OnError(Action<Exception> error)
+        {
+            errorAction = error;
+            return this;
+        }
+
+        /// <summary>
+        /// Called when [completed].
+        /// </summary>
+        /// <param name="completed">The completed.</param>
+        /// <returns></returns>
+        private ConcurrencySyncCommandBuilder<T> OnCompleted(Action completed)
+        {
+            completedAction = completed;
+            return this;
+        }
+
+        /// <summary>
+        /// Called when [cancel].
+        /// </summary>
+        /// <param name="cancel">The cancel.</param>
+        /// <returns></returns>
+        private ConcurrencySyncCommandBuilder<T> OnCancel(Action cancel)
+        {
+            cancelAction = cancel;
+            return this;
+        }
+
+        /// <summary>
+        /// Determines whether this instance can execute the specified can execute.
+        /// </summary>
+        /// <param name="canExecute">The can execute.</param>
+        /// <returns></returns>
         /// <exception cref="CommandBuilderException">
         /// </exception>
         [NotNull]
-        public ConcurrencySyncCommandBuilder<T> CanExecute([NotNull] Predicate<T> canExecute)
+        private ConcurrencySyncCommandBuilder<T> CanExecute([NotNull] Predicate<T> canExecute)
         {
             if (this.canExecuteFunction != null)
             {

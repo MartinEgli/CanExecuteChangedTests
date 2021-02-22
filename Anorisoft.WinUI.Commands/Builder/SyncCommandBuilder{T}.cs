@@ -264,7 +264,7 @@ namespace Anorisoft.WinUI.Commands.Builder
         /// </exception>
         /// <exception cref="ArgumentNullException">canExecute</exception>
         [NotNull]
-        public SyncCommandBuilder<T> CanExecute([NotNull] Predicate<T> canExecute)
+        private SyncCommandBuilder<T> CanExecute([NotNull] Predicate<T> canExecute)
         {
             if (this.canExecuteFunction != null)
             {

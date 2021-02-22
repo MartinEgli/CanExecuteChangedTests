@@ -62,7 +62,7 @@ namespace Anorisoft.WinUI.Commands
         /// <value>
         /// The synchronization context.
         /// </value>
-        [NotNull] public SynchronizationContext SynchronizationContext { get; }
+        public SynchronizationContext SynchronizationContext { get; }
 
         /// <summary>
         ///     Determines whether this instance can execute the specified parameter.

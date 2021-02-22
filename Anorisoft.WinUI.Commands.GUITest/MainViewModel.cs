@@ -21,27 +21,18 @@ namespace Anorisoft.WinUI.Commands.GUITest
     internal class MainViewModel : INotifyPropertyChanged
     {
         private readonly MainWindow window;
-
-        private string text;
-
-        private ThirietViewModel thirietViewModel;
-
-        private bool throwException;
-
+        
         public MainViewModel(MainWindow window)
         {
  
             this.window = window;
-            this.DirectCommand = new DirectCommand(() => this.OpenObservablePropertyTest1());
+            this.DirectCommand = new DirectCommand(() =>new PropertyObservableTest().ShowDialog());
             this.DirectCommand.RaiseCanExecuteChanged();
             PropertyObservableNullReferenceCommand = new DirectCommand(() => new PropertyObservableNullReferenceTest().ShowDialog());
-
+            ConcurrencyTestCommand = new DirectCommand(() => new General.MainWindow().ShowDialog());
         }
 
-        private void OpenObservablePropertyTest1()
-        {
-            new PropertyObservableTest().ShowDialog();
-        }
+        public DirectCommand ConcurrencyTestCommand { get; }
 
 
         public DirectCommand DirectCommand { get; }

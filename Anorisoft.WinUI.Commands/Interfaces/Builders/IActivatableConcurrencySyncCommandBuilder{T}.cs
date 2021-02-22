@@ -27,5 +27,12 @@ namespace Anorisoft.WinUI.Commands.Interfaces.Builders
         IActivatableConcurrencySyncCanExecuteBuilder<T> ObservesCanExecute([NotNull] Expression<Func<bool>> canExecute, bool fallback);
         [NotNull]
         IActivatableConcurrencySyncCanExecuteBuilder<T> AutoActivate();
+
+
+        [NotNull] IActivatableConcurrencySyncCanExecuteBuilder<T> OnError([NotNull] Action<Exception> error);
+
+        [NotNull] IActivatableConcurrencySyncCanExecuteBuilder<T> OnCompleted([NotNull] Action completed);
+
+        [NotNull] IActivatableConcurrencySyncCanExecuteBuilder<T> OnCancel([NotNull] Action cancel);
     }
 }

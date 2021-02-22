@@ -20,7 +20,7 @@ namespace Anorisoft.WinUI.Commands.Tests
     ///     Summary description for ObservableCommandFixture
     /// </summary>
     [TestFixture]
-    public class CommandBuilder_Fixture
+    public class CommandBuilderFixture
     {
         [SetUp]
         public void Init()
@@ -796,8 +796,7 @@ namespace Anorisoft.WinUI.Commands.Tests
                 {
                     handlers.Execute();
                     waitHandle.Set();
-                })
-                .Build();
+                }).Build();
 
             handlers.CanExecuteReturnValue = true;
             var actual = command.CanExecute();

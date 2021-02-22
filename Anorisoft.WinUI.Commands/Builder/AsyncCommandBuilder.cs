@@ -277,7 +277,7 @@ namespace Anorisoft.WinUI.Commands.Builder
         /// <exception cref="CommandBuilderException">
         /// </exception>
         [NotNull]
-        public AsyncCommandBuilder CanExecute([NotNull] Func<bool> canExecute)
+        private AsyncCommandBuilder CanExecute([NotNull] Func<bool> canExecute)
         {
             if (this.canExecuteFunction != null)
             {

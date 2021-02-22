@@ -37,7 +37,7 @@ namespace Anorisoft.WinUI.Commands.Builder
         /// <param name="canExecute">The can execute.</param>
         /// <returns></returns>
         public ISyncCanExecuteBuilder Command(Action execute, Func<bool> canExecute)
-            => new SyncCommandBuilder(execute).CanExecute(canExecute);
+            => ((ISyncCommandBuilder)new SyncCommandBuilder(execute)).CanExecute(canExecute);
 
         /// <summary>
         /// Commands the specified execute.
@@ -56,7 +56,7 @@ namespace Anorisoft.WinUI.Commands.Builder
         /// <param name="canExecute">The can execute.</param>
         /// <returns></returns>
         public ISyncCanExecuteBuilder<T> Command<T>(Action<T> execute, Predicate<T> canExecute)
-            => new SyncCommandBuilder<T>(execute).CanExecute(canExecute);
+            => ((ISyncCommandBuilder<T>)new SyncCommandBuilder<T>(execute)).CanExecute(canExecute);
 
         /// <summary>
         /// Commands the specified execute.
@@ -73,7 +73,7 @@ namespace Anorisoft.WinUI.Commands.Builder
         /// <param name="canExecute">The can execute.</param>
         /// <returns></returns>
         public IAsyncCanExecuteBuilder Command(Func<Task> execute, Func<bool> canExecute)
-            => new AsyncCommandBuilder(execute).CanExecute(canExecute);
+            => ((IAsyncCommandBuilder)new AsyncCommandBuilder(execute)).CanExecute(canExecute);
 
         /// <summary>
         /// Commands the specified execute.
@@ -92,7 +92,7 @@ namespace Anorisoft.WinUI.Commands.Builder
         /// <param name="canExecute">The can execute.</param>
         /// <returns></returns>
         public IAsyncCanExecuteBuilder<T> Command<T>(Func<T, Task> execute, Predicate<T> canExecute)
-            => new AsyncCommandBuilder<T>(execute).CanExecute(canExecute);
+            => ((IAsyncCommandBuilder<T>)new AsyncCommandBuilder<T>(execute)).CanExecute(canExecute);
 
         /// <summary>
         /// Commands the specified execute.
@@ -135,7 +135,7 @@ namespace Anorisoft.WinUI.Commands.Builder
         /// <param name="canExecute">The can execute.</param>
         /// <returns></returns>
         public IConcurrencySyncCanExecuteBuilder Command(Action<CancellationToken> execute, Func<bool> canExecute)
-            => new ConcurrencySyncCommandBuilder(execute).CanExecute(canExecute);
+            => ((IConcurrencySyncCommandBuilder)new ConcurrencySyncCommandBuilder(execute)).CanExecute(canExecute);
 
         /// <summary>
         /// Commands the specified execute.
@@ -146,7 +146,7 @@ namespace Anorisoft.WinUI.Commands.Builder
         /// <returns></returns>
         public IConcurrencySyncCanExecuteBuilder<T> Command<T>(Action<T, CancellationToken> execute,
             Predicate<T> canExecute)
-            => new ConcurrencySyncCommandBuilder<T>(execute).CanExecute(canExecute);
+            => ((IConcurrencySyncCommandBuilder<T>)new ConcurrencySyncCommandBuilder<T>(execute)).CanExecute(canExecute);
 
         /// <summary>
         /// Commands the specified execute.
